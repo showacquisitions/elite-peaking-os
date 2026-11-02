@@ -773,7 +773,14 @@ function loadState(){
   return freshState();
 }
 let S=loadState(),W=null;
-const save=()=>{try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){console.warn("state save failed",e)}};
+const SYNCKEYS=["prof","log","checks","perf","swaps","mswaps","blockStart","blockOffset","confirmed"];
+const snapOf=()=>JSON.stringify(SYNCKEYS.map(k=>S[k]));
+let lastSnap=snapOf();
+const save=()=>{
+  const sn=snapOf();
+  if(sn!==lastSnap){lastSnap=sn;S.mtime=Math.max(Date.now(),(S.mtime||0)+1);if(typeof SY!=="undefined"&&SY.token)schedulePush()}
+  try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){console.warn("state save failed",e)}
+};
 const $=id=>document.getElementById(id);
 const esc=s=>String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 const metric=()=>S.prof.units==="metric";
@@ -831,9 +838,10 @@ function buildProfile(){
      <h3>Exclude</h3><div class="d" style="margin-bottom:6px">Lactose swaps Greek yogurt and cottage cheese for lactose-free versions and adds aged cheddar (trace lactose). Whey isolate stays (about 0 g lactose). Pick "All dairy" for a milk allergy.</div>${chkHTML("excl",[["dairy","All dairy"],["lactose","Lactose (keeps whey isolate)"],["eggs","Eggs"],["fish","Fish / shellfish"],["gluten","Gluten"],["nuts","Nuts / peanuts"],["soy","Soy"]])}</div>
    </div>
   </div>
+  <div class="card"><h2><span>Sync phone ↔ desktop</span><span class="badge" id="syncMsg"></span></h2><div id="syncBox"></div></div>
   <div class="card"><h2><span>Data</span></h2><div style="display:flex;gap:8px;flex-wrap:wrap">
    <button class="btn" id="btnExport">Export backup</button><button class="btn" id="btnImport">Import backup</button><button class="btn" onclick="window.print()">Print week</button><button class="btn danger" id="btnReset">Reset everything</button></div></div>`;
-  fillProfile();
+  fillProfile();renderSync();
 }
 function fillProfile(){
   const p=S.prof;
@@ -1090,6 +1098,10 @@ document.addEventListener("click",e=>{
   if(tab){document.querySelectorAll(".tab").forEach(x=>x.classList.toggle("active",x===tab));document.querySelectorAll(".pane").forEach(x=>x.classList.toggle("active",x.id==="pane-"+tab.dataset.tab));return}
   switch(t.id){
     case "btnWake":toggleWake();break;
+    case "btnSyncConnect":{const v=$("syncToken").value.trim();if(!v)break;SY={token:v};saveSY();renderSync();syncNow();break}
+    case "btnSyncNow":syncNow();break;
+    case "btnSyncOff":SY={};saveSY();setMsg("Not connected");renderSync();break;
+    case "btnSyncLink":shareLink();break;
     case "btnConfirm":S.confirmed=true;save();fillProfile();break;
     case "btnRotate":S.blockOffset++;S.blockStart=mondayOf(TODAY);S.swaps={};S.weekOffset=0;save();regen();renderAll(true);break;
     case "btnApply":S.prof.kcalAdj=Math.max(-500,Math.min(500,(S.prof.kcalAdj||0)+(+t.dataset.delta)));commit();break;
@@ -1110,6 +1122,95 @@ $("fileIn").addEventListener("change",e=>{
   }).catch(err=>alert("Import failed: "+err.message)).finally(()=>{e.target.value=""});
 });
 
+/* ---------- SYNC ---------- */
+const SYNCF="elite-os-sync.json",SYNCD="elite-os-sync";
+let SY=(()=>{try{return JSON.parse(localStorage.getItem("elitePeakingSync_v1")||"{}")}catch(e){return {}}})();
+const saveSY=()=>{try{localStorage.setItem("elitePeakingSync_v1",JSON.stringify(SY))}catch(e){console.warn(e)}};
+let syncMsg=SY.token?"Connected":"Not connected",pushT=null,syncing=false;
+function setMsg(m){syncMsg=m;const el=$("syncMsg");if(el)el.textContent=m}
+function syncData(){return {mtime:S.mtime||Date.now(),data:Object.fromEntries(SYNCKEYS.map(k=>[k,S[k]]))}}
+function applyData(d,mtime){
+  SYNCKEYS.forEach(k=>{if(d[k]!==undefined)S[k]=d[k]});
+  S.prof=Object.assign(JSON.parse(JSON.stringify(DEFP)),S.prof);
+  lastSnap=snapOf();S.mtime=mtime||Date.now();save();regen();renderAll();
+}
+async function gh(path,opt){
+  const r=await fetch("https://api.github.com"+path,Object.assign({headers:{Authorization:"Bearer "+SY.token,Accept:"application/vnd.github+json","Content-Type":"application/json"}},opt));
+  if(!r.ok){const e=new Error("GitHub "+r.status);e.status=r.status;throw e}
+  return r.json();
+}
+async function findGist(){
+  for(let pg=1;pg<=5;pg++){
+    const list=await gh("/gists?per_page=100&page="+pg);
+    const g=list.find(x=>x.description===SYNCD);
+    if(g)return g;
+    if(list.length<100)break;
+  }
+  return null;
+}
+const gistBody=()=>JSON.stringify({description:SYNCD,public:false,files:{[SYNCF]:{content:JSON.stringify(syncData())}}});
+function schedulePush(){clearTimeout(pushT);pushT=setTimeout(syncNow,4000)}
+async function syncNow(){
+  if(!SY.token||syncing)return;
+  syncing=true;setMsg("Syncing…");
+  try{
+    if(!SY.gist){const g=await findGist();if(g){SY.gist=g.id;saveSY()}}
+    if(!SY.gist){const g=await gh("/gists",{method:"POST",body:gistBody()});SY.gist=g.id;saveSY();setMsg("Synced (first upload)")}
+    else{
+      const g=await gh("/gists/"+SY.gist),f=g.files&&g.files[SYNCF];
+      let remote=null;
+      if(f)remote=JSON.parse(f.truncated?await (await fetch(f.raw_url)).text():f.content);
+      if(remote&&remote.mtime>(S.mtime||0)){applyData(remote.data,remote.mtime);setMsg("Pulled newer data "+new Date().toLocaleTimeString())}
+      else if(!remote||remote.mtime<(S.mtime||0)){await gh("/gists/"+SY.gist,{method:"PATCH",body:gistBody()});setMsg("Synced "+new Date().toLocaleTimeString())}
+      else setMsg("Up to date "+new Date().toLocaleTimeString());
+    }
+  }catch(e){
+    if(e.status===401||e.status===403){setMsg("Token rejected");}
+    else if(e.status===404&&SY.gist){SY.gist="";saveSY();setMsg("Sync file missing, retry")}
+    else setMsg("Sync failed: "+e.message);
+    console.warn("sync error",e);
+  }finally{syncing=false}
+}
+function renderSync(){
+  const box=$("syncBox");if(!box)return;
+  setMsg(syncMsg);
+  box.innerHTML=(SY.token
+   ?`<div class="d">Connected. Changes upload a few seconds after you make them, and the newest data downloads when you open the app.</div><div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:8px"><button class="btn" id="btnSyncNow">Sync now</button><button class="btn danger" id="btnSyncOff">Disconnect this device</button></div>`
+   :`<div class="d">One-time setup per device, about a minute. <a href="https://github.com/settings/tokens/new?scopes=gist&description=elite-os-sync" target="_blank" rel="noopener" style="color:var(--accent)">Create a token</a> (leave only the gist box ticked, pick no expiration), paste it here, and tap Connect. Do the same on your other device. Your data syncs through a private gist in your GitHub account.</div><div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:8px"><input type="password" id="syncToken" placeholder="Paste token" style="flex:1;min-width:180px"/><button class="btn" id="btnSyncConnect">Connect</button></div>`)
+   +`<h3>No account? Send a link</h3><div class="d">Creates a link holding your progress. Open it on your other device to load it there.</div><div style="margin-top:8px"><button class="btn" id="btnSyncLink">Share sync link</button></div>`;
+}
+async function toB64(obj){
+  const bytes=new TextEncoder().encode(JSON.stringify(obj));
+  const buf=new Uint8Array(await new Response(new Blob([bytes]).stream().pipeThrough(new CompressionStream("gzip"))).arrayBuffer());
+  let s="";buf.forEach(b=>s+=String.fromCharCode(b));
+  return btoa(s).replace(/\+/g,"-").replace(/\//g,"_").replace(/=+$/,"");
+}
+async function fromB64(t){
+  const s=atob(t.replace(/-/g,"+").replace(/_/g,"/"));
+  const buf=Uint8Array.from(s,c=>c.charCodeAt(0));
+  return JSON.parse(await new Response(new Blob([buf]).stream().pipeThrough(new DecompressionStream("gzip"))).text());
+}
+async function shareLink(){
+  try{
+    const url=location.href.split("#")[0]+"#s="+await toB64(syncData());
+    if(navigator.share)await navigator.share({title:"Elite OS progress",url});
+    else if(navigator.clipboard){await navigator.clipboard.writeText(url);alert("Sync link copied. Open it on your other device.")}
+    else prompt("Copy this link",url);
+  }catch(e){if(e.name!=="AbortError")alert("Could not make the link: "+e.message)}
+}
+async function importHash(){
+  if(!location.hash.startsWith("#s="))return;
+  try{
+    const r=await fromB64(location.hash.slice(3));
+    history.replaceState(null,"",location.href.split("#")[0]);
+    if(r&&r.data&&confirm("Replace this device's progress with the data from the link?"))applyData(r.data);
+  }catch(e){alert("That sync link could not be read.");console.warn(e)}
+}
+function initSync(){
+  importHash();
+  if(SY.token)syncNow();
+  document.addEventListener("visibilitychange",()=>{if(document.visibilityState==="visible"&&SY.token)syncNow()});
+}
 /* ---------- WAKE LOCK ---------- */
 let wl=null,wlWant=false;
 async function getWake(){
@@ -1135,7 +1236,7 @@ document.addEventListener("keydown",e=>{
   if(e.key==="ArrowLeft"&&i>0){S.sel=W.days[i-1].date;save();renderPlan()}
 });
 
-regen();renderAll();
+regen();renderAll();initSync();
 
 </script>
 </body>
