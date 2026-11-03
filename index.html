@@ -4,6 +4,8 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
 <meta name="theme-color" content="#0a0d13" />
+<link rel="manifest" href="manifest.webmanifest" />
+<link rel="icon" href="icon.svg" type="image/svg+xml" />
 <meta name="mobile-web-app-capable" content="yes" />
 <meta name="apple-mobile-web-app-capable" content="yes" />
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
@@ -67,7 +69,9 @@
   .btns{display:flex;flex-direction:column;gap:4px;flex:none}
   .t{font-weight:600;font-size:.91rem}.d{font-size:.79rem;color:var(--muted);margin-top:2px}
   .cue{font-size:.76rem;color:#a5b4c8;margin-top:2px;font-style:italic}
-  .perf{margin-top:5px;width:100%;max-width:240px;font-size:.76rem;font-weight:500;padding:3px 8px}
+  .perfrow{display:flex;gap:6px;align-items:center;margin-top:5px}.perf{width:84px;font-size:.8rem;font-weight:600;padding:3px 8px}
+  .vid{font-size:.72rem;color:var(--accent);margin-left:6px;text-decoration:none;font-weight:600;white-space:nowrap}
+  .rtabs{display:flex;gap:6px;margin:8px 0}.rtab{background:var(--panel2);border:1px solid var(--border);color:var(--muted);border-radius:999px;padding:4px 12px;font-size:.76rem;font-weight:700;cursor:pointer}.rtab.on{background:var(--accent);border-color:var(--accent);color:#fff}
   .rest{border:1px solid var(--border);background:var(--panel2);color:var(--muted);border-radius:6px;padding:2px 8px;font-size:.72rem;cursor:pointer;white-space:nowrap}
   .rest:hover{color:var(--accent);border-color:var(--accent)}
   .macros{display:flex;gap:6px;margin-top:4px;flex-wrap:wrap}
@@ -141,12 +145,14 @@
     <div>
       <div class="card"><h2><span>Meals</span><span class="badge" id="mBadge"></span></h2><div id="mList"></div></div>
       <div class="card"><h2><span>Daily habits</span></h2><div id="hList"></div></div>
+      <div class="card"><h2><span>Ate something else?</span></h2><div id="exBox"></div></div>
     </div>
   </div>
 </section>
 
 <section id="pane-grocery" class="pane">
   <div class="card"><h2><span>Shopping list for the displayed week</span><span style="display:flex;gap:8px;align-items:center"><span class="badge" id="gBadge"></span><button class="btn" id="gShare">Share / copy</button></span></h2><div id="gList"></div></div>
+  <div class="card"><h2><span>Batch cook plan</span><span class="badge">Meal prep</span></h2><div id="prepList"></div></div>
 </section>
 
 <section id="pane-progress" class="pane">
@@ -463,6 +469,82 @@ const REC={
  e1:["2 min","Yogurt with berries, swirl in the almond butter."],
  e2:["2 min","Cottage cheese with diced apple, chia and cinnamon."]
 };
+const VAR={
+ b1:{b:["Frozen spinach, store-brand bread, olive oil and lemon instead of avocado.",["Scramble the eggs with thawed, squeezed frozen spinach, salt and pepper.","Toast the bread, drizzle with olive oil and lemon.","Serve with the banana."]],
+     g:["Sourdough, pasture-raised eggs, ripe avocado, chili flakes, flaky salt.",["Soft-scramble the eggs low and slow in olive oil, pulling off the heat while glossy.","Grill the sourdough in olive oil. Smash avocado with lemon zest, flaky salt and chili.","Stack avocado, eggs and wilted spinach, finish with chives and cracked pepper."]]},
+ b2:{b:["Plain store-brand yogurt (lactose-free store brand if needed), frozen berries, peanut butter.",["Stir frozen berries into the yogurt. They thaw into a syrup in 10 min.","Add oats and peanut butter, mix and rest 10 min."]],
+     g:["Skyr or strained yogurt, fresh berries, toasted oats, almond butter, lemon zest.",["Toast the oats in a dry pan 3 min until nutty.","Layer yogurt, warm oats and fresh berries.","Finish with an almond butter drizzle, cinnamon and lemon zest."]]},
+ b3:{b:["Store-brand oats, bulk whey, peanut butter, a very ripe banana.",["Microwave the oats with water 2 min.","Stir in whey and mashed banana, top with a spoon of peanut butter."]],
+     g:["Steel-cut oats, vanilla whey, cinnamon, sea salt, seared banana.",["Simmer steel-cut oats with salt and cinnamon 15–20 min (batch and reheat).","Whisk the whey with a splash of water and fold in off the heat.","Sear banana slices 30 sec per side, top with peanut butter."]]},
+ b4:{b:["Leftover baked potato and a frozen pepper mix.",["Crisp cubed potato in oil 8 min.","Add the frozen peppers, then the eggs, and scramble."]],
+     g:["Smashed crispy potatoes, smoked paprika, fresh parsley, a soft fried egg.",["Smash par-baked potatoes and fry hard until crusty, 12 min.","Sauté peppers and mushrooms with smoked paprika and garlic.","Top with fried eggs and chopped parsley."]]},
+ b5:{b:["Block tofu, frozen spinach, canned or leftover potatoes.",["Crumble the tofu with turmeric, cumin and salt in a hot pan, 6 min.","Stir in thawed spinach and serve with fried potato cubes."]],
+     g:["Black salt (kala namak) for an egg flavor, nutritional yeast, fresh herbs.",["Marinate crumbled tofu 10 min with turmeric, nutritional yeast and kala namak.","Brown in a hot oiled pan, add mushrooms and spinach.","Serve over crispy potatoes with chives and chili oil."]]},
+ b6:{b:["Peanut butter, plain cottage cheese (lactose-free if needed), frozen berries.",["Spread peanut butter on the rice cakes, top with cottage cheese and thawed berries."]],
+     g:["Almond butter, fresh berries or figs, honey, flaky salt.",["Spread almond butter on the rice cakes, top with cottage cheese.","Add sliced fresh fruit, a thin honey drizzle and flaky salt."]]},
+ b7:{b:["Store-brand oats, bulk pea protein, ripe banana, chia from the bulk bin.",["Cook the oats, stir in the pea protein off the heat, mash in the banana."]],
+     g:["Overnight chia oats with vanilla and cinnamon, caramelized banana.",["Soak oats overnight with chia, vanilla and cinnamon.","Warm it up and whisk in the pea protein.","Top with banana caramelized in a hot pan and toasted seeds."]]},
+ b8:{b:["Carton egg whites, frozen spinach, store-brand oats.",["Cook the oats.","Scramble the egg whites with spinach, salt and pepper."]],
+     g:["Herb omelet with chives and parsley.",["Whisk the whites with chives, parsley and salt.","Cook in a nonstick pan and fold over wilted spinach.","Serve with sliced avocado, lemon and chili flakes. Oats on the side."]]},
+ b9:{b:["Store-brand aged cheddar block, frozen spinach.",["Brown cubed potato, add the eggs and thawed spinach.","Sprinkle the cheddar over and fold."]],
+     g:["Sharp aged cheddar or gruyère, chives, a French-style omelet.",["Crisp the potatoes in a skillet.","Whisk the eggs with chives and cook as a soft French-style omelet.","Fill with grated aged cheese and herbs."]]},
+ m1:{b:["Family-pack breasts or skinless bone-in thighs, frozen broccoli, bulk rice.",["Bake seasoned chicken at 400°F for 25–30 min (batch 4–6 at once).","Microwave the frozen broccoli and reheat the rice."]],
+     g:["Lemon-garlic marinated chicken, jasmine rice, charred broccoli.",["Marinate the chicken 30 min in lemon, garlic, olive oil and smoked paprika.","Sear hard, finish in the oven, and deglaze the pan with lemon.","Char the broccoli at 450°F for 15 min with garlic and chili. Serve over jasmine rice."]]},
+ m2:{b:["Bulk ground beef (drain the fat), russet potatoes, frozen green beans.",["Brown the beef, drain, season.","Microwave the potato 8 min, split and top. Heat the green beans."]],
+     g:["Sirloin or flat-iron steak, rosemary potato wedges, blistered garlic green beans.",["Pat the steak dry, season heavily, sear 3–4 min per side, rest 5 min.","Roast the wedges with rosemary at 425°F for 30 min.","Blister green beans in a hot pan with garlic and lemon."]]},
+ m3:{b:["Frozen or canned pink salmon, frozen asparagus or green beans.",["Bake frozen salmon at 425°F for 18–20 min with lemon and salt.","Roast the sweet potato and steam the vegetable."]],
+     g:["Miso-glazed salmon (skip the miso if you avoid soy: use lemon, honey and coconut aminos).",["Brush the fillet with 1 tbsp miso mixed with lemon and a little water.","Roast at 425°F for 10–12 min until just flaky.","Serve with roasted sweet potato, asparagus and sesame seeds."]]},
+ m4:{b:["Ground turkey, store-brand pasta, frozen spinach, canned crushed tomatoes.",["Brown the turkey, add crushed tomatoes and Italian herbs, simmer 10 min.","Toss with the pasta and thawed spinach."]],
+     g:["Slow garlic-tomato ragù with basil.",["Sauté garlic and onion in olive oil, brown the turkey, add San Marzano tomatoes.","Simmer 25 min with basil and finish with olive oil.","Toss with al dente pasta and a splash of pasta water."]]},
+ m5:{b:["Frozen shrimp, rice instead of quinoa, frozen zucchini.",["Cook the rice.","Sauté thawed shrimp with garlic and paprika, and the zucchini alongside."]],
+     g:["Garlic-lime shrimp, herbed quinoa, grilled zucchini.",["Marinate the shrimp 15 min in lime, garlic and chili.","Grill the zucchini and sear the shrimp 2 min per side.","Fluff the quinoa with herbs and olive oil, add avocado."]]},
+ m6:{b:["Canned tuna, rice, frozen veg, olive oil in place of avocado.",["Mix the tuna with lemon and mustard, spoon over rice and vegetables."]],
+     g:["Seared tuna steak, brown rice, avocado, sesame.",["Sear a tuna steak 90 sec per side and slice.","Dress greens with lemon, olive oil and salt.","Build the bowl with rice, avocado and sesame seeds."]]},
+ m7:{b:["Pork loin on sale, russet potato, frozen broccoli.",["Slice the loin into cutlets, season and pan-sear 4 min per side.","Microwave the potato and broccoli."]],
+     g:["Dijon-herb crusted tenderloin, crispy roasted potatoes, garlic broccoli.",["Rub the pork with Dijon, garlic, rosemary and thyme.","Sear, then roast at 425°F to 145°F (63°C). Rest 5 min.","Serve with crusty roasted potatoes and garlicky broccoli."]]},
+ m8:{b:["Block tofu, frozen stir-fry vegetables, bulk rice.",["Pan-fry the tofu cubes.","Add frozen stir-fry vegetables and soy sauce. Serve over rice."]],
+     g:["Crispy tofu with ginger-garlic sauce.",["Toss pressed tofu in cornstarch and pan-fry until very crisp.","Sauce: tamari, ginger, garlic, rice vinegar, sesame oil.","Stir-fry broccoli and peppers hot and fast, toss with tofu and sauce over rice."]]},
+ m9:{b:["Tempeh with rice instead of quinoa and frozen greens.",["Steam and brown the tempeh.","Serve with rice and frozen greens."]],
+     g:["Smoky maple tempeh over herbed quinoa.",["Steam the tempeh 10 min, then marinate in tamari, smoked paprika, garlic and a little maple.","Sear until caramelized.","Serve over quinoa with garlicky greens and avocado."]]},
+ m10:{b:["Homemade seitan from vital wheat gluten is cheapest. Rice and frozen beans.",["Slice and sear the seitan.","Serve with rice and beans."]],
+     g:["Pepper-seared seitan with lemon-garlic beans.",["Marinate the seitan in tamari, garlic and black pepper.","Sear hot until the edges crisp.","Serve over brown rice with lemon-garlic green beans and sesame."]]},
+ m11:{b:["Family-pack chicken, russet potato, bagged salad.",["Bake the chicken and potato together at 425°F, 35–45 min.","Toss the bagged salad with lemon and oil."]],
+     g:["Lemon-herb roast chicken, crispy potato, arugula salad.",["Marinate the chicken in lemon, garlic and oregano.","Roast the potato wedges and grill the chicken to 165°F (74°C).","Dress arugula with lemon and olive oil. Add shaved parmesan if dairy is fine."]]},
+ m12:{b:["Bulk ground beef, rice, frozen pepper mix, canned mushrooms.",["Brown the beef with cumin and serve over rice with sautéed frozen peppers."]],
+     g:["Korean-style beef bowl.",["Brown the beef with tamari, garlic, ginger and a little sesame oil.","Quick-sauté the peppers and mushrooms.","Serve over rice with sliced avocado, scallions and sesame."]]},
+ m13:{b:["Canned or frozen salmon, rice, frozen asparagus.",["Flake canned salmon over rice with lemon and a drizzle of olive oil in place of avocado."]],
+     g:["Teriyaki-style salmon bowl.",["Glaze the salmon with tamari, honey and ginger, then roast at 425°F for 10–12 min.","Roast the asparagus.","Serve over rice with avocado and sesame."]]},
+ m14:{b:["Frozen cod or tilapia, rice, frozen zucchini.",["Bake frozen white fish at 400°F for 15 min with lemon and paprika.","Serve with rice and sautéed zucchini."]],
+     g:["Lemon-caper cod on herb quinoa.",["Season the cod and sear 3 min per side in olive oil.","Spoon over lemon, capers and parsley.","Serve on herb quinoa with sautéed zucchini."]]},
+ m15:{b:["Frozen shelled edamame, rice, frozen vegetables.",["Microwave the edamame and vegetables.","Season and serve over rice."]],
+     g:["Sesame-ginger edamame bowl.",["Whisk tamari, rice vinegar, ginger and sesame oil.","Toss warm edamame, broccoli and peppers with the dressing.","Serve over rice with sesame seeds and scallions."]]},
+ m16:{b:["Store-brand aged cheddar, family-pack chicken.",["Bake the chicken and top with grated cheddar for the last 2 min.","Serve with rice and frozen broccoli."]],
+     g:["Cheddar-crusted chicken with charred broccoli.",["Sear the chicken, top with aged cheddar and smoked paprika, broil 1–2 min.","Serve with jasmine rice and charred broccoli."]]},
+ m17:{b:["Russet potato, bulk beef, store-brand cheddar.",["Microwave the potato 8 min, top with browned beef and cheddar, microwave 30 sec."]],
+     g:["Twice-baked potato.",["Bake the potato, scoop out the centers and mash with a little olive oil.","Fold in browned beef, chives and aged cheddar, refill the shells.","Broil until golden. Garlic green beans on the side."]]},
+ s1:{b:["Plain yogurt, frozen berries, peanuts or sunflower seeds.",["Top the yogurt with thawed frozen berries and a spoon of peanuts."]],
+     g:["Strained yogurt, fresh berries, toasted almonds, honey and lemon zest.",["Toast the almonds 3 min.","Layer yogurt, berries and almonds, finish with zest."]]},
+ s2:{b:["Bulk whey, ripe bananas, peanut butter.",["Blend with water and ice."]],
+     g:["Frozen banana, vanilla whey, cinnamon and a pinch of salt.",["Blend frozen banana, whey, peanut butter, cinnamon, salt and ice into a thick shake."]]},
+ s3:{b:["Canned pineapple in juice (drained), peanuts.",["Top the cottage cheese with drained pineapple and peanuts."]],
+     g:["Grilled pineapple, toasted almonds, mint, lime.",["Grill the pineapple 1 min per side.","Top the cottage cheese with pineapple, almonds, mint and lime zest."]]},
+ s4:{b:["Deli turkey on sale, mustard instead of avocado.",["Stack turkey on the rice cakes with mustard."]],
+     g:["Smashed avocado, roast turkey, lemon and chili.",["Smash the avocado with lemon, salt and chili flakes.","Layer on the rice cakes, top with roasted turkey."]]},
+ s5:{b:["Bulk pea protein, ripe banana, chia.",["Blend with water and ice."]],
+     g:["Cocoa-cinnamon shake.",["Blend banana, pea protein, chia, 1 tsp cocoa, cinnamon and salt with ice."]]},
+ s6:{b:["Canned tuna, mustard, rice cakes.",["Mash the tuna with mustard and spread on the rice cakes."]],
+     g:["Lemon-dill tuna with avocado and capers.",["Mash the tuna with lemon, dill and pepper.","Spread avocado on the rice cakes, top with tuna and capers."]]},
+ s7:{b:["Frozen edamame, apple, sunflower seeds.",["Microwave the edamame and eat with apple slices and seeds."]],
+     g:["Sea-salt edamame, toasted pumpkin seeds, cinnamon apple.",["Steam the edamame and finish with flaky salt and chili.","Toast the pumpkin seeds 3 min. Slice the apple with lemon and cinnamon."]]},
+ s8:{b:["Peanut butter instead of almond butter.",["Shake the whey with water. Eat the apple with peanut butter."]],
+     g:["Baked cinnamon apple with almond butter.",["Slice the apple and microwave or bake with cinnamon 3 min until soft.","Top with almond butter and a pinch of salt. Shake the whey on the side."]]},
+ s9:{b:["Deli turkey and store-brand cheddar.",["Layer on the rice cakes with mustard."]],
+     g:["Shaved aged cheddar, roast turkey, thin apple slices, Dijon.",["Layer turkey, shaved aged cheddar and apple on the rice cakes with Dijon."]]},
+ e1:{b:["Plain yogurt, frozen berries, peanut butter.",["Stir together."]],
+     g:["Cinnamon-honey yogurt parfait with almond butter.",["Layer yogurt and berries, swirl in the almond butter, dust with cinnamon."]]},
+ e2:{b:["Cottage cheese, an apple, chia from the bulk bin.",["Dice the apple into the cottage cheese and add the chia."]],
+     g:["Spiced sautéed apple cottage bowl.",["Sauté diced apple 3 min with cinnamon.","Spoon over the cottage cheese and top with chia and toasted seeds."]]}
+};
 const SHARES={3:[["B",.30],["M",.35],["M",.35]],4:[["B",.25],["M",.30],["S",.15],["M",.30]],5:[["B",.22],["M",.26],["S",.12],["M",.26],["E",.14]],6:[["B",.20],["M",.22],["S",.10],["M",.24],["S",.10],["E",.14]]};
 const ACT={low:1.4,mod:1.55,high:1.75};
 
@@ -586,7 +668,7 @@ function instSession(sess,p,wk){
     if(e.bmReps){const m=p[e.bm+"Max"];reps=`${Math.max(1,m-rir)}`;}
     else reps=`${e.rr[0]}–${e.rr[1]}`;
     if(e.unit)reps+=e.unit;
-    return {id:e.id,uid:`${e.slot}:${e.id}`,name:e.n,slot:x.slot,key:x.key,sets,reps,rir,rest:e.rest,cue:e.cue,load:loadText(e,p),mu:e.mu,mu2:e.mu2,bmReps:!!e.bmReps,
+    return {id:e.id,uid:`${e.slot}:${e.id}`,name:e.n,slot:x.slot,key:x.key,sets,reps,rir,rest:e.rest,cue:e.cue,load:loadText(e,p),mu:e.mu,mu2:e.mu2,bmReps:!!e.bmReps,hi:e.rr[1],
             note:e.bmReps?`Sets at max (${p[e.bm+"Max"]}) − ${rir} RIR`:""};
   })};
 }
@@ -674,7 +756,7 @@ function buildMeals(p,macros,seed,swapOff){
     usedT.add(t.id);
     const m=solveMeal(t,{P:macros.P*sh,C:macros.C*sh,F:macros.F*sh});
     m.slot=slot;m.share=sh;m.prep=[t.p,t.c,t.f].map(id=>FOODS[id].prep).filter(Boolean).join(" ");
-    m.rec=REC[t.id]||null;
+    m.rec=REC[t.id]||null;m.var=VAR[t.id]||null;
     m.cost=Math.round(m.items.reduce((a,it)=>a+foodCost(it.id,it.g),0)*pf*100)/100;
     meals.push(m);
   });
@@ -767,13 +849,13 @@ function advice(p,tr){
 const KEY="elitePeakingState_v3";
 const TODAY=iso(new Date());
 const DEFP={sex:"m",age:25,cm:178,kg:68,bf:0,units:"imperial",goal:"bulk",rate:"cons",act:"mod",exp:"int",days:4,len:60,style:"cal",pullMax:8,pushMax:25,bagKg:9,eq:["pullbar","bands","bag"],pri:["shoulders"],diet:"omni",excl:[],meals:4,event:"",kcalAdj:0,inj:[],budget:"std",priceF:1};
-function freshState(){return {prof:JSON.parse(JSON.stringify(DEFP)),log:{},checks:{},perf:{},swaps:{},mswaps:{},blockStart:mondayOf(TODAY),blockOffset:0,weekOffset:0,sel:TODAY,confirmed:false}}
+function freshState(){return {prof:JSON.parse(JSON.stringify(DEFP)),log:{},checks:{},perf:{},extra:{},swaps:{},mswaps:{},blockStart:mondayOf(TODAY),blockOffset:0,weekOffset:0,sel:TODAY,confirmed:false}}
 function loadState(){
   try{const v=JSON.parse(localStorage.getItem(KEY)||"null");if(v&&v.prof){const f=freshState();return Object.assign(f,v,{prof:Object.assign(f.prof,v.prof)})}}catch(e){console.warn("state load failed",e)}
   return freshState();
 }
 let S=loadState(),W=null;
-const SYNCKEYS=["prof","log","checks","perf","swaps","mswaps","blockStart","blockOffset","confirmed"];
+const SYNCKEYS=["prof","log","checks","perf","extra","swaps","mswaps","blockStart","blockOffset","confirmed"];
 const snapOf=()=>JSON.stringify(SYNCKEYS.map(k=>S[k]));
 let lastSnap=snapOf();
 const save=()=>{
@@ -882,6 +964,33 @@ function onMulti(box,input){
 }
 function commit(){save();regen();renderAll(true)}
 
+/* ---------- recipes with tabs ---------- */
+const UIR={},UIT={},HI={};
+function recipeHTML(mm,date,i){
+  if(!mm.rec)return "";
+  const key=date+"|"+i,v=mm.var,tab=UIT[key]||(S.prof.budget==="budget"&&v?"bud":"std");
+  const ol=a=>`<ol>${a.map(x=>`<li>${esc(x)}</li>`).join("")}</ol>`;
+  const price=f=>`≈$${((mm.cost||0)*f).toFixed(2)}`;
+  const panels={std:ol(mm.rec.slice(1))};
+  if(v){
+    panels.bud=`<div class="d"><b>Swaps:</b> ${esc(v.b[0])} <b>${price(.7)}</b></div>${ol(v.b[1])}`;
+    panels.gour=`<div class="d"><b>Upgrades:</b> ${esc(v.g[0])} <b>${price(1.5)}</b></div>${ol(v.g[1])}`;
+  }
+  const tabs=[["std","Standard"],["bud","Budget"],["gour","Gourmet"]].filter(x=>panels[x[0]]);
+  return `<details class="rec" data-rk="${key}" ${UIR[key]?"open":""}><summary>Recipe · ${esc(mm.rec[0])}</summary><div class="rtabs">${tabs.map(x=>`<button type="button" class="rtab ${x[0]===tab?"on":""}" data-rt="${x[0]}" data-rk="${key}">${x[1]}</button>`).join("")}</div>${tabs.map(x=>`<div class="rpanel" data-rp="${x[0]}" ${x[0]===tab?"":"hidden"}>${panels[x[0]]}</div>`).join("")}<div class="d">Prices are rough estimates. Macros stay close to the standard version.</div></details>`;
+}
+const formLink=n=>` <a class="vid" href="https://www.youtube.com/results?search_query=${encodeURIComponent(n+" proper form")}" target="_blank" rel="noopener">▶ form</a>`;
+const perfOf=uid=>{const v=S.perf[uid];return v&&typeof v==="object"?v:{w:"",r:""}};
+function sugText(uid){
+  const v=perfOf(uid),r=parseFloat(v.r),w=parseFloat(v.w),hi=HI[uid],step=metric()?2.5:5;
+  if(!r)return "Log your best set to get a target for next time.";
+  if(hi&&r>=hi)return w?`Top of the range. Next time: ${r1(w+step)} ${wU()} for ${Math.max(1,r-3)}+ reps.`:`Top of the range. Add load (bag, vest, dumbbell) or a harder variation.`;
+  return w?`Next time: ${w} ${wU()} for ${r+1}+ reps.`:`Next time: ${r+1}+ reps.`;
+}
+function perfHTML(e){
+  const v=perfOf(e.uid);HI[e.uid]=e.hi;
+  return `<div class="perfrow"><input class="perf" type="number" inputmode="decimal" step="0.5" data-pw="${esc(e.uid)}" placeholder="${wU()}" value="${esc(v.w)}"/><span>×</span><input class="perf" type="number" inputmode="numeric" data-pr="${esc(e.uid)}" placeholder="reps" value="${esc(v.r)}"/></div><div class="cue" data-sug="${esc(e.uid)}">${esc(sugText(e.uid))}</div>`;
+}
 /* ---------- helpers for rows ---------- */
 function row(key,title,desc,extra,right){
   const on=!!S.checks[key];
@@ -907,6 +1016,13 @@ const PEAKNOTE={
  event:"Eat your pre-event meals on time, do the 15-minute pump about 75 minutes before, then enjoy the evening."
 };
 
+const SUPP=`<div class="card"><h2><span>Supplements, ranked by evidence</span><span class="badge">Optional</span></h2>
+ <div class="d" style="font-size:.84rem;line-height:1.6">
+ <b>Strong:</b> creatine monohydrate 3–5 g daily (strength and lean mass). Protein powder only for convenience.<br>
+ <b>Moderate:</b> caffeine about 3 mg/kg, 30–60 min before training, if it does not hurt your sleep.<br>
+ <b>Only if needed:</b> vitamin D if a blood test is low. Omega-3 if you rarely eat fish.<br>
+ <b>Weak or skip:</b> magnesium for sleep (optional), BCAAs, fat burners, testosterone boosters.<br>
+ Check interactions and medical conditions with a clinician. Not medical advice.</div></div>`;
 /* ---------- OVERVIEW ---------- */
 function renderOverview(){
   const T=W.T,p=S.prof,w=p.kg;
@@ -926,7 +1042,7 @@ function renderOverview(){
     <div class="kpi"><div class="l">Protein</div><div class="v" style="color:var(--accent)">${Math.round(T.P)} g</div><div class="s">${(T.P/w).toFixed(1)} g/kg</div></div>
     <div class="kpi"><div class="l">Carbs · fat</div><div class="v" style="font-size:1.15rem"><span style="color:var(--green)">${Math.round(T.C)} g</span> · <span style="color:var(--amber)">${Math.round(T.F)} g</span></div><div class="s">${(T.C/w).toFixed(1)} · ${(T.F/w).toFixed(1)} g/kg</div></div>
     <div class="kpi"><div class="l">Fiber · water</div><div class="v" style="font-size:1.15rem">${Math.round(T.fiber)} g · ${T.water} L</div><div class="s">14 g per 1000 kcal · 35 ml/kg</div></div>
-    <div class="kpi"><div class="l">Est. food cost</div><div class="v" style="font-size:1.15rem">${(W.days.reduce((a,d)=>a+d.cost,0)/7).toFixed(2)} / day</div><div class="s">${p.budget==="budget"?"Budget mode on":"Standard mode"} · US estimates × price factor</div></div>
+    <div class="kpi"><div class="l">Est. food cost</div><div class="v" style="font-size:1.15rem">$${(W.days.reduce((a,d)=>a+d.cost,0)/7).toFixed(2)} / day</div><div class="s">${p.budget==="budget"?"Budget mode on":"Standard mode"} · US estimates × price factor</div></div>
     <div class="kpi"><div class="l">Expected change</div><div class="v" style="font-size:1.15rem">${wkChange>0?"+":""}${r1(metric()?wkChange:wkChange*LB)} ${wU()}/wk</div><div class="s">${pctWk>0?"+":""}${pctWk.toFixed(2)}% bodyweight per week</div></div>
    </div>
    <div class="grid2">
@@ -943,6 +1059,7 @@ function renderOverview(){
       <b>Limits:</b> these are rule-based estimates (±10%), not medical advice. See a clinician or dietitian for health conditions.
      </div></div>
    </div>`;
+  $("pane-overview").insertAdjacentHTML("beforeend",SUPP);
 }
 
 /* ---------- PLAN ---------- */
@@ -958,12 +1075,14 @@ function renderPlan(){
     return `<button class="day ${x.date===d.date?"active":""} ${pr.t&&pr.n===pr.t?"done":""}" data-day="${x.date}"><b>${dateLabel(x.date,{weekday:"short"})}${x.date===TODAY?" · today":""}</b><small>${dateLabel(x.date,{month:"short",day:"numeric"})}</small><small>${esc(x.label)}</small><div class="mini"><i style="width:${pr.pct*100}%"></i></div></button>`;
   }).join("");
   const pr=dayProg(d),m=d.macros,a=d.actual;
+  const xt=S.extra[d.date]||{kcal:0,p:0};
+  const eat=d.meals.reduce((q,mm,i)=>S.checks[`${d.date}|meal|${i}`]?{kcal:q.kcal+mm.kcal,P:q.P+mm.P}:q,{kcal:+xt.kcal||0,P:+xt.p||0});
   const water=T.water;
   $("kpis").innerHTML=`
    <div class="kpi"><div class="ring">${ring(pr.pct)}<div><div class="l">Day complete</div><div class="s">${pr.n} / ${pr.t} items</div></div></div></div>
-   <div class="kpi"><div class="l">Calories · cost</div><div class="v">${Math.round(m.kcal).toLocaleString()}</div><div class="s">Meals ${a.kcal.toLocaleString()} (${a.kcal>=m.kcal?"+":""}${a.kcal-m.kcal}) · ≈${d.cost.toFixed(2)}</div></div>
+   <div class="kpi"><div class="l">Calories · cost</div><div class="v">${Math.round(m.kcal).toLocaleString()}</div><div class="s">Meals ${a.kcal.toLocaleString()} (${a.kcal>=m.kcal?"+":""}${a.kcal-m.kcal}) · ≈$${d.cost.toFixed(2)}</div></div>
    <div class="kpi"><div class="l">P / C / F target</div><div class="v" style="font-size:1.1rem">${Math.round(m.P)} / ${Math.round(m.C)} / ${Math.round(m.F)} g</div><div class="mbar"><div class="p" style="width:${m.P*4/m.kcal*100}%"></div><div class="c" style="width:${m.C*4/m.kcal*100}%"></div><div class="f" style="width:${m.F*9/m.kcal*100}%"></div></div></div>
-   <div class="kpi"><div class="l">Meals provide P / C / F</div><div class="v" style="font-size:1.1rem">${a.P} / ${a.C} / ${a.F} g</div><div class="s">${d.kind==="train"?"Training day: carbs +10%":d.phase?d.phase.l:"Rest day: carbs lower"}</div></div>
+   <div class="kpi"><div class="l">Eaten so far</div><div class="v" style="font-size:1.1rem">${eat.kcal} kcal · P ${eat.P}</div><div class="s">${Math.max(0,m.kcal-eat.kcal)} kcal · ${Math.max(0,Math.round(m.P-eat.P))} g protein left</div></div>
    <div class="kpi"><div class="l">Hydration</div><div class="v" style="color:var(--accent)">${water} L</div><div class="s">Steady, to thirst. No cutting.</div></div>`;
   const retest=W.wk===3&&!W.peak?`<div class="note"><b>Deload & retest week.</b> Do lighter sets, then test max strict reps and update them here. Every new number rebuilds your next block.<div class="fgrid" style="margin-top:8px;max-width:340px"><div class="cg"><label>Max pull-ups</label><input type="number" inputmode="numeric" data-p="pullMax" value="${p.pullMax}"/></div><div class="cg"><label>Max push-ups</label><input type="number" inputmode="numeric" data-p="pushMax" value="${p.pushMax}"/></div></div></div>`:"";
   const note=retest+(d.phase?`<div class="note"><b>${esc(d.phase.l)}.</b> ${PEAKNOTE[d.phase.k]}</div>`:"");
@@ -973,8 +1092,8 @@ function renderPlan(){
     $("wTitle").textContent=`${s.name}`;
     $("wBadge").textContent=`Week ${s.wk+1} · ${s.rir} RIR`;
     $("wList").innerHTML=`<div class="d" style="margin-bottom:6px">Warm-up: 5 min easy cardio and joint circles, then 2 ramp-up sets of the first exercise.</div>`+
-     s.ex.map((e,i)=>row(`${d.date}|ex|${i}`,esc(e.name),`<b>${e.sets} × ${e.reps}</b> · ${e.rir} RIR · rest ${e.rest}s<br>${esc(e.load)}`,
-      `${e.note?`<div class="d">${esc(e.note)}</div>`:""}<div class="cue">${esc(e.cue)}</div><input class="perf" data-perf="${esc(e.uid)}" placeholder="Last top set (e.g. 45 lb × 8)" value="${esc(S.perf[e.uid]||"")}"/>`,
+     s.ex.map((e,i)=>row(`${d.date}|ex|${i}`,esc(e.name)+formLink(e.name),`<b>${e.sets} × ${e.reps}</b> · ${e.rir} RIR · rest ${e.rest}s<br>${esc(e.load)}`,
+      `${e.note?`<div class="d">${esc(e.note)}</div>`:""}<div class="cue">${esc(e.cue)}</div>${perfHTML(e)}`,
       `<button type="button" class="rest" data-t="${e.rest}">⏱ ${e.rest}s</button>${e.key!=="pump"?`<button type="button" class="rest" data-swap="${esc(e.key)}">↻ swap</button>`:""}`)).join("");
   }else{
     $("wTitle").textContent=d.label;$("wBadge").textContent=d.kind==="rest"?"Recovery":"No lifting";
@@ -986,9 +1105,10 @@ function renderPlan(){
     const BARE=["banana","egg","apple","avocado"];
     const items=mm.items.map(it=>`${qtyText(it.id,it.g,p.units,false)}${FOODS[it.id].u&&BARE.includes(FOODS[it.id].u[0])?"":" "+FOODS[it.id].n.toLowerCase()}`).join(" · ");
     return row(`${d.date}|meal|${i}`,esc(mm.name),esc(items||"Add your own"),
-      `<div class="macros"><span class="mk">${mm.kcal} kcal</span><span class="mk">≈${(mm.cost||0).toFixed(2)}</span><span class="mp">P ${mm.P}</span><span class="mc">C ${mm.C}</span><span class="mf">F ${mm.F}</span></div>${mm.prep?`<div class="cue">${esc(mm.prep)}</div>`:""}${mm.rec?`<details class="rec"><summary>Recipe · ${esc(mm.rec[0])}</summary><ol>${mm.rec.slice(1).map(x=>`<li>${esc(x)}</li>`).join("")}</ol></details>`:""}`,
+      `<div class="macros"><span class="mk">${mm.kcal} kcal</span><span class="mk">≈$${(mm.cost||0).toFixed(2)}</span><span class="mp">P ${mm.P}</span><span class="mc">C ${mm.C}</span><span class="mf">F ${mm.F}</span></div>${mm.prep?`<div class="cue">${esc(mm.prep)}</div>`:""}${recipeHTML(mm,d.date,i)}`,
       mm.custom?"":`<button type="button" class="rest" data-mswap="${d.date}|${i}">↻ new meal</button>`);
   }).join("");
+  $("exBox").innerHTML=`<div class="d">Add food that was not in the plan. It counts toward "Eaten so far".</div><div class="fgrid" style="margin-top:8px"><div class="cg"><label>Calories</label><input type="number" inputmode="numeric" id="exK"/></div><div class="cg"><label>Protein (g)</label><input type="number" inputmode="numeric" id="exP"/></div></div><div style="display:flex;gap:8px;margin-top:8px"><button class="btn" id="btnAddEx">Add</button><button class="btn danger" id="btnClrEx">Clear</button></div>${xt.kcal||xt.p?`<div class="d" style="margin-top:6px">Added so far: ${xt.kcal||0} kcal, ${xt.p||0} g protein</div>`:""}`;
   const steps=T.goal==="cut"?"9–11k":"7–9k";
   $("hList").innerHTML=[
    ["water",`Drink ${water} L water`,"Mostly before the evening."],
@@ -1005,11 +1125,12 @@ function renderGrocery(){
   order.forEach(cat=>{
     if(!g[cat])return;
     out+=`<h3>${cat}</h3>`;
-    g[cat].forEach(it=>{const k=`${wk}|g|${it.id}`;total++;if(S.checks[k])done++;cost+=it.cost;out+=row(k,esc(it.name),`Buy about <b>${it.text}</b> (raw / packaged) · ≈${it.cost.toFixed(2)}`)});
+    g[cat].forEach(it=>{const k=`${wk}|g|${it.id}`;total++;if(S.checks[k])done++;cost+=it.cost;out+=row(k,esc(it.name),`Buy about <b>${it.text}</b> (raw / packaged) · ≈$${it.cost.toFixed(2)}`)});
   });
   out+="<h3>Staples</h3>"+STAPLES.map((s,i)=>{const k=`${wk}|g|staple${i}`;total++;if(S.checks[k])done++;return row(k,esc(s),"")}).join("");
   $("gList").innerHTML=out;
-  $("gBadge").textContent=`${done} / ${total} bought · ≈${Math.round(cost)} / week`;
+  $("gBadge").textContent=`${done} / ${total} bought · ≈$${Math.round(cost)} / week`;
+  renderPrep();
   $("gShare").onclick=()=>shareList(g,order);
 }
 
@@ -1018,6 +1139,16 @@ function shareList(g,order){
   if(navigator.share)navigator.share({title:"Grocery list",text:txt}).catch(()=>{});
   else if(navigator.clipboard)navigator.clipboard.writeText(txt).then(()=>alert("Grocery list copied")).catch(()=>alert(txt));
   else alert(txt);
+}
+function renderPrep(){
+  const groups=[[0,4],[4,7]];
+  $("prepList").innerHTML=groups.map(([a,b])=>{
+    const tot={};
+    W.days.slice(a,b).forEach(d=>d.meals.forEach(m=>m.items.forEach(it=>{const f=FOODS[it.id];if((f.cat==="Protein"||f.cat==="Carbohydrates")&&f.raw!==1)tot[it.id]=(tot[it.id]||0)+it.g})));
+    const ids=Object.keys(tot).sort((x,y)=>tot[y]-tot[x]);
+    if(!ids.length)return "";
+    return `<h3>Cook ahead for ${dateLabel(W.days[a].date,{weekday:"short"})} to ${dateLabel(W.days[b-1].date,{weekday:"short"})}</h3>`+ids.map(id=>`<div class="d" style="margin:4px 0"><b>${esc(FOODS[id].n)}</b>: cook about ${qtyText(id,tot[id],S.prof.units,true)} raw (${Math.round(tot[id])} g cooked)${FOODS[id].prep?" · "+esc(FOODS[id].prep):""}</div>`).join("");
+  }).join("")+`<div class="d" style="margin-top:10px">Cooked food keeps 3–4 days in the fridge. Freeze the rest. Reheat chicken, fish and rice until steaming hot.</div>`;
 }
 /* ---------- PROGRESS ---------- */
 let logDate=TODAY;
@@ -1067,7 +1198,7 @@ document.addEventListener("input",e=>{
   const t=e.target;
   if(t.matches("[data-p]")){clearTimeout(deb);deb=setTimeout(()=>onField(t),t.type==="number"?250:0);if(t.tagName==="SELECT"||t.type==="date"){clearTimeout(deb);onField(t)}}
   else if(t.matches("[data-m] input")){onMulti(t.closest("[data-m]"),t)}
-  else if(t.matches("[data-perf]")){S.perf[t.dataset.perf]=t.value;save()}
+  else if(t.matches("[data-pw],[data-pr]")){const uid=t.dataset.pw||t.dataset.pr,o=Object.assign({},perfOf(uid));if(t.dataset.pw)o.w=t.value;else o.r=t.value;S.perf[uid]=o;save();const el=document.querySelector(`[data-sug="${uid}"]`);if(el)el.textContent=sugText(uid)}
   else if(t.id==="logDate"){logDate=t.value||TODAY;renderProgress()}
   else if(["lw","lwa","ls","le","ln"].includes(t.id)){
     const l=S.log[logDate]=S.log[logDate]||{};
@@ -1084,6 +1215,8 @@ document.addEventListener("change",e=>{
 });
 document.addEventListener("click",e=>{
   const t=e.target;
+  const rt=t.closest("[data-rt]");
+  if(rt){const det=rt.closest("details"),tab=rt.dataset.rt;UIT[rt.dataset.rk]=tab;det.querySelectorAll("[data-rt]").forEach(b=>b.classList.toggle("on",b.dataset.rt===tab));det.querySelectorAll("[data-rp]").forEach(p=>p.hidden=p.dataset.rp!==tab);return}
   const tm=t.closest("[data-t]");
   if(tm){e.preventDefault();startTimer(+tm.dataset.t);return}
   const sw=t.closest("[data-swap]");
@@ -1098,6 +1231,8 @@ document.addEventListener("click",e=>{
   if(tab){document.querySelectorAll(".tab").forEach(x=>x.classList.toggle("active",x===tab));document.querySelectorAll(".pane").forEach(x=>x.classList.toggle("active",x.id==="pane-"+tab.dataset.tab));return}
   switch(t.id){
     case "btnWake":toggleWake();break;
+    case "btnAddEx":{const k=parseFloat($("exK").value)||0,p=parseFloat($("exP").value)||0;if(!k&&!p)break;const o=S.extra[S.sel]||{kcal:0,p:0};S.extra[S.sel]={kcal:o.kcal+k,p:o.p+p};save();renderPlan();break}
+    case "btnClrEx":delete S.extra[S.sel];save();renderPlan();break;
     case "btnSyncConnect":{const v=$("syncToken").value.trim();if(!v)break;SY={token:v};saveSY();renderSync();syncNow();break}
     case "btnSyncNow":syncNow();break;
     case "btnSyncOff":SY={};saveSY();setMsg("Not connected");renderSync();break;
@@ -1176,7 +1311,7 @@ function renderSync(){
   setMsg(syncMsg);
   box.innerHTML=(SY.token
    ?`<div class="d">Connected. Changes upload a few seconds after you make them, and the newest data downloads when you open the app.</div><div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:8px"><button class="btn" id="btnSyncNow">Sync now</button><button class="btn danger" id="btnSyncOff">Disconnect this device</button></div>`
-   :`<div class="d">One-time setup per device, about a minute. <a href="https://github.com/settings/tokens/new?scopes=gist&description=elite-os-sync" target="_blank" rel="noopener" style="color:var(--accent)">Create a token</a> (leave only the gist box ticked, pick no expiration), paste it here, and tap Connect. Do the same on your other device. Your data syncs through a private gist in your GitHub account.</div><div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:8px"><input type="password" id="syncToken" placeholder="Paste token" style="flex:1;min-width:180px"/><button class="btn" id="btnSyncConnect">Connect</button></div>`)
+   :`<div class="d">One-time setup per device, about a minute. <a href="https://github.com/settings/tokens/new?scopes=gist&description=elite-os-${Math.random().toString(36).slice(2,6)}" target="_blank" rel="noopener" style="color:var(--accent)">Create a token</a> (leave only the gist box ticked, pick no expiration), paste it here, and tap Connect. On your other device, paste this same token (or create another one under a new name). Your data syncs through a private gist in your GitHub account.</div><div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:8px"><input type="password" id="syncToken" placeholder="Paste token" style="flex:1;min-width:180px"/><button class="btn" id="btnSyncConnect">Connect</button></div>`)
    +`<h3>No account? Send a link</h3><div class="d">Creates a link holding your progress. Open it on your other device to load it there.</div><div style="margin-top:8px"><button class="btn" id="btnSyncLink">Share sync link</button></div>`;
 }
 async function toB64(obj){
@@ -1236,6 +1371,8 @@ document.addEventListener("keydown",e=>{
   if(e.key==="ArrowLeft"&&i>0){S.sel=W.days[i-1].date;save();renderPlan()}
 });
 
+document.addEventListener("toggle",e=>{const el=e.target;if(el.matches&&el.matches("details.rec"))UIR[el.dataset.rk]=el.open},true);
+if("serviceWorker" in navigator&&location.protocol.startsWith("http"))navigator.serviceWorker.register("sw.js").catch(()=>{});
 regen();renderAll();initSync();
 
 </script>
