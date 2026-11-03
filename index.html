@@ -141,6 +141,59 @@
   html[data-theme=light] .tab.active,html[data-theme=light] .tab:hover{color:#fff}
   html[data-theme=light] .rtab.on,html[data-theme=light] .ck-go{color:#fff}
   @media print{.tabs,#timer,.btn,.rest,.days,.wknav{display:none!important}.pane{display:block!important}body{background:#fff;color:#000}.card,.kpi{border-color:#999;background:#fff}}
+  /* ---------- polish: readability and depth ---------- */
+  :root{--muted:#a9b4c3;--accent2:#60a5fa;--radius:14px;--shadow:0 1px 2px rgba(0,0,0,.35),0 10px 28px rgba(0,0,0,.28)}
+  html{-webkit-text-size-adjust:100%;scroll-behavior:smooth}
+  body{font-size:16px;line-height:1.6;max-width:1180px;background-color:var(--bg);background-image:radial-gradient(1100px 520px at 12% -8%,rgba(59,130,246,.11),transparent 60%),radial-gradient(900px 480px at 100% 0,rgba(16,185,129,.07),transparent 55%);background-attachment:fixed}
+  header{border-radius:var(--radius);padding:20px 26px;background:linear-gradient(135deg,var(--panel),var(--panel2));box-shadow:var(--shadow)}
+  h1{font-size:clamp(1.05rem,2.3vw,1.45rem);line-height:1.25}
+  .sub{font-size:.92rem}
+  .card,.kpi,.overall{border-radius:var(--radius);box-shadow:var(--shadow)}
+  .card{padding:22px}
+  .card h2{font-size:1.12rem;padding-bottom:12px;margin-bottom:14px}
+  .card h3{font-size:.8rem;letter-spacing:.07em;margin:20px 0 8px}
+  .kpis{gap:14px}
+  .kpi{padding:15px 18px}
+  .kpi .l{font-size:.74rem;letter-spacing:.06em}
+  .kpi .v{font-size:1.6rem}
+  .kpi .s{font-size:.82rem}
+  .t{font-size:1rem;font-weight:650}
+  .d{font-size:.9rem;line-height:1.55}
+  .cue{font-size:.84rem}
+  .row{padding:13px 0}
+  .overall .bar{height:12px;border-radius:6px}
+  .overall b{font-size:.92rem}
+  .note{font-size:.9rem;line-height:1.55}
+  .btn{font-size:.88rem;padding:8px 14px;border-radius:8px;color:var(--text);background:var(--panel2);transition:border-color .15s,background .15s,filter .15s}
+  .btn:hover{border-color:var(--accent);background:var(--glow)}
+  .btn:active{transform:translateY(1px)}
+  .btn.pri{background:var(--accent);border-color:var(--accent);color:#fff;font-weight:700}
+  .btn.pri:hover{filter:brightness(1.12);color:#fff;background:var(--accent)}
+  .btn.danger{color:#f4a3a3}
+  input,select,textarea{border-radius:8px;padding:8px 12px;font-size:.92rem}
+  input:focus,select:focus,textarea:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px var(--glow)}
+  :focus-visible{outline:2px solid var(--accent2);outline-offset:2px}
+  .macros{gap:7px;margin-top:6px}
+  .macros span{font-size:.8rem;padding:2px 10px}
+  .macros .mp{background:rgba(59,130,246,.16)}.macros .mc{background:rgba(16,185,129,.16)}.macros .mf{background:rgba(245,158,11,.16)}.macros .mk{background:rgba(127,127,127,.16)}
+  .ims{font-size:.88rem}
+  .vrow{font-size:.88rem}
+  .badge{font-size:.74rem}
+  @media(min-width:701px){
+    .tab{border-radius:10px;font-size:.92rem;padding:10px 18px}
+    .tabs{gap:10px}
+  }
+  @media(max-width:700px){
+    body{padding:12px 12px 150px}
+    .card{padding:16px}
+    .t{font-size:1.02rem}
+    .d{font-size:.9rem}
+  }
+  html[data-theme=light]{--muted:#4b5767;--accent2:#2563eb;--shadow:0 1px 2px rgba(20,32,46,.08),0 8px 22px rgba(20,32,46,.09)}
+  html[data-theme=light] body{background-image:radial-gradient(1100px 520px at 12% -8%,rgba(59,130,246,.09),transparent 60%)}
+  html[data-theme=light] .btn.danger{color:#b42323}
+  html[data-theme=light] .btn.pri{color:#fff}
+  @media(prefers-reduced-motion:reduce){*{transition:none!important;scroll-behavior:auto!important}}
 </style>
 </head>
 <body>
@@ -913,7 +966,7 @@ function advice(p,tr){
 /* ===================== UI ===================== */
 const KEY="elitePeakingState_v3";
 const TODAY=iso(new Date());
-const DEFP={sex:"m",age:25,cm:178,kg:68,bf:0,units:"imperial",goal:"bulk",rate:"cons",act:"mod",exp:"int",days:4,len:60,style:"cal",pullMax:8,pushMax:25,bagKg:9,eq:["pullbar","bands","bag"],pri:["shoulders"],diet:"omni",excl:[],meals:4,event:"",kcalAdj:0,inj:[],budget:"std",priceF:1,wtime:"17:30",mealRem:"no"};
+const DEFP={sex:"m",age:30,cm:175,kg:75,bf:0,units:"imperial",goal:"recomp",rate:"cons",act:"mod",exp:"int",days:4,len:60,style:"cal",pullMax:5,pushMax:15,bagKg:0,eq:["pullbar","bands"],pri:[],diet:"omni",excl:[],meals:4,event:"",kcalAdj:0,inj:[],budget:"std",priceF:1,wtime:"17:30",mealRem:"no"};
 function freshState(){return {prof:JSON.parse(JSON.stringify(DEFP)),log:{},checks:{},perf:{},extra:{},hist:{},done:{},prefs:{foods:{},meals:{}},recipes:[],groc:[],water:{},swaps:{},mswaps:{},blockStart:mondayOf(TODAY),blockOffset:0,weekOffset:0,sel:TODAY,confirmed:false}}
 function loadState(){
   try{const v=JSON.parse(localStorage.getItem(KEY)||"null");if(v&&v.prof){const f=freshState();return Object.assign(f,v,{prof:Object.assign(f.prof,v.prof)})}}catch(e){console.warn("state load failed",e)}
@@ -925,7 +978,7 @@ const snapOf=()=>JSON.stringify(SYNCKEYS.map(k=>S[k]));
 let lastSnap=snapOf();
 const save=()=>{
   const sn=snapOf();
-  if(sn!==lastSnap){lastSnap=sn;S.mtime=Math.max(Date.now(),(S.mtime||0)+1);if(typeof SY!=="undefined"&&SY.token)schedulePush()}
+  if(sn!==lastSnap){lastSnap=sn;S.mtime=Math.max(Date.now(),(S.mtime||0)+1);if(typeof SY!=="undefined"&&SY.sess)schedulePush()}
   try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){console.warn("state save failed",e)}
 };
 const $=id=>document.getElementById(id);
@@ -1138,8 +1191,8 @@ function renderPlan(){
   $("kpis").innerHTML=`
    <div class="kpi"><div class="ring">${ring(pr.pct)}<div><div class="l">Day complete</div><div class="s">${pr.n} / ${pr.t} items</div></div></div></div>
    <div class="kpi"><div class="l">Calories · cost</div><div class="v">${Math.round(m.kcal).toLocaleString()}</div><div class="s">Meals ${a.kcal.toLocaleString()} (${a.kcal>=m.kcal?"+":""}${a.kcal-m.kcal}) · ≈$${d.cost.toFixed(2)}</div></div>
-   <div class="kpi"><div class="l">P / C / F target</div><div class="v" style="font-size:1.1rem">${Math.round(m.P)} / ${Math.round(m.C)} / ${Math.round(m.F)} g</div><div class="mbar"><div class="p" style="width:${m.P*4/m.kcal*100}%"></div><div class="c" style="width:${m.C*4/m.kcal*100}%"></div><div class="f" style="width:${m.F*9/m.kcal*100}%"></div></div></div>
-   <div class="kpi"><div class="l">Eaten so far</div><div class="v" style="font-size:1.1rem">${eat.kcal} kcal · P ${eat.P}</div><div class="s">${Math.max(0,m.kcal-eat.kcal)} kcal · ${Math.max(0,Math.round(m.P-eat.P))} g protein left</div></div>
+   <div class="kpi"><div class="l">Protein / Carbs / Fat target</div><div class="v" style="font-size:1.1rem">${Math.round(m.P)} / ${Math.round(m.C)} / ${Math.round(m.F)} g</div><div class="mbar"><div class="p" style="width:${m.P*4/m.kcal*100}%"></div><div class="c" style="width:${m.C*4/m.kcal*100}%"></div><div class="f" style="width:${m.F*9/m.kcal*100}%"></div></div></div>
+   <div class="kpi"><div class="l">Eaten so far</div><div class="v" style="font-size:1.1rem">${eat.kcal} kcal · Protein ${eat.P}</div><div class="s">${Math.max(0,m.kcal-eat.kcal)} kcal · ${Math.max(0,Math.round(m.P-eat.P))} g protein left</div></div>
    <div class="kpi"><div class="l">Hydration</div><div class="v" style="color:var(--accent)">${water} L</div><div class="s">Steady, to thirst. No cutting.</div></div>`;
   const retest=W.wk===3&&!W.peak?`<div class="note"><b>Deload & retest week.</b> Do lighter sets, then test max strict reps and update them here. Every new number rebuilds your next block.<div class="fgrid" style="margin-top:8px;max-width:340px"><div class="cg"><label>Max pull-ups</label><input type="number" inputmode="numeric" data-p="pullMax" value="${p.pullMax}"/></div><div class="cg"><label>Max push-ups</label><input type="number" inputmode="numeric" data-p="pushMax" value="${p.pushMax}"/></div></div></div>`:"";
   const note=retest+(d.phase?`<div class="note"><b>${esc(d.phase.l)}.</b> ${PEAKNOTE[d.phase.k]}</div>`:"");
@@ -1162,7 +1215,7 @@ function renderPlan(){
     const BARE=["banana","egg","apple","avocado"];
     const items=mm.user?`Your recipe · ${mm.mult} serving${mm.mult===1?"":"s"}`:mm.items.map(it=>`${qtyText(it.id,it.g,p.units,false)}${FOODS[it.id].u&&BARE.includes(FOODS[it.id].u[0])?"":" "+FOODS[it.id].n.toLowerCase()}`).join(" · ");
     return row(`${d.date}|meal|${i}`,esc(mm.name),esc(items||"Add your own"),
-      `<div class="macros"><span class="mk">${mm.kcal} kcal</span>${mm.cost?`<span class="mk">≈$${mm.cost.toFixed(2)}</span>`:""}<span class="mp">P ${mm.P}</span><span class="mc">C ${mm.C}</span><span class="mf">F ${mm.F}</span></div>${mm.prep?`<div class="cue">${esc(mm.prep)}</div>`:""}${recipeHTML(mm,d.date,i)}`,
+      `<div class="macros"><span class="mk">${mm.kcal} kcal</span>${mm.cost?`<span class="mk">≈$${mm.cost.toFixed(2)}</span>`:""}<span class="mp">Protein ${mm.P}</span><span class="mc">Carbs ${mm.C}</span><span class="mf">Fat ${mm.F}</span></div>${mm.prep?`<div class="cue">${esc(mm.prep)}</div>`:""}${recipeHTML(mm,d.date,i)}`,
       mm.custom?"":`<button type="button" class="rest" data-mswap="${d.date}|${i}">↻ new meal</button><button type="button" class="rest ${(S.prefs.meals||{})[mm.tid]===1?"on":""}" data-mp="1|${mm.tid}">👍</button><button type="button" class="rest" data-mp="-1|${mm.tid}">👎</button>`);
   }).join("");
   renderReady();
@@ -1307,9 +1360,12 @@ document.addEventListener("click",e=>{
     case "btnCopyRep":{const r=weekReport(),txt="Last 7 days\n"+r.lines.join("\n")+"\n\nNext week\n"+r.focus.join("\n");if(navigator.clipboard)navigator.clipboard.writeText(txt).then(()=>alert("Report copied")).catch(()=>alert(txt));else alert(txt);break}
     case "btnAddEx":{const k=parseFloat($("exK").value)||0,p=parseFloat($("exP").value)||0;if(!k&&!p)break;const o=S.extra[S.sel]||{kcal:0,p:0};S.extra[S.sel]={kcal:o.kcal+k,p:o.p+p};save();renderPlan();break}
     case "btnClrEx":delete S.extra[S.sel];save();renderPlan();break;
-    case "btnSyncConnect":{const v=$("syncToken").value.trim();if(!v)break;SY={token:v};saveSY();renderSync();syncNow();break}
+    case "btnSbIn":case "btnSbUp":signIn(t.id==="btnSbUp");break;
+    case "btnSbForgot":forgot();break;
+    case "btnSbNew":setNewPw();break;
+    case "btnSbDel":delAccount();break;
     case "btnSyncNow":syncNow();break;
-    case "btnSyncOff":SY={};saveSY();setMsg("Not connected");renderSync();break;
+    case "btnSyncOff":SY={};saveSY();setMsg("Signed out");renderSync();break;
     case "btnSyncLink":shareLink();break;
     case "btnConfirm":S.confirmed=true;save();fillProfile();break;
     case "btnRotate":S.blockOffset++;S.blockStart=mondayOf(TODAY);S.swaps={};S.weekOffset=0;save();regen();renderAll(true);break;
@@ -1332,10 +1388,12 @@ $("fileIn").addEventListener("change",e=>{
 });
 
 /* ---------- SYNC ---------- */
-const SYNCF="elite-os-sync.json",SYNCD="elite-os-sync";
-let SY=(()=>{try{return JSON.parse(localStorage.getItem("elitePeakingSync_v1")||"{}")}catch(e){return {}}})();
-const saveSY=()=>{try{localStorage.setItem("elitePeakingSync_v1",JSON.stringify(SY))}catch(e){console.warn(e)}};
-let syncMsg=SY.token?"Connected":"Not connected",pushT=null,syncing=false;
+/* Supabase backend. The publishable key is public by design; row-level security protects the data. */
+const SB_URL="https://yimjcsyhvoviliupwayl.supabase.co",SB_KEY="sb_publishable_bw3A2LHIyEYbvsWSDPQm3g_8UKLz0Ig";
+const OWNK="elitePeakingOwner";
+let SY=(()=>{try{return JSON.parse(localStorage.getItem("elitePeakingSync_v2")||"{}")}catch(e){return {}}})();
+const saveSY=()=>{try{localStorage.setItem("elitePeakingSync_v2",JSON.stringify(SY))}catch(e){console.warn(e)}};
+let syncMsg=SY.sess?"Signed in":"Not signed in",pushT=null,syncing=false,PWR=null;
 function setMsg(m){syncMsg=m;const el=$("syncMsg");if(el)el.textContent=m}
 function syncData(){return {mtime:S.mtime||Date.now(),data:Object.fromEntries(SYNCKEYS.map(k=>[k,S[k]]))}}
 function applyData(d,mtime){
@@ -1343,50 +1401,124 @@ function applyData(d,mtime){
   S.prof=Object.assign(JSON.parse(JSON.stringify(DEFP)),S.prof);
   lastSnap=snapOf();S.mtime=mtime||Date.now();save();regen();renderAll();
 }
-async function gh(path,opt){
-  const r=await fetch("https://api.github.com"+path,Object.assign({headers:{Authorization:"Bearer "+SY.token,Accept:"application/vnd.github+json","Content-Type":"application/json"}},opt));
-  if(!r.ok){const e=new Error("GitHub "+r.status);e.status=r.status;throw e}
-  return r.json();
+/* Two devices edited since the last sync: keep entries from both. Same key on both sides: the newer side wins. */
+const MAPK=["log","checks","perf","extra","hist","done","water","swaps","mswaps"];
+function mergeData(older,newer){
+  const o=JSON.parse(JSON.stringify(newer));
+  MAPK.forEach(k=>{o[k]=Object.assign({},older[k],newer[k])});
+  ["recipes","groc"].forEach(k=>{const ids=new Set((newer[k]||[]).map(x=>x.id));o[k]=(newer[k]||[]).concat((older[k]||[]).filter(x=>!ids.has(x.id)))});
+  const po=older.prefs||{},pn=newer.prefs||{};
+  o.prefs=Object.assign({},pn,{foods:Object.assign({},po.foods,pn.foods),meals:Object.assign({},po.meals,pn.meals)});
+  return o;
 }
-async function findGist(){
-  for(let pg=1;pg<=5;pg++){
-    const list=await gh("/gists?per_page=100&page="+pg);
-    const g=list.find(x=>x.description===SYNCD);
-    if(g)return g;
-    if(list.length<100)break;
+async function sbFetch(path,opt,tok){
+  const o=opt||{};
+  const r=await fetch(SB_URL+path,Object.assign({},o,{headers:Object.assign({apikey:SB_KEY,Authorization:"Bearer "+(tok||SB_KEY),"Content-Type":"application/json"},o.headers)}));
+  const j=r.status===204?null:await r.json().catch(()=>null);
+  if(!r.ok){const e=new Error((j&&(j.msg||j.error_description||j.message))||"HTTP "+r.status);e.status=r.status;throw e}
+  return j;
+}
+function setSess(j){SY.sess={at:j.access_token,rt:j.refresh_token,exp:Date.now()+(j.expires_in||3600)*1000,uid:j.user.id,email:j.user.email};saveSY()}
+async function sbToken(){
+  if(SY.sess.exp-60000<Date.now())setSess(await sbFetch("/auth/v1/token?grant_type=refresh_token",{method:"POST",body:JSON.stringify({refresh_token:SY.sess.rt})}));
+  return SY.sess.at;
+}
+async function startSession(j){
+  const own=localStorage.getItem(OWNK);
+  if(own&&own!==j.user.id){
+    if(!confirm("This device holds another account's progress. Signing in replaces it on this device (that account's cloud copy is untouched). Continue?")){setMsg("Cancelled");return false}
+    S=freshState();S.mtime=0;lastSnap=snapOf();save();regen();renderAll();
   }
-  return null;
+  localStorage.setItem(OWNK,j.user.id);
+  setSess(j);SY.base=0;saveSY();renderSync();syncNow();
+  return true;
 }
-const gistBody=()=>JSON.stringify({description:SYNCD,public:false,files:{[SYNCF]:{content:JSON.stringify(syncData())}}});
+async function signIn(up){
+  const email=$("sbEmail").value.trim(),pw=$("sbPw").value;
+  if(!email||pw.length<6){setMsg("Enter email and a password of 6+ characters");return}
+  setMsg(up?"Creating account…":"Signing in…");
+  try{
+    const j=await sbFetch(up?"/auth/v1/signup":"/auth/v1/token?grant_type=password",{method:"POST",body:JSON.stringify({email,password:pw})});
+    if(!j.access_token){setMsg("Check your email to confirm, then sign in");return}
+    await startSession(j);
+  }catch(e){setMsg(e.status===400&&!up?"Wrong email or password":e.message)}
+}
+async function forgot(){
+  const email=$("sbEmail").value.trim();
+  if(!email){setMsg("Enter your email above first");return}
+  try{
+    await sbFetch("/auth/v1/recover?redirect_to="+encodeURIComponent(location.origin+location.pathname),{method:"POST",body:JSON.stringify({email})});
+    setMsg("If that account exists, a reset link was emailed. Open it on this device");
+  }catch(e){setMsg(e.message)}
+}
+function checkRecovery(){
+  const h=new URLSearchParams(location.hash.slice(1)),clean=()=>history.replaceState(null,"",location.pathname+location.search);
+  if(h.get("error_description")){setMsg(h.get("error_description").replace(/\+/g," "));clean();return}
+  if(h.get("type")!=="recovery"||!h.get("access_token"))return;
+  PWR={at:h.get("access_token"),rt:h.get("refresh_token"),ex:+h.get("expires_in")||3600};
+  clean();renderSync();
+  const pane=$("syncBox").closest(".pane"),tab=pane&&document.querySelector('.tab[data-tab="'+pane.id.replace("pane-","")+'"]');
+  if(tab)tab.click();
+  $("syncBox").scrollIntoView();
+}
+async function setNewPw(){
+  const pw=$("sbNew").value;
+  if(pw.length<6){setMsg("Password must be 6+ characters");return}
+  try{
+    await sbFetch("/auth/v1/user",{method:"PUT",body:JSON.stringify({password:pw})},PWR.at);
+    const user=await sbFetch("/auth/v1/user",{},PWR.at),j={access_token:PWR.at,refresh_token:PWR.rt,expires_in:PWR.ex,user};
+    PWR=null;
+    if(!(await startSession(j)))renderSync();
+  }catch(e){setMsg(e.message)}
+}
+async function delAccount(){
+  if(!confirm("Permanently delete your account and cloud data? Progress stored on this device is kept."))return;
+  try{
+    await sbFetch("/rest/v1/rpc/delete_me",{method:"POST",body:"{}"},await sbToken());
+    localStorage.removeItem(OWNK);SY={};saveSY();renderSync();setMsg("Account deleted");
+  }catch(e){setMsg(e.status===404?"Delete is not set up. Run the updated setup SQL in Supabase":e.message)}
+}
+async function findRemote(tok){
+  const rows=await sbFetch("/rest/v1/progress?select=data,mtime&user_id=eq."+SY.sess.uid,{},tok);
+  return rows[0]||null;
+}
+async function pushNow(tok){
+  const d=syncData();
+  await sbFetch("/rest/v1/progress?on_conflict=user_id",{method:"POST",headers:{Prefer:"resolution=merge-duplicates,return=minimal"},body:JSON.stringify({user_id:SY.sess.uid,mtime:d.mtime,data:d.data})},tok);
+  if(!S.mtime){S.mtime=d.mtime;save()}
+  return d.mtime;
+}
 function schedulePush(){clearTimeout(pushT);pushT=setTimeout(syncNow,4000)}
 async function syncNow(){
-  if(!SY.token||syncing)return;
+  if(!SY.sess||syncing)return;
+  if(navigator.onLine===false){setMsg("Offline. Changes are saved here and will sync when you reconnect");return}
   syncing=true;setMsg("Syncing…");
   try{
-    if(!SY.gist){const g=await findGist();if(g){SY.gist=g.id;saveSY()}}
-    if(!SY.gist){const g=await gh("/gists",{method:"POST",body:gistBody()});SY.gist=g.id;saveSY();setMsg("Synced (first upload)")}
-    else{
-      const g=await gh("/gists/"+SY.gist),f=g.files&&g.files[SYNCF];
-      let remote=null;
-      if(f)remote=JSON.parse(f.truncated?await (await fetch(f.raw_url)).text():f.content);
-      if(remote&&remote.mtime>(S.mtime||0)){applyData(remote.data,remote.mtime);setMsg("Pulled newer data "+new Date().toLocaleTimeString())}
-      else if(!remote||remote.mtime<(S.mtime||0)){await gh("/gists/"+SY.gist,{method:"PATCH",body:gistBody()});setMsg("Synced "+new Date().toLocaleTimeString())}
-      else setMsg("Up to date "+new Date().toLocaleTimeString());
-    }
+    const tok=await sbToken(),remote=await findRemote(tok),rm=remote?+remote.mtime:0,lm=S.mtime||0,base=SY.base||0,tm=new Date().toLocaleTimeString();
+    if(remote&&rm!==lm&&rm>base&&lm>base){
+      const mine=syncData().data,mt=Math.max(Date.now(),rm,lm)+1;
+      applyData(rm>lm?mergeData(mine,remote.data):mergeData(remote.data,mine),mt);
+      SY.base=await pushNow(tok);setMsg("Merged edits from two devices "+tm);
+    }else if(remote&&rm>lm){applyData(remote.data,rm);SY.base=rm;setMsg("Pulled newer data "+tm)}
+    else if(!remote||rm<lm){SY.base=await pushNow(tok);setMsg("Synced "+tm)}
+    else{SY.base=rm;setMsg("Up to date "+tm)}
+    saveSY();
   }catch(e){
-    if(e.status===401||e.status===403){setMsg("Token rejected");}
-    else if(e.status===404&&SY.gist){SY.gist="";saveSY();setMsg("Sync file missing, retry")}
-    else setMsg("Sync failed: "+e.message);
+    if(e.status===400||e.status===401||e.status===403){SY={};saveSY();renderSync();setMsg("Session expired, sign in again")}
+    else setMsg(e.status?"Sync failed: "+e.message:"Can't reach the server. Will retry");
     console.warn("sync error",e);
   }finally{syncing=false}
 }
 function renderSync(){
   const box=$("syncBox");if(!box)return;
   setMsg(syncMsg);
-  box.innerHTML=(SY.token
-   ?`<div class="d">Connected. Changes upload a few seconds after you make them, and the newest data downloads when you open the app.</div><div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:8px"><button class="btn" id="btnSyncNow">Sync now</button><button class="btn danger" id="btnSyncOff">Disconnect this device</button></div>`
-   :`<div class="d">One-time setup per device, about a minute. <a href="https://github.com/settings/tokens/new?scopes=gist&description=elite-os-${Math.random().toString(36).slice(2,6)}" target="_blank" rel="noopener" style="color:var(--accent)">Create a token</a> (leave only the gist box ticked, pick no expiration), paste it here, and tap Connect. On your other device, paste this same token (or create another one under a new name). Your data syncs through a private gist in your GitHub account.</div><div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:8px"><input type="password" id="syncToken" placeholder="Paste token" style="flex:1;min-width:180px"/><button class="btn" id="btnSyncConnect">Connect</button></div>`)
-   +`<h3>No account? Send a link</h3><div class="d">Creates a link holding your progress. Open it on your other device to load it there.</div><div style="margin-top:8px"><button class="btn" id="btnSyncLink">Share sync link</button></div>`;
+  const row="display:flex;gap:8px;flex-wrap:wrap;margin-top:10px";
+  let h;
+  if(PWR)h=`<div class="d">Choose a new password for your account.</div><div style="${row}"><input type="password" id="sbNew" placeholder="New password (6+ characters)" autocomplete="new-password" style="flex:1;min-width:200px"/><button class="btn pri" id="btnSbNew">Set password</button></div>`;
+  else if(SY.sess)h=`<div class="d">Signed in as <b>${esc(SY.sess.email)}</b>. Your progress is private to this account. Changes upload a few seconds after you make them, and every signed-in device checks for newer data every minute and when you open the app.</div><div style="${row}"><button class="btn pri" id="btnSyncNow">Sync now</button><button class="btn" id="btnSyncOff">Sign out</button></div><h3>Danger zone</h3><div class="d">Deletes your account and the copy stored online. Progress already on this device stays.</div><div style="${row}"><button class="btn danger" id="btnSbDel">Delete my account and cloud data</button></div>`;
+  else h=`<div class="d">Make an account to keep your own progress and sync it to every device. Sign in with the same email on each device.</div><div style="${row}"><input type="email" id="sbEmail" placeholder="Email" autocomplete="email" style="flex:1;min-width:200px"/><input type="password" id="sbPw" placeholder="Password (6+ characters)" autocomplete="current-password" style="flex:1;min-width:200px"/></div><div style="${row}"><button class="btn pri" id="btnSbIn">Sign in</button><button class="btn" id="btnSbUp">Create account</button><button class="btn" id="btnSbForgot">Forgot password?</button></div>`;
+  if(!PWR)h+=`<h3>No account? Send a link</h3><div class="d">Creates a link holding your progress. Open it on your other device to load it there.</div><div style="margin-top:10px"><button class="btn" id="btnSyncLink">Share sync link</button></div>`;
+  box.innerHTML=h;
 }
 async function toB64(obj){
   const bytes=new TextEncoder().encode(JSON.stringify(obj));
@@ -1416,9 +1548,13 @@ async function importHash(){
   }catch(e){alert("That sync link could not be read.");console.warn(e)}
 }
 function initSync(){
+  checkRecovery();
   importHash();
-  if(SY.token)syncNow();
-  document.addEventListener("visibilitychange",()=>{if(document.visibilityState==="visible"&&SY.token)syncNow()});
+  if(SY.sess)syncNow();
+  document.addEventListener("visibilitychange",()=>{if(document.visibilityState==="visible"&&SY.sess)syncNow()});
+  setInterval(()=>{if(document.visibilityState==="visible"&&SY.sess)syncNow()},60000);
+  addEventListener("online",()=>{if(SY.sess)syncNow()});
+  document.addEventListener("keydown",e=>{if(e.key!=="Enter")return;const id=e.target.id;if(id==="sbPw"||id==="sbEmail")signIn(false);else if(id==="sbNew")setNewPw()});
 }
 /* ---------- WAKE LOCK ---------- */
 let wl=null,wlWant=false;
@@ -1594,7 +1730,7 @@ function drawCook(){
   const c=CK,m=c.mm,n=c.steps.length,tabName={std:"Standard",bud:"Budget",gour:"Gourmet"}[c.tab],BARE=["banana","egg","apple","avocado"];
   let body;
   if(c.step<0){
-    body=`<div class="ck-sub">${tabName} · ${esc(m.rec[0])}</div>${m.user?"":`<div class="ck-mult">Servings: ${[1,2,3,4].map(x=>`<button type="button" class="rtab ${x===c.mult?"on":""}" data-ckact="m${x}">×${x}</button>`).join("")}</div>`}<div class="ck-list">${m.user?m.ing.map(l=>`<div>${esc(l)}</div>`).join(""):m.items.map(it=>`<div>${esc(qtyText(it.id,Math.round(it.g*c.mult),S.prof.units,false))}${FOODS[it.id].u&&BARE.includes(FOODS[it.id].u[0])?"":" "+esc(FOODS[it.id].n.toLowerCase())} <small class="ims">${itemMac({id:it.id,g:it.g*c.mult}).kc} kcal · P${itemMac({id:it.id,g:it.g*c.mult}).P}</small></div>`).join("")}</div><div class="d">${m.user?"Your planned portion":"Per serving"}: ${m.kcal} kcal · P ${m.P} C ${m.C} F ${m.F}</div><button type="button" class="btn ck-go" data-ckact="next">Start cooking ›</button>`;
+    body=`<div class="ck-sub">${tabName} · ${esc(m.rec[0])}</div>${m.user?"":`<div class="ck-mult">Servings: ${[1,2,3,4].map(x=>`<button type="button" class="rtab ${x===c.mult?"on":""}" data-ckact="m${x}">×${x}</button>`).join("")}</div>`}<div class="ck-list">${m.user?m.ing.map(l=>`<div>${esc(l)}</div>`).join(""):m.items.map(it=>`<div>${esc(qtyText(it.id,Math.round(it.g*c.mult),S.prof.units,false))}${FOODS[it.id].u&&BARE.includes(FOODS[it.id].u[0])?"":" "+esc(FOODS[it.id].n.toLowerCase())} <small class="ims">${itemMac({id:it.id,g:it.g*c.mult}).kc} kcal · P${itemMac({id:it.id,g:it.g*c.mult}).P}</small></div>`).join("")}</div><div class="d">${m.user?"Your planned portion":"Per serving"}: ${m.kcal} kcal · Protein ${m.P} Carbs ${m.C} Fat ${m.F}</div><button type="button" class="btn ck-go" data-ckact="next">Start cooking ›</button>`;
   }else{
     body=`<div class="ck-sub">Step ${c.step+1} of ${n}</div><div class="ck-step">${esc(c.steps[c.step])}</div><div class="ck-nav"><button type="button" class="btn" data-ckact="prev">‹ Back</button><button type="button" class="btn ck-go" data-ckact="next">${c.step===n-1?"Done ✓":"Next ›"}</button></div>`;
   }
@@ -1748,7 +1884,7 @@ function saveRecipe(){
 }
 function renderRecipeList(){
   const rs=S.recipes||[],names={B:"Breakfast",M:"Main",S:"Snack",E:"Evening"};
-  $("kRecipes").innerHTML=rs.length?rs.map(r=>`<div class="row" style="cursor:default"><input type="checkbox" ${r.use!==false?"checked":""} data-ru="${r.id}" title="Use in plan"/><div class="body"><div class="t">${r.fav?"⭐ ":""}${esc(r.name)}</div><div class="d">${r.slots.map(s=>names[s]).join(", ")} · ${r.kcal} kcal · P ${r.P} C ${r.C} F ${r.F} per serving · ${r.ing.length} ingredients</div></div><div class="btns"><button type="button" class="rest" data-rfv="${r.id}">${r.fav?"Unfavorite":"⭐ Favorite"}</button><button type="button" class="rest" data-red="${r.id}">Edit</button><button type="button" class="rest" data-rgl="${r.id}">+ Groceries</button><button type="button" class="rest" data-rdel="${r.id}">Delete</button></div></div>`).join("")+'<div class="d" style="margin-top:6px">Ticked recipes can appear in your plan. Favorites appear more often. Your own recipes are not checked against your diet settings.</div>':'<div class="d">No recipes yet. Upload or paste one above and it joins your meal rotation, scaled to your targets.</div>';
+  $("kRecipes").innerHTML=rs.length?rs.map(r=>`<div class="row" style="cursor:default"><input type="checkbox" ${r.use!==false?"checked":""} data-ru="${r.id}" title="Use in plan"/><div class="body"><div class="t">${r.fav?"⭐ ":""}${esc(r.name)}</div><div class="d">${r.slots.map(s=>names[s]).join(", ")} · ${r.kcal} kcal · Protein ${r.P} Carbs ${r.C} Fat ${r.F} per serving · ${r.ing.length} ingredients</div></div><div class="btns"><button type="button" class="rest" data-rfv="${r.id}">${r.fav?"Unfavorite":"⭐ Favorite"}</button><button type="button" class="rest" data-red="${r.id}">Edit</button><button type="button" class="rest" data-rgl="${r.id}">+ Groceries</button><button type="button" class="rest" data-rdel="${r.id}">Delete</button></div></div>`).join("")+'<div class="d" style="margin-top:6px">Ticked recipes can appear in your plan. Favorites appear more often. Your own recipes are not checked against your diet settings.</div>':'<div class="d">No recipes yet. Upload or paste one above and it joins your meal rotation, scaled to your targets.</div>';
 }
 
 /* ---------- custom groceries ---------- */
@@ -1821,10 +1957,10 @@ const itemMac=it=>{const f=FOODS[it.id],k=it.g/100;return {kc:Math.round((4*f.p+
 const BARE2=["banana","egg","apple","avocado"];
 const itemLabel=it=>{const f=FOODS[it.id];return qtyText(it.id,Math.round(it.g),S.prof.units,false)+(f.u&&BARE2.includes(f.u[0])?"":" "+f.n.toLowerCase())};
 function macroChips(mm,label){
-  return `<div class="macros" style="margin:8px 0 4px"><span class="mk">${mm.kcal} kcal</span><span class="mp">P ${mm.P}</span><span class="mc">C ${mm.C}</span><span class="mf">F ${mm.F}</span>${label?`<span class="mk">${esc(label)}</span>`:""}</div>`;
+  return `<div class="macros" style="margin:8px 0 4px"><span class="mk">${mm.kcal} kcal</span><span class="mp">Protein ${mm.P}</span><span class="mc">Carbs ${mm.C}</span><span class="mf">Fat ${mm.F}</span>${label?`<span class="mk">${esc(label)}</span>`:""}</div>`;
 }
 function ingredientTable(mm){
-  return `<div class="d"><b>Ingredients and macros</b></div><div class="itab">${mm.items.map(it=>{const m=itemMac(it);return `<div class="irow"><span>${esc(itemLabel(it))}</span><span class="ims">${m.kc} kcal · P${m.P} C${m.C} F${m.F}</span></div>`}).join("")}<div class="irow itot"><span>Total</span><span class="ims">${mm.kcal} kcal · P${mm.P} C${mm.C} F${mm.F}</span></div></div>`;
+  return `<div class="d"><b>Ingredients and macros</b></div><div class="itab">${mm.items.map(it=>{const m=itemMac(it);return `<div class="irow"><span>${esc(itemLabel(it))}</span><span class="ims">${m.kc} kcal · Protein ${m.P} g · Carbs ${m.C} g · Fat ${m.F} g</span></div>`}).join("")}<div class="irow itot"><span>Total</span><span class="ims">${mm.kcal} kcal · Protein ${mm.P} g · Carbs ${mm.C} g · Fat ${mm.F} g</span></div></div>`;
 }
 
 /* ---------- water ---------- */
@@ -1864,7 +2000,7 @@ function weekICS(){
   const evt=(uid,date,t,dur,sum,desc,alarm)=>{ev.push("BEGIN:VEVENT","UID:"+uid+"@elite-os","DTSTAMP:"+stamp,"DTSTART:"+ymd(date,t),"DTEND:"+ymd(date,addMin(t,dur)),"SUMMARY:"+icsEsc(sum),"DESCRIPTION:"+icsEsc(desc),"BEGIN:VALARM","ACTION:DISPLAY","DESCRIPTION:"+icsEsc(sum),"TRIGGER:-PT"+alarm+"M","END:VALARM","END:VEVENT")};
   W.days.forEach(d=>{
     if(d.session)evt(d.date+"-w",d.date,wt,len,"Workout: "+d.session.name,d.session.ex.map(e=>`${e.name} ${e.sets} x ${e.reps} @ ${e.rir} RIR`).join("\n"),30);
-    if(withMeals){const ts=MEALT[S.prof.meals]||MEALT[4];d.meals.forEach((m,i)=>evt(d.date+"-m"+i,d.date,ts[i]||"12:00",20,"Meal: "+m.name,`${m.kcal} kcal, P ${m.P} C ${m.C} F ${m.F}`,10))}
+    if(withMeals){const ts=MEALT[S.prof.meals]||MEALT[4];d.meals.forEach((m,i)=>evt(d.date+"-m"+i,d.date,ts[i]||"12:00",20,"Meal: "+m.name,`${m.kcal} kcal, Protein ${m.P} Carbs ${m.C} Fat ${m.F}`,10))}
   });
   return ["BEGIN:VCALENDAR","VERSION:2.0","PRODID:-//Elite OS//EN","CALSCALE:GREGORIAN",...ev,"END:VCALENDAR"].map(icsFold).join("\r\n")+"\r\n";
 }
