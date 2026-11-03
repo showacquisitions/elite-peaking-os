@@ -68,7 +68,7 @@
   .row .body{flex:1;min-width:0}
   .btns{display:flex;flex-direction:column;gap:4px;flex:none}
   .t{font-weight:600;font-size:.91rem}.d{font-size:.79rem;color:var(--muted);margin-top:2px}
-  .cue{font-size:.76rem;color:#a5b4c8;margin-top:2px;font-style:italic}
+  .cue{font-size:.76rem;color:var(--muted);margin-top:2px;font-style:italic}
   .perfrow{display:flex;gap:6px;align-items:center;margin-top:5px}.perf{width:84px;font-size:.8rem;font-weight:600;padding:3px 8px}
   .vid{font-size:.72rem;color:var(--accent);margin-left:6px;text-decoration:none;font-weight:600;white-space:nowrap}
   .rtabs{display:flex;gap:6px;margin:8px 0}.rtab{background:var(--panel2);border:1px solid var(--border);color:var(--muted);border-radius:999px;padding:4px 12px;font-size:.76rem;font-weight:700;cursor:pointer}.rtab.on{background:var(--accent);border-color:var(--accent);color:#fff}
@@ -105,6 +105,7 @@
     .t{font-size:.97rem}.d{font-size:.84rem}
     .kpis{grid-template-columns:1fr 1fr}
     .btns{flex-direction:row;flex-wrap:wrap}
+    .row{flex-wrap:wrap}.row>.btns{flex:1 1 100%;padding-left:34px}
     .vrow{grid-template-columns:72px 1fr 30px 46px}
     .overall b{min-width:0;font-size:.75rem}.overall>.sub{display:none}
     #timer{left:8px;right:8px;bottom:calc(58px + env(safe-area-inset-bottom));flex-wrap:nowrap;justify-content:center;gap:5px;padding:6px 8px}
@@ -130,13 +131,23 @@
   .fchip.s1{border-color:var(--green);background:rgba(16,185,129,.14)}
   .fchip.s-1{border-color:var(--red);background:rgba(239,68,68,.12);color:#f3b0b0;text-decoration:line-through}
   .rest.on{border-color:var(--green);color:var(--green)}
+  .itab{margin:4px 0 8px;font-size:.8rem}
+  .irow{display:flex;flex-wrap:wrap;justify-content:space-between;gap:2px 10px;padding:4px 0;border-bottom:1px solid var(--border)}.irow>span:first-child{flex:1 1 150px}
+  .itot{font-weight:700;border-bottom:none}
+  .ims{color:var(--muted);white-space:nowrap}small.ims{font-size:.7rem;margin-left:6px}
+  html[data-theme=light]{--bg:#f4f6fa;--panel:#ffffff;--panel2:#eaeef5;--border:#d3dae6;--text:#14202e;--muted:#5a6676;--glow:rgba(59,130,246,.12)}
+  html[data-theme=light] .note{color:#6b4e00;background:rgba(245,158,11,.12)}
+  html[data-theme=light] .fchip.s-1{color:#a32020}
+  html[data-theme=light] .tab.active,html[data-theme=light] .tab:hover{color:#fff}
+  html[data-theme=light] .rtab.on,html[data-theme=light] .ck-go{color:#fff}
   @media print{.tabs,#timer,.btn,.rest,.days,.wknav{display:none!important}.pane{display:block!important}body{background:#fff;color:#000}.card,.kpi{border-color:#999;background:#fff}}
 </style>
 </head>
 <body>
-<header>
-  <h1>ELITE AESTHETIC TRAINING & NUTRITION OS</h1>
-  <p class="sub" id="sub"></p>
+<header style="display:flex;justify-content:space-between;align-items:flex-start;gap:10px">
+  <div><h1>ELITE AESTHETIC TRAINING & NUTRITION OS</h1>
+  <p class="sub" id="sub"></p></div>
+  <button class="btn" id="btnTheme">☀️ Light</button>
 </header>
 <div class="overall"><span class="sub">This week</span><div class="bar"><div id="overallFill" style="width:0"></div></div><b id="overallTxt"></b></div>
 <nav class="tabs">
@@ -194,11 +205,15 @@
         <div class="cg"><label id="lwal">Waist</label><input type="number" step="0.1" id="lwa"/></div>
         <div class="cg"><label>Sleep (h)</label><input type="number" step="0.25" id="ls"/></div>
         <div class="cg"><label>Energy (1–5)</label><input type="number" min="1" max="5" id="le"/></div>
+        <div class="cg"><label id="lchL">Chest</label><input type="number" step="0.1" id="lch"/></div>
+        <div class="cg"><label id="larL">Arm</label><input type="number" step="0.1" id="lar"/></div>
+        <div class="cg"><label id="lthL">Thigh</label><input type="number" step="0.1" id="lth"/></div>
       </div>
       <h3>Notes</h3><textarea id="ln" placeholder="Pump, strength, hunger, mood, mirror check…"></textarea></div>
     <div class="card"><h2><span>Weekly check-in</span></h2><div id="checkin"></div></div>
     <div class="card"><h2><span>Trend & auto-adjust</span></h2><div id="trend"></div><h3>Weight, last 28 days</h3><div id="logWt"></div></div>
   </div>
+  <div id="measBox"></div>
   <div id="progExtra"></div>
 </section>
 
@@ -898,14 +913,14 @@ function advice(p,tr){
 /* ===================== UI ===================== */
 const KEY="elitePeakingState_v3";
 const TODAY=iso(new Date());
-const DEFP={sex:"m",age:25,cm:178,kg:68,bf:0,units:"imperial",goal:"bulk",rate:"cons",act:"mod",exp:"int",days:4,len:60,style:"cal",pullMax:8,pushMax:25,bagKg:9,eq:["pullbar","bands","bag"],pri:["shoulders"],diet:"omni",excl:[],meals:4,event:"",kcalAdj:0,inj:[],budget:"std",priceF:1};
-function freshState(){return {prof:JSON.parse(JSON.stringify(DEFP)),log:{},checks:{},perf:{},extra:{},hist:{},done:{},prefs:{foods:{},meals:{}},recipes:[],groc:[],swaps:{},mswaps:{},blockStart:mondayOf(TODAY),blockOffset:0,weekOffset:0,sel:TODAY,confirmed:false}}
+const DEFP={sex:"m",age:25,cm:178,kg:68,bf:0,units:"imperial",goal:"bulk",rate:"cons",act:"mod",exp:"int",days:4,len:60,style:"cal",pullMax:8,pushMax:25,bagKg:9,eq:["pullbar","bands","bag"],pri:["shoulders"],diet:"omni",excl:[],meals:4,event:"",kcalAdj:0,inj:[],budget:"std",priceF:1,wtime:"17:30",mealRem:"no"};
+function freshState(){return {prof:JSON.parse(JSON.stringify(DEFP)),log:{},checks:{},perf:{},extra:{},hist:{},done:{},prefs:{foods:{},meals:{}},recipes:[],groc:[],water:{},swaps:{},mswaps:{},blockStart:mondayOf(TODAY),blockOffset:0,weekOffset:0,sel:TODAY,confirmed:false}}
 function loadState(){
   try{const v=JSON.parse(localStorage.getItem(KEY)||"null");if(v&&v.prof){const f=freshState();return Object.assign(f,v,{prof:Object.assign(f.prof,v.prof)})}}catch(e){console.warn("state load failed",e)}
   return freshState();
 }
 let S=loadState(),W=null;
-const SYNCKEYS=["prof","log","checks","perf","extra","hist","done","prefs","recipes","groc","swaps","mswaps","blockStart","blockOffset","confirmed"];
+const SYNCKEYS=["prof","log","checks","perf","extra","hist","done","prefs","recipes","groc","water","swaps","mswaps","blockStart","blockOffset","confirmed"];
 const snapOf=()=>JSON.stringify(SYNCKEYS.map(k=>S[k]));
 let lastSnap=snapOf();
 const save=()=>{
@@ -943,6 +958,7 @@ const OPT={
  diet:[["omni","Omnivore"],["pesc","Pescatarian"],["veg","Vegetarian"],["vegan","Vegan"]],
  meals:[[3,"3 meals"],[4,"4 meals"],[5,"5 meals"],[6,"6 meals"]],
  budget:[["std","Standard (best quality)"],["budget","Budget (cheapest good options)"]],
+ mealRem:[["no","Workouts only"],["yes","Workouts and meals"]],
  units:[["imperial","Imperial (lb, in)"],["metric","Metric (kg, cm)"]]
 };
 const NUMF={age:[14,90],cm:[120,230],kg:[35,200],bf:[0,60],pullMax:[0,60],pushMax:[0,100],bagKg:[0,60],priceF:[0.3,5]};
@@ -963,7 +979,7 @@ function buildProfile(){
    </div>
    <div>
     <div class="card"><h2><span>Training</span></h2>
-     <div class="fgrid">${selHTML("exp","Experience")}${selHTML("days","Days per week")}${selHTML("len","Session length")}${selHTML("style","Style")}${numHTML("pullMax","Max strict pull-ups")}${numHTML("pushMax","Max strict push-ups")}${numHTML("bagKg","Weighted bag load")}</div>
+     <div class="fgrid">${selHTML("exp","Experience")}${selHTML("days","Days per week")}${selHTML("len","Session length")}${selHTML("style","Style")}${numHTML("pullMax","Max strict pull-ups")}${numHTML("pushMax","Max strict push-ups")}${numHTML("bagKg","Weighted bag load")}<div class="cg"><label>Usual workout time</label><input type="time" data-p="wtime"/></div>${selHTML("mealRem","Calendar export includes")}</div>
      <h3>Equipment you have</h3>${chkHTML("eq",EQUIP)}<h3>Aches or injuries to work around</h3>${chkHTML("inj",[["shoulder","Shoulder"],["elbow","Elbow"],["wrist","Wrist"],["back","Lower back"],["knee","Knee"]])}</div>
     <div class="card"><h2><span>Nutrition</span></h2>
      <div class="fgrid">${selHTML("diet","Diet")}${selHTML("meals","Meals per day")}${selHTML("budget","Food budget")}${numHTML("priceF","Local price factor (1 = US prices)",.1)}</div>
@@ -998,7 +1014,7 @@ function onField(el){
     const [lo,hi]=NUMF[k];
     if(st<lo-1e-6||st>hi+1e-6){el.classList.add("bad");return}
     el.classList.remove("bad");p[k]=st;
-  }else if(el.type==="date"){p[k]=el.value}
+  }else if(el.type==="date"||el.type==="time"){p[k]=el.value}
   else{
     const v=isNaN(+el.value)?el.value:+el.value;
     p[k]=v;
@@ -1022,13 +1038,14 @@ function recipeHTML(mm,date,i){
   const ol=a=>`<ol>${a.map(x=>`<li>${esc(x)}</li>`).join("")}</ol>`;
   const price=f=>`≈$${((mm.cost||0)*f).toFixed(2)}`;
   const ingH=mm.ing&&mm.ing.length?`<div class="d"><b>Ingredients (per serving):</b></div><ul style="margin:4px 0 8px 18px;font-size:.8rem">${mm.ing.map(x=>`<li>${esc(x)}</li>`).join("")}</ul>`:"";
-  const panels={std:ingH+ol(mm.rec.slice(1))};
+  const itemH=!mm.user&&mm.items&&mm.items.length?ingredientTable(mm):"";
+  const panels={std:ingH+itemH+ol(mm.rec.slice(1))};
   if(v){
     panels.bud=`<div class="d"><b>Swaps:</b> ${esc(v.b[0])} <b>${price(.7)}</b></div>${ol(v.b[1])}`;
     panels.gour=`<div class="d"><b>Upgrades:</b> ${esc(v.g[0])} <b>${price(1.5)}</b></div>${ol(v.g[1])}`;
   }
   const tabs=[["std","Standard"],["bud","Budget"],["gour","Gourmet"]].filter(x=>panels[x[0]]);
-  return `<details class="rec" data-rk="${key}" ${UIR[key]?"open":""}><summary>Recipe · ${esc(mm.rec[0])}</summary><button type="button" class="btn" data-cook="${date}|${i}" style="margin-top:8px">Cook mode</button><div class="rtabs">${tabs.map(x=>`<button type="button" class="rtab ${x[0]===tab?"on":""}" data-rt="${x[0]}" data-rk="${key}">${x[1]}</button>`).join("")}</div>${tabs.map(x=>`<div class="rpanel" data-rp="${x[0]}" ${x[0]===tab?"":"hidden"}>${panels[x[0]]}</div>`).join("")}${v?`<div class="d">Prices are rough estimates. Macros stay close to the standard version.</div>`:""}</details>`;
+  return `<details class="rec" data-rk="${key}" ${UIR[key]?"open":""}><summary>Recipe · ${esc(mm.rec[0])}</summary>${macroChips(mm,mm.user?"your planned portion":"")}<button type="button" class="btn" data-cook="${date}|${i}" style="margin-top:8px">Cook mode</button><div class="rtabs">${tabs.map(x=>`<button type="button" class="rtab ${x[0]===tab?"on":""}" data-rt="${x[0]}" data-rk="${key}">${x[1]}</button>`).join("")}</div>${tabs.map(x=>`<div class="rpanel" data-rp="${x[0]}" ${x[0]===tab?"":"hidden"}>${panels[x[0]]}</div>`).join("")}${v?`<div class="d">Prices are rough estimates. Macros stay close to the standard version.</div>`:""}</details>`;
 }
 const formLink=n=>` <a class="vid" href="https://www.youtube.com/results?search_query=${encodeURIComponent(n+" proper form")}" target="_blank" rel="noopener">▶ form</a>`;
 /* ---------- helpers for rows ---------- */
@@ -1046,7 +1063,7 @@ function dayKeys(d){
 function dayProg(d){const k=dayKeys(d),n=k.filter(x=>S.checks[x]).length;return {n,t:k.length,pct:k.length?n/k.length:0}}
 function ring(pct){
   const r=22,c=2*Math.PI*r;
-  return `<svg width="56" height="56" viewBox="0 0 56 56"><circle cx="28" cy="28" r="${r}" fill="none" stroke="#0a0d13" stroke-width="6"/><circle cx="28" cy="28" r="${r}" fill="none" stroke="#10b981" stroke-width="6" stroke-linecap="round" stroke-dasharray="${c}" stroke-dashoffset="${c*(1-pct)}" transform="rotate(-90 28 28)"/><text x="28" y="32" text-anchor="middle" fill="#e8eef5" font-size="12" font-weight="800">${Math.round(pct*100)}%</text></svg>`;
+  return `<svg width="56" height="56" viewBox="0 0 56 56"><circle cx="28" cy="28" r="${r}" fill="none" style="stroke:var(--bg)" stroke-width="6"/><circle cx="28" cy="28" r="${r}" fill="none" stroke="#10b981" stroke-width="6" stroke-linecap="round" stroke-dasharray="${c}" stroke-dashoffset="${c*(1-pct)}" transform="rotate(-90 28 28)"/><text x="28" y="32" text-anchor="middle" style="fill:var(--text)" font-size="12" font-weight="800">${Math.round(pct*100)}%</text></svg>`;
 }
 const PEAKNOTE={
  deplete:"Train hard and keep carbs low (about 2.5 g/kg). Keep water and sodium normal. There is no good evidence that cutting them improves the look, and the risks are real.",
@@ -1108,8 +1125,8 @@ function renderPlan(){
   const peakShown=W.peak;
   const mon=weekMon();
   $("weekNav").innerHTML=peakShown
-    ?`<span class="badge a">Peak week · event ${dateLabel(p.event)}</span>`
-    :`<button class="btn" data-wk="-1">‹</button><b>${dateLabel(mon,{month:"short",day:"numeric"})} – ${dateLabel(addD(mon,6),{month:"short",day:"numeric"})}</b><button class="btn" data-wk="1">›</button><button class="btn" data-wk="0">Today</button><span class="badge">Week ${W.wk+1} of 4 · RIR ${W.rir}${W.wk===3?" · deload":""}</span><button class="btn" id="btnRotate">New block (rotate exercises)</button><button class="btn" id="btnWake">${wlWant?"Screen stays on ✓":"Keep screen on"}</button>`;
+    ?`<span class="badge a">Peak week · event ${dateLabel(p.event)}</span><button class="btn" id="btnIcs">📅 Add week to calendar</button>`
+    :`<button class="btn" data-wk="-1">‹</button><b>${dateLabel(mon,{month:"short",day:"numeric"})} – ${dateLabel(addD(mon,6),{month:"short",day:"numeric"})}</b><button class="btn" data-wk="1">›</button><button class="btn" data-wk="0">Today</button><span class="badge">Week ${W.wk+1} of 4 · RIR ${W.rir}${W.wk===3?" · deload":""}</span><button class="btn" id="btnRotate">New block (rotate exercises)</button><button class="btn" id="btnIcs">📅 Add week to calendar</button><button class="btn" id="btnWake">${wlWant?"Screen stays on ✓":"Keep screen on"}</button>`;
   $("days").innerHTML=W.days.map(x=>{
     const pr=dayProg(x);
     return `<button class="day ${x.date===d.date?"active":""} ${pr.t&&pr.n===pr.t?"done":""}" data-day="${x.date}"><b>${dateLabel(x.date,{weekday:"short"})}${x.date===TODAY?" · today":""}</b><small>${dateLabel(x.date,{month:"short",day:"numeric"})}</small><small>${esc(x.label)}</small><div class="mini"><i style="width:${pr.pct*100}%"></i></div></button>`;
@@ -1152,10 +1169,10 @@ function renderPlan(){
   $("exBox").innerHTML=`<div class="d">Add food that was not in the plan. It counts toward "Eaten so far".</div><div class="fgrid" style="margin-top:8px"><div class="cg"><label>Calories</label><input type="number" inputmode="numeric" id="exK"/></div><div class="cg"><label>Protein (g)</label><input type="number" inputmode="numeric" id="exP"/></div></div><div style="display:flex;gap:8px;margin-top:8px"><button class="btn" id="btnAddEx">Add</button><button class="btn danger" id="btnClrEx">Clear</button></div>${xt.kcal||xt.p?`<div class="d" style="margin-top:6px">Added so far: ${xt.kcal||0} kcal, ${xt.p||0} g protein</div>`:""}`;
   const steps=T.goal==="cut"?"9–11k":"7–9k";
   $("hList").innerHTML=[
-   ["water",`Drink ${water} L water`,"Mostly before the evening."],
+   ["water",`Water ${waterAmt(d.date)} / ${water} L`,"Mostly before the evening. Tap + as you drink."],
    ["move",d.session&&d.kind==="train"?`Hit all sets with ${d.session.rir} RIR`:`Walk ${steps} steps`,d.session&&d.kind==="train"?"Log your top sets so next week beats them.":"Easy movement speeds recovery."],
    ["sleep","Sleep 7.5–9 h","Same bedtime, cool dark room, screens off 45 min before."]
-  ].map(h=>row(`${d.date}|hab|${h[0]}`,h[1],h[2])).join("");
+  ].map(h=>row(`${d.date}|hab|${h[0]}`,h[1],h[2],"",h[0]==="water"?waterBtns():"")).join("");
 }
 
 /* ---------- GROCERY ---------- */
@@ -1197,8 +1214,10 @@ function renderProgress(){
   const l=S.log[logDate]||{};
   $("logDate").value=logDate;
   $("lw").value=l.w?dW(l.w):"";$("lwa").value=l.wa?dL(l.wa):"";$("ls").value=l.s??"";$("le").value=l.e??"";$("ln").value=l.n??"";
+  $("lch").value=l.ch?dL(l.ch):"";$("lar").value=l.ar?dL(l.ar):"";$("lth").value=l.th?dL(l.th):"";
+  $("lchL").textContent=`Chest (${lU()})`;$("larL").textContent=`Arm (${lU()})`;$("lthL").textContent=`Thigh (${lU()})`;
   $("lwl").textContent=`Morning weight (${wU()})`;$("lwal").textContent=`Waist at navel (${lU()})`;
-  renderTrend();renderCheckin();renderProgExtra();
+  renderTrend();renderCheckin();renderProgExtra();renderMeasure();
 }
 function renderCheckin(){
   const last7=[];for(let i=0;i<7;i++)last7.push(addD(TODAY,-i));
@@ -1242,10 +1261,13 @@ document.addEventListener("input",e=>{
   else if(t.matches("[data-m] input")){onMulti(t.closest("[data-m]"),t)}
   else if(t.matches("[data-pw],[data-pr]")){onPerfInput(t)}
   else if(t.id==="logDate"){logDate=t.value||TODAY;renderProgress()}
-  else if(["lw","lwa","ls","le","ln"].includes(t.id)){
+  else if(["lw","lwa","ls","le","ln","lch","lar","lth"].includes(t.id)){
     const l=S.log[logDate]=S.log[logDate]||{};
     if(t.id==="lw")l.w=t.value?fromW(parseFloat(t.value)):0;
     if(t.id==="lwa")l.wa=t.value?fromL(parseFloat(t.value)):0;
+    if(t.id==="lch")l.ch=t.value?fromL(parseFloat(t.value)):0;
+    if(t.id==="lar")l.ar=t.value?fromL(parseFloat(t.value)):0;
+    if(t.id==="lth")l.th=t.value?fromL(parseFloat(t.value)):0;
     if(t.id==="ls")l.s=t.value;if(t.id==="le")l.e=t.value;if(t.id==="ln")l.n=t.value;
     save();
     clearTimeout(deb);deb=setTimeout(renderTrend,400);
@@ -1259,7 +1281,7 @@ document.addEventListener("change",e=>{
 });
 document.addEventListener("click",e=>{
   const t=e.target;
-  if(kitchenClick(t))return;
+  if(kitchenClick(t)||extrasClick(t))return;
   const ck=t.closest("[data-cook]");
   if(ck){const p=ck.dataset.cook.split("|");openCook(p[0],+p[1]);return}
   const ca=t.closest("[data-ckact]");
@@ -1572,7 +1594,7 @@ function drawCook(){
   const c=CK,m=c.mm,n=c.steps.length,tabName={std:"Standard",bud:"Budget",gour:"Gourmet"}[c.tab],BARE=["banana","egg","apple","avocado"];
   let body;
   if(c.step<0){
-    body=`<div class="ck-sub">${tabName} · ${esc(m.rec[0])}</div>${m.user?"":`<div class="ck-mult">Servings: ${[1,2,3,4].map(x=>`<button type="button" class="rtab ${x===c.mult?"on":""}" data-ckact="m${x}">×${x}</button>`).join("")}</div>`}<div class="ck-list">${m.user?m.ing.map(l=>`<div>${esc(l)}</div>`).join(""):m.items.map(it=>`<div>${esc(qtyText(it.id,Math.round(it.g*c.mult),S.prof.units,false))}${FOODS[it.id].u&&BARE.includes(FOODS[it.id].u[0])?"":" "+esc(FOODS[it.id].n.toLowerCase())}</div>`).join("")}</div><div class="d">${m.user?"Your planned portion":"Per serving"}: ${m.kcal} kcal · P ${m.P} C ${m.C} F ${m.F}</div><button type="button" class="btn ck-go" data-ckact="next">Start cooking ›</button>`;
+    body=`<div class="ck-sub">${tabName} · ${esc(m.rec[0])}</div>${m.user?"":`<div class="ck-mult">Servings: ${[1,2,3,4].map(x=>`<button type="button" class="rtab ${x===c.mult?"on":""}" data-ckact="m${x}">×${x}</button>`).join("")}</div>`}<div class="ck-list">${m.user?m.ing.map(l=>`<div>${esc(l)}</div>`).join(""):m.items.map(it=>`<div>${esc(qtyText(it.id,Math.round(it.g*c.mult),S.prof.units,false))}${FOODS[it.id].u&&BARE.includes(FOODS[it.id].u[0])?"":" "+esc(FOODS[it.id].n.toLowerCase())} <small class="ims">${itemMac({id:it.id,g:it.g*c.mult}).kc} kcal · P${itemMac({id:it.id,g:it.g*c.mult}).P}</small></div>`).join("")}</div><div class="d">${m.user?"Your planned portion":"Per serving"}: ${m.kcal} kcal · P ${m.P} C ${m.C} F ${m.F}</div><button type="button" class="btn ck-go" data-ckact="next">Start cooking ›</button>`;
   }else{
     body=`<div class="ck-sub">Step ${c.step+1} of ${n}</div><div class="ck-step">${esc(c.steps[c.step])}</div><div class="ck-nav"><button type="button" class="btn" data-ckact="prev">‹ Back</button><button type="button" class="btn ck-go" data-ckact="next">${c.step===n-1?"Done ✓":"Next ›"}</button></div>`;
   }
@@ -1794,9 +1816,95 @@ function kitchenChange(t){
 function kitchenInput(t){if(t.id==="kq"){KQ=t.value;renderKitchen();return true}return false}
 document.addEventListener("keydown",e=>{if(e.target&&e.target.id==="gcIn"&&e.key==="Enter"){addGrocery(e.target.value);e.target.value=""}});
 
+/* ===================== EXTRAS: macros in recipes, water, measurements, calendar, theme ===================== */
+const itemMac=it=>{const f=FOODS[it.id],k=it.g/100;return {kc:Math.round((4*f.p+4*f.c+9*f.f)*k),P:Math.round(f.p*k),C:Math.round(f.c*k),F:Math.round(f.f*k)}};
+const BARE2=["banana","egg","apple","avocado"];
+const itemLabel=it=>{const f=FOODS[it.id];return qtyText(it.id,Math.round(it.g),S.prof.units,false)+(f.u&&BARE2.includes(f.u[0])?"":" "+f.n.toLowerCase())};
+function macroChips(mm,label){
+  return `<div class="macros" style="margin:8px 0 4px"><span class="mk">${mm.kcal} kcal</span><span class="mp">P ${mm.P}</span><span class="mc">C ${mm.C}</span><span class="mf">F ${mm.F}</span>${label?`<span class="mk">${esc(label)}</span>`:""}</div>`;
+}
+function ingredientTable(mm){
+  return `<div class="d"><b>Ingredients and macros</b></div><div class="itab">${mm.items.map(it=>{const m=itemMac(it);return `<div class="irow"><span>${esc(itemLabel(it))}</span><span class="ims">${m.kc} kcal · P${m.P} C${m.C} F${m.F}</span></div>`}).join("")}<div class="irow itot"><span>Total</span><span class="ims">${mm.kcal} kcal · P${mm.P} C${mm.C} F${mm.F}</span></div></div>`;
+}
+
+/* ---------- water ---------- */
+const waterAmt=date=>r1(((S.water||{})[date]||0)/1000);
+const waterBtns=()=>`<button type="button" class="rest" data-wa="-250">−250</button><button type="button" class="rest" data-wa="250">+250</button><button type="button" class="rest" data-wa="500">+500</button>`;
+function addWater(ml){
+  S.water=S.water||{};
+  const cur=S.water[S.sel]||0,nw=Math.max(0,cur+ml);
+  S.water[S.sel]=nw;
+  const key=`${S.sel}|hab|water`;
+  S.checks[key]=nw>=W.T.water*1000;
+  markDone(key);save();renderPlan();renderOverall();renderProgExtra();
+}
+
+/* ---------- measurements ---------- */
+const MEAS=[["wa","Waist"],["ch","Chest"],["ar","Arm"],["th","Thigh"]];
+function renderMeasure(){
+  const box=$("measBox");if(!box)return;
+  const dates=Object.keys(S.log).sort();
+  const rows=MEAS.map(([k,n])=>{
+    const pts=dates.filter(d=>S.log[d][k]>0).map(d=>({d,v:S.log[d][k]}));
+    if(!pts.length)return `<div class="irow"><span>${n}</span><span class="ims">no data</span></div>`;
+    const first=pts[0],last=pts[pts.length-1],ch=last.v-first.v;
+    return `<div class="irow"><span>${n}</span><span class="ims">${dL(last.v)} ${lU()}${pts.length>1?` · ${ch>0?"+":""}${r1(metric()?ch:ch/IN)} since ${dateLabel(first.d,{month:"short",day:"numeric"})}`:""}</span></div>`;
+  }).join("");
+  box.innerHTML=`<div class="card"><h2><span>Measurements</span><span class="badge">Latest and change</span></h2><div class="itab">${rows}</div><div class="d" style="margin-top:6px">Same spot, same time of day. Waist at the navel, chest at the nipple line, arm flexed, thigh halfway up.</div></div>`;
+}
+
+/* ---------- calendar export ---------- */
+const icsEsc=s=>String(s).replace(/\\/g,"\\\\").replace(/;/g,"\\;").replace(/,/g,"\\,").replace(/\r?\n/g,"\\n");
+const icsFold=l=>{let o="";while(l.length>73){o+=l.slice(0,73)+"\r\n ";l=l.slice(73)}return o+l};
+const ymd=(d,t)=>d.replace(/-/g,"")+"T"+t.replace(":","")+"00";
+const MEALT={3:["08:00","13:00","19:00"],4:["08:00","12:30","16:00","19:30"],5:["07:30","11:00","14:30","18:00","20:30"],6:["07:30","10:30","13:00","16:00","19:00","21:00"]};
+function addMin(t,m){const [h,mi]=t.split(":").map(Number),x=h*60+mi+m;return pad(Math.floor(x/60)%24)+":"+pad(x%60)}
+function weekICS(){
+  const ev=[],stamp=new Date().toISOString().replace(/[-:]/g,"").replace(/\.\d+/,""),wt=S.prof.wtime||"17:30",len=S.prof.len||60,withMeals=S.prof.mealRem==="yes";
+  const evt=(uid,date,t,dur,sum,desc,alarm)=>{ev.push("BEGIN:VEVENT","UID:"+uid+"@elite-os","DTSTAMP:"+stamp,"DTSTART:"+ymd(date,t),"DTEND:"+ymd(date,addMin(t,dur)),"SUMMARY:"+icsEsc(sum),"DESCRIPTION:"+icsEsc(desc),"BEGIN:VALARM","ACTION:DISPLAY","DESCRIPTION:"+icsEsc(sum),"TRIGGER:-PT"+alarm+"M","END:VALARM","END:VEVENT")};
+  W.days.forEach(d=>{
+    if(d.session)evt(d.date+"-w",d.date,wt,len,"Workout: "+d.session.name,d.session.ex.map(e=>`${e.name} ${e.sets} x ${e.reps} @ ${e.rir} RIR`).join("\n"),30);
+    if(withMeals){const ts=MEALT[S.prof.meals]||MEALT[4];d.meals.forEach((m,i)=>evt(d.date+"-m"+i,d.date,ts[i]||"12:00",20,"Meal: "+m.name,`${m.kcal} kcal, P ${m.P} C ${m.C} F ${m.F}`,10))}
+  });
+  return ["BEGIN:VCALENDAR","VERSION:2.0","PRODID:-//Elite OS//EN","CALSCALE:GREGORIAN",...ev,"END:VCALENDAR"].map(icsFold).join("\r\n")+"\r\n";
+}
+function downloadICS(){
+  const a=document.createElement("a");
+  a.href=URL.createObjectURL(new Blob([weekICS()],{type:"text/calendar"}));
+  a.download="elite-os-week.ics";document.body.appendChild(a);a.click();a.remove();
+  setTimeout(()=>URL.revokeObjectURL(a.href),1000);
+}
+
+/* ---------- theme ---------- */
+const THK="elitePeakingTheme";
+function applyTheme(t){
+  document.documentElement.dataset.theme=t;
+  const m=document.querySelector("meta[name=theme-color]");if(m)m.content=t==="light"?"#f4f6fa":"#0a0d13";
+  const b=$("btnTheme");if(b)b.textContent=t==="light"?"🌙 Dark":"☀️ Light";
+}
+function initTheme(){
+  let t="dark";
+  try{t=localStorage.getItem(THK)||(matchMedia("(prefers-color-scheme: light)").matches?"light":"dark")}catch(e){console.warn(e)}
+  applyTheme(t);
+}
+function toggleTheme(){
+  const t=document.documentElement.dataset.theme==="light"?"dark":"light";
+  try{localStorage.setItem(THK,t)}catch(e){console.warn(e)}
+  applyTheme(t);
+}
+
+/* ---------- routing ---------- */
+function extrasClick(t){
+  let b;
+  if((b=t.closest("[data-wa]"))){addWater(+b.dataset.wa);return true}
+  if(t.id==="btnTheme"){toggleTheme();return true}
+  if(t.id==="btnIcs"){downloadICS();return true}
+  return false;
+}
+
 document.addEventListener("toggle",e=>{const el=e.target;if(el.matches&&el.matches("details.rec"))UIR[el.dataset.rk]=el.open},true);
 if("serviceWorker" in navigator&&location.protocol.startsWith("http"))navigator.serviceWorker.register("sw.js").catch(()=>{});
-regen();renderAll();initSync();
+initTheme();regen();renderAll();initSync();
 
 </script>
 </body>
