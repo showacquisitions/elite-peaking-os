@@ -115,6 +115,16 @@
   details.rec{margin-top:6px;background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:6px 10px}
   details.rec summary{cursor:pointer;font-size:.78rem;font-weight:700;color:var(--accent)}
   details.rec ol{margin:6px 0 2px 18px;font-size:.8rem;color:var(--text)}details.rec li{margin:3px 0}
+  .heat{display:grid;grid-template-columns:repeat(12,1fr);grid-template-rows:repeat(7,14px);grid-auto-flow:column;gap:3px}.heat i{border-radius:3px;display:block}
+  #cook{position:fixed;inset:0;z-index:100;background:var(--bg);padding:16px 18px calc(24px + env(safe-area-inset-bottom));overflow:auto;display:flex;flex-direction:column;gap:14px}
+  #cook[hidden]{display:none}
+  .ck-head{display:flex;justify-content:space-between;align-items:center;gap:10px;font-size:1.05rem}
+  .ck-sub{color:var(--accent);font-weight:700;font-size:.9rem}
+  .ck-mult{display:flex;gap:6px;align-items:center;font-size:.85rem;color:var(--muted)}
+  .ck-list{font-size:1.15rem;line-height:1.9}
+  .ck-step{font-size:1.5rem;line-height:1.5;font-weight:600;flex:1;display:flex;align-items:center}
+  .ck-nav{display:flex;gap:10px}.ck-nav .btn,.ck-go{flex:1;min-height:56px;font-size:1.05rem;color:var(--text)}
+  .ck-go{background:var(--accent);border-color:var(--accent);color:#fff}
   @media print{.tabs,#timer,.btn,.rest,.days,.wknav{display:none!important}.pane{display:block!important}body{background:#fff;color:#000}.card,.kpi{border-color:#999;background:#fff}}
 </style>
 </head>
@@ -140,6 +150,7 @@
   <div class="days" id="days"></div>
   <div class="kpis" id="kpis"></div>
   <div id="peakNote"></div>
+  <div class="card"><h2><span>Readiness check</span><span class="badge" id="rdBadge"></span></h2><div id="readyBox"></div></div>
   <div class="grid2">
     <div class="card"><h2><span id="wTitle"></span><span class="badge" id="wBadge"></span></h2><div id="wList"></div></div>
     <div>
@@ -168,9 +179,11 @@
     <div class="card"><h2><span>Weekly check-in</span></h2><div id="checkin"></div></div>
     <div class="card"><h2><span>Trend & auto-adjust</span></h2><div id="trend"></div><h3>Weight, last 28 days</h3><div id="logWt"></div></div>
   </div>
+  <div id="progExtra"></div>
 </section>
 
 <input type="file" id="fileIn" accept="application/json" hidden />
+<div id="cook" hidden></div>
 <div id="timer"><span class="sub">Rest</span><span class="clk" id="clk">0:00</span>
   <button class="btn" data-t="45">45</button><button class="btn" data-t="60">60</button><button class="btn" data-t="90">90</button><button class="btn" data-t="120">120</button><button class="btn" data-t="180">180</button><button class="btn" id="tStop">Stop</button></div>
 
@@ -849,13 +862,13 @@ function advice(p,tr){
 const KEY="elitePeakingState_v3";
 const TODAY=iso(new Date());
 const DEFP={sex:"m",age:25,cm:178,kg:68,bf:0,units:"imperial",goal:"bulk",rate:"cons",act:"mod",exp:"int",days:4,len:60,style:"cal",pullMax:8,pushMax:25,bagKg:9,eq:["pullbar","bands","bag"],pri:["shoulders"],diet:"omni",excl:[],meals:4,event:"",kcalAdj:0,inj:[],budget:"std",priceF:1};
-function freshState(){return {prof:JSON.parse(JSON.stringify(DEFP)),log:{},checks:{},perf:{},extra:{},swaps:{},mswaps:{},blockStart:mondayOf(TODAY),blockOffset:0,weekOffset:0,sel:TODAY,confirmed:false}}
+function freshState(){return {prof:JSON.parse(JSON.stringify(DEFP)),log:{},checks:{},perf:{},extra:{},hist:{},done:{},swaps:{},mswaps:{},blockStart:mondayOf(TODAY),blockOffset:0,weekOffset:0,sel:TODAY,confirmed:false}}
 function loadState(){
   try{const v=JSON.parse(localStorage.getItem(KEY)||"null");if(v&&v.prof){const f=freshState();return Object.assign(f,v,{prof:Object.assign(f.prof,v.prof)})}}catch(e){console.warn("state load failed",e)}
   return freshState();
 }
 let S=loadState(),W=null;
-const SYNCKEYS=["prof","log","checks","perf","extra","swaps","mswaps","blockStart","blockOffset","confirmed"];
+const SYNCKEYS=["prof","log","checks","perf","extra","hist","done","swaps","mswaps","blockStart","blockOffset","confirmed"];
 const snapOf=()=>JSON.stringify(SYNCKEYS.map(k=>S[k]));
 let lastSnap=snapOf();
 const save=()=>{
@@ -977,20 +990,9 @@ function recipeHTML(mm,date,i){
     panels.gour=`<div class="d"><b>Upgrades:</b> ${esc(v.g[0])} <b>${price(1.5)}</b></div>${ol(v.g[1])}`;
   }
   const tabs=[["std","Standard"],["bud","Budget"],["gour","Gourmet"]].filter(x=>panels[x[0]]);
-  return `<details class="rec" data-rk="${key}" ${UIR[key]?"open":""}><summary>Recipe · ${esc(mm.rec[0])}</summary><div class="rtabs">${tabs.map(x=>`<button type="button" class="rtab ${x[0]===tab?"on":""}" data-rt="${x[0]}" data-rk="${key}">${x[1]}</button>`).join("")}</div>${tabs.map(x=>`<div class="rpanel" data-rp="${x[0]}" ${x[0]===tab?"":"hidden"}>${panels[x[0]]}</div>`).join("")}<div class="d">Prices are rough estimates. Macros stay close to the standard version.</div></details>`;
+  return `<details class="rec" data-rk="${key}" ${UIR[key]?"open":""}><summary>Recipe · ${esc(mm.rec[0])}</summary><button type="button" class="btn" data-cook="${date}|${i}" style="margin-top:8px">Cook mode</button><div class="rtabs">${tabs.map(x=>`<button type="button" class="rtab ${x[0]===tab?"on":""}" data-rt="${x[0]}" data-rk="${key}">${x[1]}</button>`).join("")}</div>${tabs.map(x=>`<div class="rpanel" data-rp="${x[0]}" ${x[0]===tab?"":"hidden"}>${panels[x[0]]}</div>`).join("")}<div class="d">Prices are rough estimates. Macros stay close to the standard version.</div></details>`;
 }
 const formLink=n=>` <a class="vid" href="https://www.youtube.com/results?search_query=${encodeURIComponent(n+" proper form")}" target="_blank" rel="noopener">▶ form</a>`;
-const perfOf=uid=>{const v=S.perf[uid];return v&&typeof v==="object"?v:{w:"",r:""}};
-function sugText(uid){
-  const v=perfOf(uid),r=parseFloat(v.r),w=parseFloat(v.w),hi=HI[uid],step=metric()?2.5:5;
-  if(!r)return "Log your best set to get a target for next time.";
-  if(hi&&r>=hi)return w?`Top of the range. Next time: ${r1(w+step)} ${wU()} for ${Math.max(1,r-3)}+ reps.`:`Top of the range. Add load (bag, vest, dumbbell) or a harder variation.`;
-  return w?`Next time: ${w} ${wU()} for ${r+1}+ reps.`:`Next time: ${r+1}+ reps.`;
-}
-function perfHTML(e){
-  const v=perfOf(e.uid);HI[e.uid]=e.hi;
-  return `<div class="perfrow"><input class="perf" type="number" inputmode="decimal" step="0.5" data-pw="${esc(e.uid)}" placeholder="${wU()}" value="${esc(v.w)}"/><span>×</span><input class="perf" type="number" inputmode="numeric" data-pr="${esc(e.uid)}" placeholder="reps" value="${esc(v.r)}"/></div><div class="cue" data-sug="${esc(e.uid)}">${esc(sugText(e.uid))}</div>`;
-}
 /* ---------- helpers for rows ---------- */
 function row(key,title,desc,extra,right){
   const on=!!S.checks[key];
@@ -1088,11 +1090,11 @@ function renderPlan(){
   const note=retest+(d.phase?`<div class="note"><b>${esc(d.phase.l)}.</b> ${PEAKNOTE[d.phase.k]}</div>`:"");
   $("peakNote").innerHTML=note;
   if(d.session){
-    const s=d.session;
+    const s=d.session,rd=readiness(d.date);
     $("wTitle").textContent=`${s.name}`;
     $("wBadge").textContent=`Week ${s.wk+1} · ${s.rir} RIR`;
     $("wList").innerHTML=`<div class="d" style="margin-bottom:6px">Warm-up: 5 min easy cardio and joint circles, then 2 ramp-up sets of the first exercise.</div>`+
-     s.ex.map((e,i)=>row(`${d.date}|ex|${i}`,esc(e.name)+formLink(e.name),`<b>${e.sets} × ${e.reps}</b> · ${e.rir} RIR · rest ${e.rest}s<br>${esc(e.load)}`,
+     s.ex.map((e,i)=>row(`${d.date}|ex|${i}`,esc(e.name)+formLink(e.name),`${setLine(e,rd)}<br>${esc(e.load)}`,
       `${e.note?`<div class="d">${esc(e.note)}</div>`:""}<div class="cue">${esc(e.cue)}</div>${perfHTML(e)}`,
       `<button type="button" class="rest" data-t="${e.rest}">⏱ ${e.rest}s</button>${e.key!=="pump"?`<button type="button" class="rest" data-swap="${esc(e.key)}">↻ swap</button>`:""}`)).join("");
   }else{
@@ -1108,6 +1110,7 @@ function renderPlan(){
       `<div class="macros"><span class="mk">${mm.kcal} kcal</span><span class="mk">≈$${(mm.cost||0).toFixed(2)}</span><span class="mp">P ${mm.P}</span><span class="mc">C ${mm.C}</span><span class="mf">F ${mm.F}</span></div>${mm.prep?`<div class="cue">${esc(mm.prep)}</div>`:""}${recipeHTML(mm,d.date,i)}`,
       mm.custom?"":`<button type="button" class="rest" data-mswap="${d.date}|${i}">↻ new meal</button>`);
   }).join("");
+  renderReady();
   $("exBox").innerHTML=`<div class="d">Add food that was not in the plan. It counts toward "Eaten so far".</div><div class="fgrid" style="margin-top:8px"><div class="cg"><label>Calories</label><input type="number" inputmode="numeric" id="exK"/></div><div class="cg"><label>Protein (g)</label><input type="number" inputmode="numeric" id="exP"/></div></div><div style="display:flex;gap:8px;margin-top:8px"><button class="btn" id="btnAddEx">Add</button><button class="btn danger" id="btnClrEx">Clear</button></div>${xt.kcal||xt.p?`<div class="d" style="margin-top:6px">Added so far: ${xt.kcal||0} kcal, ${xt.p||0} g protein</div>`:""}`;
   const steps=T.goal==="cut"?"9–11k":"7–9k";
   $("hList").innerHTML=[
@@ -1157,7 +1160,7 @@ function renderProgress(){
   $("logDate").value=logDate;
   $("lw").value=l.w?dW(l.w):"";$("lwa").value=l.wa?dL(l.wa):"";$("ls").value=l.s??"";$("le").value=l.e??"";$("ln").value=l.n??"";
   $("lwl").textContent=`Morning weight (${wU()})`;$("lwal").textContent=`Waist at navel (${lU()})`;
-  renderTrend();renderCheckin();
+  renderTrend();renderCheckin();renderProgExtra();
 }
 function renderCheckin(){
   const last7=[];for(let i=0;i<7;i++)last7.push(addD(TODAY,-i));
@@ -1185,7 +1188,7 @@ function renderOverall(){
   let n=0,t=0;W.days.forEach(d=>{const p=dayProg(d);n+=p.n;t+=p.t});
   const pct=t?Math.round(n/t*100):0;
   $("overallFill").style.width=pct+"%";$("overallTxt").textContent=`${pct}% of the week · ${n}/${t}`;
-  $("sub").textContent=`${S.prof.goal==="cut"?"Fat loss":S.prof.goal==="bulk"?"Lean muscle gain":S.prof.goal==="peak"?"Event peak":"Recomp"} · ${S.prof.days} days · ${S.prof.style==="cal"?"calisthenics-first":S.prof.style==="wt"?"weights-first":"hybrid"} · saves in this browser`;
+  $("sub").textContent=`${S.prof.goal==="cut"?"Fat loss":S.prof.goal==="bulk"?"Lean muscle gain":S.prof.goal==="peak"?"Event peak":"Recomp"} · ${S.prof.days} days · ${S.prof.style==="cal"?"calisthenics-first":S.prof.style==="wt"?"weights-first":"hybrid"} · saves in this browser${streak()?` · ${streak()}-day streak`:""}`;
 }
 function renderAll(skipProfile){
   if(!skipProfile)buildProfile();
@@ -1198,7 +1201,7 @@ document.addEventListener("input",e=>{
   const t=e.target;
   if(t.matches("[data-p]")){clearTimeout(deb);deb=setTimeout(()=>onField(t),t.type==="number"?250:0);if(t.tagName==="SELECT"||t.type==="date"){clearTimeout(deb);onField(t)}}
   else if(t.matches("[data-m] input")){onMulti(t.closest("[data-m]"),t)}
-  else if(t.matches("[data-pw],[data-pr]")){const uid=t.dataset.pw||t.dataset.pr,o=Object.assign({},perfOf(uid));if(t.dataset.pw)o.w=t.value;else o.r=t.value;S.perf[uid]=o;save();const el=document.querySelector(`[data-sug="${uid}"]`);if(el)el.textContent=sugText(uid)}
+  else if(t.matches("[data-pw],[data-pr]")){onPerfInput(t)}
   else if(t.id==="logDate"){logDate=t.value||TODAY;renderProgress()}
   else if(["lw","lwa","ls","le","ln"].includes(t.id)){
     const l=S.log[logDate]=S.log[logDate]||{};
@@ -1211,10 +1214,17 @@ document.addEventListener("input",e=>{
 });
 document.addEventListener("change",e=>{
   const t=e.target;
-  if(t.dataset&&t.dataset.k){S.checks[t.dataset.k]=t.checked;save();renderPlan();renderGrocery();renderOverall()}
+  if(t.dataset&&t.dataset.k){S.checks[t.dataset.k]=t.checked;markDone(t.dataset.k);save();renderPlan();renderGrocery();renderOverall();renderProgExtra()}
+  else if(t.dataset&&t.dataset.rd)onReady(t);
 });
 document.addEventListener("click",e=>{
   const t=e.target;
+  const ck=t.closest("[data-cook]");
+  if(ck){const p=ck.dataset.cook.split("|");openCook(p[0],+p[1]);return}
+  const ca=t.closest("[data-ckact]");
+  if(ca){cookAct(ca.dataset.ckact);return}
+  const rb=t.closest("button[data-rd]");
+  if(rb){toggleReady();return}
   const rt=t.closest("[data-rt]");
   if(rt){const det=rt.closest("details"),tab=rt.dataset.rt;UIT[rt.dataset.rk]=tab;det.querySelectorAll("[data-rt]").forEach(b=>b.classList.toggle("on",b.dataset.rt===tab));det.querySelectorAll("[data-rp]").forEach(p=>p.hidden=p.dataset.rp!==tab);return}
   const tm=t.closest("[data-t]");
@@ -1231,6 +1241,7 @@ document.addEventListener("click",e=>{
   if(tab){document.querySelectorAll(".tab").forEach(x=>x.classList.toggle("active",x===tab));document.querySelectorAll(".pane").forEach(x=>x.classList.toggle("active",x.id==="pane-"+tab.dataset.tab));return}
   switch(t.id){
     case "btnWake":toggleWake();break;
+    case "btnCopyRep":{const r=weekReport(),txt="Last 7 days\n"+r.lines.join("\n")+"\n\nNext week\n"+r.focus.join("\n");if(navigator.clipboard)navigator.clipboard.writeText(txt).then(()=>alert("Report copied")).catch(()=>alert(txt));else alert(txt);break}
     case "btnAddEx":{const k=parseFloat($("exK").value)||0,p=parseFloat($("exP").value)||0;if(!k&&!p)break;const o=S.extra[S.sel]||{kcal:0,p:0};S.extra[S.sel]={kcal:o.kcal+k,p:o.p+p};save();renderPlan();break}
     case "btnClrEx":delete S.extra[S.sel];save();renderPlan();break;
     case "btnSyncConnect":{const v=$("syncToken").value.trim();if(!v)break;SY={token:v};saveSY();renderSync();syncNow();break}
@@ -1370,6 +1381,170 @@ document.addEventListener("keydown",e=>{
   if(e.key==="ArrowRight"&&i<6){S.sel=W.days[i+1].date;save();renderPlan()}
   if(e.key==="ArrowLeft"&&i>0){S.sel=W.days[i-1].date;save();renderPlan()}
 });
+
+/* ===================== FEATURES ===================== */
+const NM={};
+
+/* ---------- readiness ---------- */
+const SLEEP_OPT=[[4.5,"Under 5 h"],[5.5,"5–6 h"],[6.5,"6–7 h"],[7.5,"7–8 h"],[8.5,"8+ h"]];
+function readiness(date){
+  const l=S.log[date]||{},s=parseFloat(l.s),e=parseFloat(l.e),sr=parseFloat(l.sr),parts=[];
+  if(s>0)parts.push([.4,Math.max(0,Math.min(1,(s-5)/3))]);
+  if(e>0)parts.push([.35,(e-1)/4]);
+  if(sr>0)parts.push([.25,(5-sr)/4]);
+  if(!parts.length)return null;
+  const wsum=parts.reduce((a,p)=>a+p[0],0),score=parts.reduce((a,p)=>a+p[0]*p[1],0)/wsum;
+  return {score,level:score>=.7?"green":score>=.4?"yellow":"red",off:!!l.ro};
+}
+function adjusted(e,rd){
+  if(!rd||rd.off||rd.level==="green")return {sets:e.sets,rir:e.rir};
+  if(rd.level==="yellow")return {sets:Math.max(2,e.sets-1),rir:e.rir+1};
+  return {sets:Math.max(2,Math.ceil(e.sets*.6)),rir:e.rir+2};
+}
+function setLine(e,rd){
+  const a=adjusted(e,rd);
+  let reps=e.reps;
+  if(e.bmReps&&a.rir!==e.rir)reps=String(Math.max(1,parseInt(e.reps)-(a.rir-e.rir)));
+  const changed=a.sets!==e.sets||a.rir!==e.rir;
+  return `<b>${a.sets} × ${reps}</b> · ${a.rir} RIR · rest ${e.rest}s${changed?` <span class="badge a">readiness</span>`:""}`;
+}
+function renderReady(){
+  const d=selDay(),l=S.log[d.date]||{},rd=readiness(d.date);
+  const sel=(f,opts,cur)=>`<select data-rd="${f}"><option value="">–</option>${opts.map(o=>`<option value="${o[0]}" ${String(o[0])===String(cur)?"selected":""}>${o[1]}</option>`).join("")}</select>`;
+  const s=parseFloat(l.s);
+  const sCur=s>0?SLEEP_OPT.reduce((b,o)=>Math.abs(o[0]-s)<Math.abs(b[0]-s)?o:b)[0]:"";
+  const e5=[[1,"1 · drained"],[2,"2 · low"],[3,"3 · ok"],[4,"4 · good"],[5,"5 · great"]];
+  const so=[[1,"1 · none"],[2,"2 · light"],[3,"3 · moderate"],[4,"4 · high"],[5,"5 · severe"]];
+  const msg=!rd?"Fill these in to get a suggestion for this day.":rd.off?"Suggestion off. Training as planned.":rd.level==="green"?"Green: train as planned.":rd.level==="yellow"?"Yellow: 1 fewer set per exercise and 1 more rep in reserve.":"Red: about 40% fewer sets and 2 more reps in reserve. A walk is fine if you feel unwell.";
+  $("rdBadge").textContent=rd?rd.level.toUpperCase():"";
+  $("readyBox").innerHTML=`<div class="fgrid"><div class="cg"><label>Sleep last night</label>${sel("s",SLEEP_OPT,sCur)}</div><div class="cg"><label>Energy</label>${sel("e",e5,l.e)}</div><div class="cg"><label>Soreness</label>${sel("sr",so,l.sr)}</div></div><div class="d" style="margin-top:8px">${msg}</div>${rd&&rd.level!=="green"?`<button class="btn" data-rd="toggle" style="margin-top:8px">${rd.off?"Use the suggestion":"Train as planned anyway"}</button>`:""}<div class="d" style="margin-top:6px">A suggestion, not a rule. You can always override it.</div>`;
+}
+function onReady(t){
+  const f=t.dataset.rd;if(f==="toggle")return;
+  const l=S.log[S.sel]=S.log[S.sel]||{};l[f]=t.value;
+  save();renderPlan();renderProgExtra();
+}
+function toggleReady(){const l=S.log[S.sel]=S.log[S.sel]||{};l.ro=l.ro?0:1;save();renderPlan()}
+
+/* ---------- load log, PRs ---------- */
+const perfOf=uid=>{const v=S.perf[uid];return v&&typeof v==="object"?v:{w:"",r:""}};
+const e1=(w,r)=>w>0&&r>0?w*(1+Math.min(r,12)/30):0;
+const valOf=h=>h.w>0?e1(h.w,h.r):h.r;
+function bestBefore(uid,date){let b=0;Object.values(S.hist).forEach(h=>{if(h.u===uid&&h.d<date){const v=valOf(h);if(v>b)b=v}});return b}
+function sugText(uid){
+  const v=perfOf(uid),r=parseFloat(v.r),hi=HI[uid],step=metric()?2.5:5,wd=v.w===""?0:dW(v.w);
+  if(!r)return "Log your best set to get a target for next time.";
+  let t;
+  if(hi&&r>=hi)t=wd?`Top of the range. Next time: ${r1(wd+step)} ${wU()} for ${Math.max(1,r-3)}+ reps.`:"Top of the range. Add load (bag, vest, dumbbell) or a harder variation.";
+  else t=wd?`Next time: ${wd} ${wU()} for ${r+1}+ reps.`:`Next time: ${r+1}+ reps.`;
+  const cur=valOf({w:v.w===""?0:v.w,r}),prev=bestBefore(uid,S.sel);
+  if(prev>0&&cur>prev)t+=" 🏆 New PR!";
+  return t;
+}
+function perfHTML(e){
+  const v=perfOf(e.uid);HI[e.uid]=e.hi;NM[e.uid]=e.name;
+  return `<div class="perfrow"><input class="perf" type="number" inputmode="decimal" step="0.5" data-pw="${esc(e.uid)}" placeholder="${wU()}" value="${v.w===""?"":esc(dW(v.w))}"/><span>×</span><input class="perf" type="number" inputmode="numeric" data-pr="${esc(e.uid)}" placeholder="reps" value="${esc(v.r)}"/></div><div class="cue" data-sug="${esc(e.uid)}">${esc(sugText(e.uid))}</div>`;
+}
+function onPerfInput(t){
+  const uid=t.dataset.pw||t.dataset.pr,o=Object.assign({},perfOf(uid));
+  if(t.dataset.pw)o.w=t.value===""?"":fromW(parseFloat(t.value));else o.r=t.value;
+  S.perf[uid]=o;
+  const key=uid+"|"+S.sel,r=parseFloat(o.r)||0;
+  if(r>0)S.hist[key]={u:uid,n:NM[uid]||uid,d:S.sel,w:o.w===""?0:o.w,r};else delete S.hist[key];
+  save();
+  const el=document.querySelector(`[data-sug="${uid}"]`);if(el)el.textContent=sugText(uid);
+}
+function histList(){
+  const m={};Object.values(S.hist).forEach(h=>(m[h.u]=m[h.u]||[]).push(h));
+  return Object.values(m).map(a=>{
+    a.sort((x,y)=>x.d<y.d?-1:1);
+    let best=a[0],bv=valOf(a[0]);
+    a.forEach(h=>{const v=valOf(h);if(v>bv){bv=v;best=h}});
+    const last=a[a.length-1];
+    return {n:last.n,last,best,bv,count:a.length};
+  }).sort((x,y)=>x.last.d<y.last.d?1:-1);
+}
+function prList(){
+  const out=[],m={};
+  Object.values(S.hist).forEach(h=>(m[h.u]=m[h.u]||[]).push(h));
+  Object.values(m).forEach(a=>{a.sort((x,y)=>x.d<y.d?-1:1);let b=0;a.forEach((h,i)=>{const v=valOf(h);if(v>b){if(i>0)out.push(h);b=v}})});
+  return out;
+}
+
+/* ---------- streaks, heatmap, weekly report ---------- */
+const pctOf=d=>S.done[d]||0;
+function streak(){let n=0,d=TODAY;if(pctOf(d)<70)d=addD(d,-1);while(pctOf(d)>=70){n++;d=addD(d,-1)}return n}
+function markDone(key){
+  if(!/\|(ex|meal|hab)\|/.test(key))return;
+  const date=key.split("|")[0],d=W.days.find(x=>x.date===date);
+  if(d)S.done[date]=Math.round(dayProg(d).pct*100);
+}
+function heatmap(){
+  const start=addD(mondayOf(TODAY),-77);let cells="";
+  for(let w=0;w<12;w++)for(let i=0;i<7;i++){
+    const d=addD(start,w*7+i),p=pctOf(d),fut=d>TODAY;
+    const c=fut?"transparent":p>=70?"var(--green)":p>=40?"var(--amber)":p>0?"#3a4358":"var(--panel2)";
+    cells+=`<i title="${d}: ${p}%" style="background:${c}"></i>`;
+  }
+  return `<div class="heat">${cells}</div><div class="d" style="margin-top:6px">Last 12 weeks. Green is a day at 70% or more.</div>`;
+}
+function weekReport(){
+  const days=[];for(let i=6;i>=0;i--)days.push(addD(TODAY,-i));
+  const adh=Math.round(days.reduce((a,d)=>a+pctOf(d),0)/7);
+  const sessions=days.filter(d=>Object.keys(S.checks).filter(k=>S.checks[k]&&k.startsWith(d+"|ex|")).length>=3).length;
+  const avg=k=>{const v=days.map(d=>parseFloat((S.log[d]||{})[k])).filter(x=>x>0);return v.length?r1(v.reduce((a,b)=>a+b,0)/v.length):null};
+  const prs=prList().filter(p=>p.d>=days[0]&&p.d<=TODAY);
+  const tr=weightTrend(S.log,TODAY),adv=advice(S.prof,tr),sl=avg("s"),en=avg("e");
+  const lines=[`Adherence ${adh}%`,`Sessions completed ${sessions}`,`PRs ${prs.length}${prs.length?": "+[...new Set(prs.map(p=>p.n))].join(", "):""}`,`Avg sleep ${sl===null?"–":sl} h, energy ${en===null?"–":en}/5`,tr?`Weight trend ${tr.perWeek>0?"+":""}${r1(metric()?tr.perWeek:tr.perWeek*LB)} ${wU()}/wk`:"Weight trend: log 4 weigh-ins over 7+ days"];
+  const focus=[];
+  if(adh<60)focus.push("Adherence is the limit. Fix the two habits you missed most before changing the plan.");
+  if(adv&&adv.delta)focus.push(adv.msg);
+  if(sl!==null&&sl<6.5)focus.push("Sleep is under 6.5 h on average. Protect it before adding training.");
+  if(!prs.length&&sessions>=3)focus.push("No PRs this week. Check that you log top sets and eat enough.");
+  if(!focus.length)focus.push("Keep going. Repeat the plan and beat last week's logged sets.");
+  return {lines,focus};
+}
+function renderProgExtra(){
+  const box=$("progExtra");if(!box)return;
+  const r=weekReport(),h=histList(),pr=prList();
+  box.innerHTML=`<div class="grid2"><div class="card"><h2><span>Consistency</span><span class="badge g">${streak()}-day streak</span></h2>${heatmap()}</div>
+  <div class="card"><h2><span>Last 7 days</span><button class="btn" id="btnCopyRep">Copy report</button></h2>${r.lines.map(l=>`<div class="d" style="font-size:.86rem;color:var(--text)">${esc(l)}</div>`).join("")}<h3>Next week</h3>${r.focus.map(f=>`<div class="d" style="font-size:.84rem">${esc(f)}</div>`).join("")}</div></div>
+  <div class="card"><h2><span>Strength history</span><span class="badge">${pr.length} PRs</span></h2>${h.length?h.slice(0,12).map(x=>`<div class="row" style="cursor:default"><div class="body"><div class="t">${esc(x.n)}</div><div class="d">Best ${x.best.w>0?"est. max "+dW(x.bv)+" "+wU():x.bv+" reps"} · last ${x.last.w>0?dW(x.last.w)+" "+wU()+" × ":""}${x.last.r} on ${dateLabel(x.last.d,{month:"short",day:"numeric"})} · ${x.count} logged</div></div></div>`).join(""):'<div class="d">Log load and reps on the Plan tab to build your history. A PR is flagged when you beat your best.</div>'}</div>`;
+}
+
+/* ---------- cook mode ---------- */
+let CK=null;
+function openCook(date,i){
+  const d=W.days.find(x=>x.date===date),mm=d&&d.meals[i];
+  if(!mm||!mm.rec)return;
+  const key=date+"|"+i,v=mm.var,tab=UIT[key]||(S.prof.budget==="budget"&&v?"bud":"std");
+  const steps=tab==="bud"&&v?v.b[1]:tab==="gour"&&v?v.g[1]:mm.rec.slice(1);
+  CK={mm,steps,step:-1,mult:1,tab,lock:null};
+  $("cook").hidden=false;document.body.style.overflow="hidden";drawCook();
+  try{navigator.wakeLock.request("screen").then(l=>{if(CK)CK.lock=l;else l.release()}).catch(()=>{})}catch(e){console.warn(e)}
+}
+function closeCook(){
+  if(CK&&CK.lock)CK.lock.release().catch(()=>{});
+  CK=null;$("cook").hidden=true;document.body.style.overflow="";
+}
+function drawCook(){
+  const c=CK,m=c.mm,n=c.steps.length,tabName={std:"Standard",bud:"Budget",gour:"Gourmet"}[c.tab],BARE=["banana","egg","apple","avocado"];
+  let body;
+  if(c.step<0){
+    body=`<div class="ck-sub">${tabName} · ${esc(m.rec[0])}</div><div class="ck-mult">Servings: ${[1,2,3,4].map(x=>`<button type="button" class="rtab ${x===c.mult?"on":""}" data-ckact="m${x}">×${x}</button>`).join("")}</div><div class="ck-list">${m.items.map(it=>`<div>${esc(qtyText(it.id,Math.round(it.g*c.mult),S.prof.units,false))}${FOODS[it.id].u&&BARE.includes(FOODS[it.id].u[0])?"":" "+esc(FOODS[it.id].n.toLowerCase())}</div>`).join("")}</div><div class="d">Per serving: ${m.kcal} kcal · P ${m.P} C ${m.C} F ${m.F}</div><button type="button" class="btn ck-go" data-ckact="next">Start cooking ›</button>`;
+  }else{
+    body=`<div class="ck-sub">Step ${c.step+1} of ${n}</div><div class="ck-step">${esc(c.steps[c.step])}</div><div class="ck-nav"><button type="button" class="btn" data-ckact="prev">‹ Back</button><button type="button" class="btn ck-go" data-ckact="next">${c.step===n-1?"Done ✓":"Next ›"}</button></div>`;
+  }
+  $("cook").innerHTML=`<div class="ck-head"><b>${esc(m.name)}</b><button type="button" class="btn" data-ckact="close">✕ Close</button></div>${body}`;
+}
+function cookAct(a){
+  if(!CK)return;
+  if(a==="close"){closeCook();return}
+  if(a==="next"){if(CK.step>=CK.steps.length-1){closeCook();return}CK.step++}
+  else if(a==="prev")CK.step=Math.max(-1,CK.step-1);
+  else if(a[0]==="m")CK.mult=+a.slice(1);
+  drawCook();
+}
 
 document.addEventListener("toggle",e=>{const el=e.target;if(el.matches&&el.matches("details.rec"))UIR[el.dataset.rk]=el.open},true);
 if("serviceWorker" in navigator&&location.protocol.startsWith("http"))navigator.serviceWorker.register("sw.js").catch(()=>{});
