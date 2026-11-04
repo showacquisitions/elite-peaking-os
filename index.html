@@ -6,6 +6,7 @@
 <meta name="theme-color" content="#0a0d13" />
 <link rel="manifest" href="manifest.webmanifest" />
 <link rel="icon" href="icon.svg" type="image/svg+xml" />
+<link rel="apple-touch-icon" href="apple-touch-icon.png" />
 <meta name="mobile-web-app-capable" content="yes" />
 <meta name="apple-mobile-web-app-capable" content="yes" />
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
@@ -227,6 +228,9 @@
       <div class="card"><h2><span>Meals</span><span class="badge" id="mBadge"></span></h2><div id="mList"></div></div>
       <div class="card"><h2><span>Daily habits</span></h2><div id="hList"></div></div>
       <div class="card"><h2><span>Ate something else?</span></h2><div id="exBox"></div></div>
+      <div class="card"><h2><span>Log food</span></h2><div id="foodBox"></div></div>
+      <div class="card"><h2><span>Micronutrients</span></h2><div id="microBox"></div></div>
+      <div class="card"><h2><span>Plate calculator</span></h2><div id="plateBox"></div></div>
     </div>
   </div>
 </section>
@@ -268,9 +272,26 @@
   </div>
   <div id="measBox"></div>
   <div id="progExtra"></div>
+  <div class="card"><h2><span>Steps and health import</span></h2><div id="healthBox"></div></div>
+  <div class="card"><h2><span>Progress photos</span></h2><div id="photoBox"></div></div>
+  <div class="card"><h2><span>Privacy and data</span></h2>
+    <details class="rec" open><summary>What is stored and where</summary>
+      <ol>
+        <li><b>On this device:</b> your profile, plan, logs, recipes and food entries are saved in this browser. Progress photos are saved here too and never leave this device.</li>
+        <li><b>If you create an account:</b> your email and your progress data (not photos) are stored online with Supabase so they sync between your devices. The data is private to your account from other users, but it is not end-to-end encrypted, so the person who runs this app's database can technically read it.</li>
+        <li><b>Food search:</b> the words or barcode you search are sent to Open Food Facts, which can see your network address. Nothing else is sent to them.</li>
+        <li><b>Hosting:</b> the page is served by GitHub Pages, which logs ordinary page requests.</li>
+        <li><b>No ads, no analytics, no tracking scripts, and your data is never sold.</b></li>
+        <li><b>Your control:</b> "Export backup" downloads your data. "Delete my account and cloud data" in the sync card removes the online copy. Clearing this site's data in your browser removes the device copy and photos.</li>
+        <li><b>Not medical advice.</b> Plans are general estimates. Check with a doctor before big changes to training or diet, especially with a medical condition, injury or pregnancy.</li>
+      </ol>
+    </details>
+  </div>
 </section>
 
 <input type="file" id="fileIn" accept="application/json" hidden />
+<input type="file" id="phFile" accept="image/*" multiple hidden />
+<input type="file" id="hsFile" accept=".csv,.json,.txt,text/csv,application/json,text/plain" hidden />
 <div id="cook" hidden></div>
 <div id="timer"><span class="sub">Rest</span><span class="clk" id="clk">0:00</span>
   <button class="btn" data-t="45">45</button><button class="btn" data-t="60">60</button><button class="btn" data-t="90">90</button><button class="btn" data-t="120">120</button><button class="btn" data-t="180">180</button><button class="btn" id="tStop">Stop</button></div>
@@ -967,13 +988,13 @@ function advice(p,tr){
 const KEY="elitePeakingState_v3";
 const TODAY=iso(new Date());
 const DEFP={sex:"m",age:30,cm:175,kg:75,bf:0,units:"imperial",goal:"recomp",rate:"cons",act:"mod",exp:"int",days:4,len:60,style:"cal",pullMax:5,pushMax:15,bagKg:0,eq:["pullbar","bands"],pri:[],diet:"omni",excl:[],meals:4,event:"",kcalAdj:0,inj:[],budget:"std",priceF:1,wtime:"17:30",mealRem:"no"};
-function freshState(){return {prof:JSON.parse(JSON.stringify(DEFP)),log:{},checks:{},perf:{},extra:{},hist:{},done:{},prefs:{foods:{},meals:{}},recipes:[],groc:[],water:{},swaps:{},mswaps:{},blockStart:mondayOf(TODAY),blockOffset:0,weekOffset:0,sel:TODAY,confirmed:false}}
+function freshState(){return {prof:JSON.parse(JSON.stringify(DEFP)),log:{},checks:{},perf:{},extra:{},hist:{},done:{},prefs:{foods:{},meals:{}},recipes:[],groc:[],water:{},swaps:{},mswaps:{},blockStart:mondayOf(TODAY),blockOffset:0,weekOffset:0,sel:TODAY,confirmed:false,flog:{},sets:{},steps:{}}}
 function loadState(){
   try{const v=JSON.parse(localStorage.getItem(KEY)||"null");if(v&&v.prof){const f=freshState();return Object.assign(f,v,{prof:Object.assign(f.prof,v.prof)})}}catch(e){console.warn("state load failed",e)}
   return freshState();
 }
 let S=loadState(),W=null;
-const SYNCKEYS=["prof","log","checks","perf","extra","hist","done","prefs","recipes","groc","water","swaps","mswaps","blockStart","blockOffset","confirmed"];
+const SYNCKEYS=["prof","log","checks","perf","extra","hist","done","prefs","recipes","groc","water","swaps","mswaps","blockStart","blockOffset","confirmed","flog","sets","steps"];
 const snapOf=()=>JSON.stringify(SYNCKEYS.map(k=>S[k]));
 let lastSnap=snapOf();
 const save=()=>{
@@ -1186,13 +1207,14 @@ function renderPlan(){
   }).join("");
   const pr=dayProg(d),m=d.macros,a=d.actual;
   const xt=S.extra[d.date]||{kcal:0,p:0};
-  const eat=d.meals.reduce((q,mm,i)=>S.checks[`${d.date}|meal|${i}`]?{kcal:q.kcal+mm.kcal,P:q.P+mm.P}:q,{kcal:+xt.kcal||0,P:+xt.p||0});
+  const fl=(S.flog&&S.flog[d.date])||[],fs=k=>fl.reduce((a,x)=>a+(x[k]||0),0);
+  const eat=d.meals.reduce((q,mm,i)=>S.checks[`${d.date}|meal|${i}`]?{kcal:q.kcal+mm.kcal,P:q.P+mm.P,C:q.C+mm.C,F:q.F+mm.F}:q,{kcal:(+xt.kcal||0)+fs("kcal"),P:(+xt.p||0)+fs("p"),C:fs("c"),F:fs("f")});
   const water=T.water;
   $("kpis").innerHTML=`
    <div class="kpi"><div class="ring">${ring(pr.pct)}<div><div class="l">Day complete</div><div class="s">${pr.n} / ${pr.t} items</div></div></div></div>
    <div class="kpi"><div class="l">Calories · cost</div><div class="v">${Math.round(m.kcal).toLocaleString()}</div><div class="s">Meals ${a.kcal.toLocaleString()} (${a.kcal>=m.kcal?"+":""}${a.kcal-m.kcal}) · ≈$${d.cost.toFixed(2)}</div></div>
    <div class="kpi"><div class="l">Protein / Carbs / Fat target</div><div class="v" style="font-size:1.1rem">${Math.round(m.P)} / ${Math.round(m.C)} / ${Math.round(m.F)} g</div><div class="mbar"><div class="p" style="width:${m.P*4/m.kcal*100}%"></div><div class="c" style="width:${m.C*4/m.kcal*100}%"></div><div class="f" style="width:${m.F*9/m.kcal*100}%"></div></div></div>
-   <div class="kpi"><div class="l">Eaten so far</div><div class="v" style="font-size:1.1rem">${eat.kcal} kcal · Protein ${eat.P}</div><div class="s">${Math.max(0,m.kcal-eat.kcal)} kcal · ${Math.max(0,Math.round(m.P-eat.P))} g protein left</div></div>
+   <div class="kpi"><div class="l">Eaten so far</div><div class="v" style="font-size:1.1rem">${Math.round(eat.kcal)} kcal · Protein ${Math.round(eat.P)}</div><div class="s">${Math.max(0,Math.round(m.kcal-eat.kcal))} kcal · ${Math.max(0,Math.round(m.P-eat.P))} g protein left<br>Carbs ${Math.round(eat.C)} g · Fat ${Math.round(eat.F)} g eaten</div></div>
    <div class="kpi"><div class="l">Hydration</div><div class="v" style="color:var(--accent)">${water} L</div><div class="s">Steady, to thirst. No cutting.</div></div>`;
   const retest=W.wk===3&&!W.peak?`<div class="note"><b>Deload & retest week.</b> Do lighter sets, then test max strict reps and update them here. Every new number rebuilds your next block.<div class="fgrid" style="margin-top:8px;max-width:340px"><div class="cg"><label>Max pull-ups</label><input type="number" inputmode="numeric" data-p="pullMax" value="${p.pullMax}"/></div><div class="cg"><label>Max push-ups</label><input type="number" inputmode="numeric" data-p="pushMax" value="${p.pushMax}"/></div></div></div>`:"";
   const note=retest+(d.phase?`<div class="note"><b>${esc(d.phase.l)}.</b> ${PEAKNOTE[d.phase.k]}</div>`:"");
@@ -1298,7 +1320,7 @@ function renderOverall(){
   let n=0,t=0;W.days.forEach(d=>{const p=dayProg(d);n+=p.n;t+=p.t});
   const pct=t?Math.round(n/t*100):0;
   $("overallFill").style.width=pct+"%";$("overallTxt").textContent=`${pct}% of the week · ${n}/${t}`;
-  $("sub").textContent=`${S.prof.goal==="cut"?"Fat loss":S.prof.goal==="bulk"?"Lean muscle gain":S.prof.goal==="peak"?"Event peak":"Recomp"} · ${S.prof.days} days · ${S.prof.style==="cal"?"calisthenics-first":S.prof.style==="wt"?"weights-first":"hybrid"} · saves in this browser${streak()?` · ${streak()}-day streak`:""}`;
+  $("sub").textContent=`${S.prof.goal==="cut"?"Fat loss":S.prof.goal==="bulk"?"Lean muscle gain":S.prof.goal==="peak"?"Event peak":"Recomp"} · ${S.prof.days} days · ${S.prof.style==="cal"?"calisthenics-first":S.prof.style==="wt"?"weights-first":"hybrid"} · saves on this device${streak()?` · ${streak()}-day streak`:""}`;
 }
 function renderAll(skipProfile){
   if(!skipProfile)buildProfile();
@@ -1361,8 +1383,6 @@ document.addEventListener("click",e=>{
     case "btnAddEx":{const k=parseFloat($("exK").value)||0,p=parseFloat($("exP").value)||0;if(!k&&!p)break;const o=S.extra[S.sel]||{kcal:0,p:0};S.extra[S.sel]={kcal:o.kcal+k,p:o.p+p};save();renderPlan();break}
     case "btnClrEx":delete S.extra[S.sel];save();renderPlan();break;
     case "btnSbIn":case "btnSbUp":signIn(t.id==="btnSbUp");break;
-    case "btnSbForgot":forgot();break;
-    case "btnSbNew":setNewPw();break;
     case "btnSbDel":delAccount();break;
     case "btnSyncNow":syncNow();break;
     case "btnSyncOff":SY={};saveSY();setMsg("Signed out");renderSync();break;
@@ -1393,7 +1413,7 @@ const SB_URL="https://yimjcsyhvoviliupwayl.supabase.co",SB_KEY="sb_publishable_b
 const OWNK="elitePeakingOwner";
 let SY=(()=>{try{return JSON.parse(localStorage.getItem("elitePeakingSync_v2")||"{}")}catch(e){return {}}})();
 const saveSY=()=>{try{localStorage.setItem("elitePeakingSync_v2",JSON.stringify(SY))}catch(e){console.warn(e)}};
-let syncMsg=SY.sess?"Signed in":"Not signed in",pushT=null,syncing=false,PWR=null;
+let syncMsg=SY.sess?"Signed in":"Not signed in",pushT=null,syncing=false;
 function setMsg(m){syncMsg=m;const el=$("syncMsg");if(el)el.textContent=m}
 function syncData(){return {mtime:S.mtime||Date.now(),data:Object.fromEntries(SYNCKEYS.map(k=>[k,S[k]]))}}
 function applyData(d,mtime){
@@ -1402,11 +1422,12 @@ function applyData(d,mtime){
   lastSnap=snapOf();S.mtime=mtime||Date.now();save();regen();renderAll();
 }
 /* Two devices edited since the last sync: keep entries from both. Same key on both sides: the newer side wins. */
-const MAPK=["log","checks","perf","extra","hist","done","water","swaps","mswaps"];
+const MAPK=["log","checks","perf","extra","hist","done","water","swaps","mswaps","sets","steps"];
 function mergeData(older,newer){
   const o=JSON.parse(JSON.stringify(newer));
   MAPK.forEach(k=>{o[k]=Object.assign({},older[k],newer[k])});
   ["recipes","groc"].forEach(k=>{const ids=new Set((newer[k]||[]).map(x=>x.id));o[k]=(newer[k]||[]).concat((older[k]||[]).filter(x=>!ids.has(x.id)))});
+  {const a=older.flog||{},b=newer.flog||{},m={};new Set([...Object.keys(a),...Object.keys(b)]).forEach(d=>{const ids=new Set((b[d]||[]).map(x=>x.id));m[d]=(b[d]||[]).concat((a[d]||[]).filter(x=>!ids.has(x.id)))});o.flog=m}
   const po=older.prefs||{},pn=newer.prefs||{};
   o.prefs=Object.assign({},pn,{foods:Object.assign({},po.foods,pn.foods),meals:Object.assign({},po.meals,pn.meals)});
   return o;
@@ -1442,34 +1463,6 @@ async function signIn(up){
     if(!j.access_token){setMsg("Check your email to confirm, then sign in");return}
     await startSession(j);
   }catch(e){setMsg(e.status===400&&!up?"Wrong email or password":e.message)}
-}
-async function forgot(){
-  const email=$("sbEmail").value.trim();
-  if(!email){setMsg("Enter your email above first");return}
-  try{
-    await sbFetch("/auth/v1/recover?redirect_to="+encodeURIComponent(location.origin+location.pathname),{method:"POST",body:JSON.stringify({email})});
-    setMsg("If that account exists, a reset link was emailed. Open it on this device");
-  }catch(e){setMsg(e.message)}
-}
-function checkRecovery(){
-  const h=new URLSearchParams(location.hash.slice(1)),clean=()=>history.replaceState(null,"",location.pathname+location.search);
-  if(h.get("error_description")){setMsg(h.get("error_description").replace(/\+/g," "));clean();return}
-  if(h.get("type")!=="recovery"||!h.get("access_token"))return;
-  PWR={at:h.get("access_token"),rt:h.get("refresh_token"),ex:+h.get("expires_in")||3600};
-  clean();renderSync();
-  const pane=$("syncBox").closest(".pane"),tab=pane&&document.querySelector('.tab[data-tab="'+pane.id.replace("pane-","")+'"]');
-  if(tab)tab.click();
-  $("syncBox").scrollIntoView();
-}
-async function setNewPw(){
-  const pw=$("sbNew").value;
-  if(pw.length<6){setMsg("Password must be 6+ characters");return}
-  try{
-    await sbFetch("/auth/v1/user",{method:"PUT",body:JSON.stringify({password:pw})},PWR.at);
-    const user=await sbFetch("/auth/v1/user",{},PWR.at),j={access_token:PWR.at,refresh_token:PWR.rt,expires_in:PWR.ex,user};
-    PWR=null;
-    if(!(await startSession(j)))renderSync();
-  }catch(e){setMsg(e.message)}
 }
 async function delAccount(){
   if(!confirm("Permanently delete your account and cloud data? Progress stored on this device is kept."))return;
@@ -1514,10 +1507,9 @@ function renderSync(){
   setMsg(syncMsg);
   const row="display:flex;gap:8px;flex-wrap:wrap;margin-top:10px";
   let h;
-  if(PWR)h=`<div class="d">Choose a new password for your account.</div><div style="${row}"><input type="password" id="sbNew" placeholder="New password (6+ characters)" autocomplete="new-password" style="flex:1;min-width:200px"/><button class="btn pri" id="btnSbNew">Set password</button></div>`;
-  else if(SY.sess)h=`<div class="d">Signed in as <b>${esc(SY.sess.email)}</b>. Your progress is private to this account. Changes upload a few seconds after you make them, and every signed-in device checks for newer data every minute and when you open the app.</div><div style="${row}"><button class="btn pri" id="btnSyncNow">Sync now</button><button class="btn" id="btnSyncOff">Sign out</button></div><h3>Danger zone</h3><div class="d">Deletes your account and the copy stored online. Progress already on this device stays.</div><div style="${row}"><button class="btn danger" id="btnSbDel">Delete my account and cloud data</button></div>`;
-  else h=`<div class="d">Make an account to keep your own progress and sync it to every device. Sign in with the same email on each device.</div><div style="${row}"><input type="email" id="sbEmail" placeholder="Email" autocomplete="email" style="flex:1;min-width:200px"/><input type="password" id="sbPw" placeholder="Password (6+ characters)" autocomplete="current-password" style="flex:1;min-width:200px"/></div><div style="${row}"><button class="btn pri" id="btnSbIn">Sign in</button><button class="btn" id="btnSbUp">Create account</button><button class="btn" id="btnSbForgot">Forgot password?</button></div>`;
-  if(!PWR)h+=`<h3>No account? Send a link</h3><div class="d">Creates a link holding your progress. Open it on your other device to load it there.</div><div style="margin-top:10px"><button class="btn" id="btnSyncLink">Share sync link</button></div>`;
+  if(SY.sess)h=`<div class="d">Signed in as <b>${esc(SY.sess.email)}</b>. Your progress is private to this account. Changes upload a few seconds after you make them, and every signed-in device checks for newer data every minute and when you open the app.</div><div style="${row}"><button class="btn pri" id="btnSyncNow">Sync now</button><button class="btn" id="btnSyncOff">Sign out</button></div><h3>Danger zone</h3><div class="d">Deletes your account and the copy stored online. Progress already on this device stays.</div><div style="${row}"><button class="btn danger" id="btnSbDel">Delete my account and cloud data</button></div>`;
+  else h=`<div class="d">Make an account to keep your own progress and sync it to every device. Sign in with the same email on each device.</div><div style="${row}"><input type="email" id="sbEmail" placeholder="Email" autocomplete="email" style="flex:1;min-width:200px"/><input type="password" id="sbPw" placeholder="Password (6+ characters)" autocomplete="current-password" style="flex:1;min-width:200px"/></div><div style="${row}"><button class="btn pri" id="btnSbIn">Sign in</button><button class="btn" id="btnSbUp">Create account</button></div>`;
+  h+=`<h3>No account? Send a link</h3><div class="d">Creates a link holding your progress. Open it on your other device to load it there.</div><div style="margin-top:10px"><button class="btn" id="btnSyncLink">Share sync link</button></div>`;
   box.innerHTML=h;
 }
 async function toB64(obj){
@@ -1548,13 +1540,12 @@ async function importHash(){
   }catch(e){alert("That sync link could not be read.");console.warn(e)}
 }
 function initSync(){
-  checkRecovery();
   importHash();
   if(SY.sess)syncNow();
   document.addEventListener("visibilitychange",()=>{if(document.visibilityState==="visible"&&SY.sess)syncNow()});
   setInterval(()=>{if(document.visibilityState==="visible"&&SY.sess)syncNow()},60000);
   addEventListener("online",()=>{if(SY.sess)syncNow()});
-  document.addEventListener("keydown",e=>{if(e.key!=="Enter")return;const id=e.target.id;if(id==="sbPw"||id==="sbEmail")signIn(false);else if(id==="sbNew")setNewPw()});
+  document.addEventListener("keydown",e=>{if(e.key!=="Enter")return;const id=e.target.id;if(id==="sbPw"||id==="sbEmail")signIn(false)});
 }
 /* ---------- WAKE LOCK ---------- */
 let wl=null,wlWant=false;
@@ -1638,11 +1629,14 @@ function sugText(uid){
   else t=wd?`Next time: ${wd} ${wU()} for ${r+1}+ reps.`:`Next time: ${r+1}+ reps.`;
   const cur=valOf({w:v.w===""?0:v.w,r}),prev=bestBefore(uid,S.sel);
   if(prev>0&&cur>prev)t+=" 🏆 New PR!";
+  if(wd)t+=` Est. 1RM ${r1(dW(e1(+v.w,r)))} ${wU()}.`;
+  const lh=Object.values(S.hist).filter(h=>h.u===uid&&h.d<S.sel).sort((a,b)=>a.d<b.d?1:-1)[0];
+  if(lh)t+=` Last time: ${lh.w>0?dW(lh.w)+" "+wU()+" × ":""}${lh.r}.`;
   return t;
 }
 function perfHTML(e){
   const v=perfOf(e.uid);HI[e.uid]=e.hi;NM[e.uid]=e.name;
-  return `<div class="perfrow"><input class="perf" type="number" inputmode="decimal" step="0.5" data-pw="${esc(e.uid)}" placeholder="${wU()}" value="${v.w===""?"":esc(dW(v.w))}"/><span>×</span><input class="perf" type="number" inputmode="numeric" data-pr="${esc(e.uid)}" placeholder="reps" value="${esc(v.r)}"/></div><div class="cue" data-sug="${esc(e.uid)}">${esc(sugText(e.uid))}</div>`;
+  return `<div class="perfrow"><input class="perf" type="number" inputmode="decimal" step="0.5" data-pw="${esc(e.uid)}" placeholder="${wU()}" value="${v.w===""?"":esc(dW(v.w))}"/><span>×</span><input class="perf" type="number" inputmode="numeric" data-pr="${esc(e.uid)}" placeholder="reps" value="${esc(v.r)}"/></div><div class="perfrow"><button class="btn" data-addset="${esc(e.uid)}">+ Log set</button></div><div class="cue" data-setlist="${esc(e.uid)}">${setsHTML(e.uid)}</div><div class="cue" data-sug="${esc(e.uid)}">${esc(sugText(e.uid))}</div>`;
 }
 function onPerfInput(t){
   const uid=t.dataset.pw||t.dataset.pr,o=Object.assign({},perfOf(uid));
@@ -2040,6 +2034,276 @@ function extrasClick(t){
 
 document.addEventListener("toggle",e=>{const el=e.target;if(el.matches&&el.matches("details.rec"))UIR[el.dataset.rk]=el.open},true);
 if("serviceWorker" in navigator&&location.protocol.startsWith("http"))navigator.serviceWorker.register("sw.js").catch(()=>{});
+/* ===== EXTRAS: render hooks ===== */
+var PLANX=[],PROGX=[];
+(function(){
+  const rp=renderPlan,rg=renderProgress;
+  renderPlan=function(){rp.apply(this,arguments);PLANX.forEach(f=>f())};
+  renderProgress=function(){rg.apply(this,arguments);PROGX.forEach(f=>f())};
+})();
+
+/* ===== FOOD SEARCH, BARCODE, MICRONUTRIENTS (Open Food Facts) ===== */
+const FSF="code,product_name,brands,nutriments,serving_quantity";
+let FS={q:"",bc:"",cc:"united-states",res:[],msg:""};
+const nz=v=>{v=parseFloat(v);return isFinite(v)?v:0};
+function offNorm(p){
+  const n=p.nutriments||{},kcal=nz(n["energy-kcal_100g"])||nz(n.energy_100g)/4.184;
+  if(!p.product_name||!(kcal>0))return null;
+  return {n:p.product_name+(p.brands?" ("+p.brands.split(",")[0].trim()+")":""),srv:Math.round(nz(p.serving_quantity))||100,
+    per:{kcal,p:nz(n.proteins_100g),c:nz(n.carbohydrates_100g),f:nz(n.fat_100g),fiber:nz(n.fiber_100g),
+      sodium:nz(n.sodium_100g)*1000,iron:nz(n.iron_100g)*1000,ca:nz(n.calcium_100g)*1000,mg:nz(n.magnesium_100g)*1000,
+      k:nz(n.potassium_100g)*1000,vd:nz(n["vitamin-d_100g"])*1e6,vc:nz(n["vitamin-c_100g"])*1000}};
+}
+async function fsSearch(){
+  const q=FS.q.trim();
+  if(q.length<2){FS.msg="Type at least 2 letters";return renderFood()}
+  FS.msg="Searching…";renderFood();
+  try{
+    const url="https://world.openfoodfacts.org/cgi/search.pl?search_simple=1&action=process&json=1&page_size=15&fields="+FSF+"&search_terms="+encodeURIComponent(q)+(FS.cc?"&tagtype_0=countries&tag_contains_0=contains&tag_0="+FS.cc:"");
+    let r;
+    try{r=await fetch(url)}catch(e){await new Promise(t=>setTimeout(t,1200));r=await fetch(url)}
+    if(!r.ok)throw new Error("HTTP "+r.status);
+    FS.res=((await r.json()).products||[]).map(offNorm).filter(Boolean);
+    FS.msg=FS.res.length?"":"No matches. Try fewer words or a barcode";
+  }catch(e){FS.msg="Food database unreachable: "+e.message;FS.res=[]}
+  renderFood();
+}
+async function fsBarcode(code){
+  code=String(code||"").replace(/\D/g,"");
+  if(code.length<8){FS.msg="Enter the 8 to 14 digit barcode";return renderFood()}
+  FS.msg="Looking up "+code+"…";renderFood();
+  try{
+    const r=await fetch("https://world.openfoodfacts.org/api/v2/product/"+code+".json?fields="+FSF);
+    if(!r.ok)throw new Error("HTTP "+r.status);
+    const j=await r.json(),it=j.status===1?offNorm(j.product):null;
+    FS.res=it?[it]:[];FS.msg=it?"":"Not in the database. Use the custom entry above";
+  }catch(e){FS.msg="Food database unreachable: "+e.message;FS.res=[]}
+  renderFood();
+}
+function fsAdd(i,g){
+  const it=FS.res[i];g=nz(g);if(!it||g<=0)return;
+  const k=g/100,s=x=>Math.round(x*k*10)/10,e={id:Date.now().toString(36)+i,n:it.n,g:Math.round(g),kcal:Math.round(it.per.kcal*k),p:s(it.per.p),c:s(it.per.c),f:s(it.per.f),m:{}};
+  ["fiber","sodium","iron","ca","mg","k","vd","vc"].forEach(x=>{e.m[x]=s(it.per[x])});
+  (S.flog[S.sel]=S.flog[S.sel]||[]).push(e);save();renderPlan();
+}
+async function fsScan(){
+  if(!("BarcodeDetector" in window)){FS.msg="This browser can't scan. Type the barcode number";return renderFood()}
+  let stream,iv;
+  const ov=document.createElement("div");
+  ov.style.cssText="position:fixed;inset:0;z-index:200;background:#000;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px";
+  ov.innerHTML='<video playsinline muted style="max-width:100%;max-height:70vh"></video><button class="btn pri">Cancel</button>';
+  document.body.appendChild(ov);
+  const done=c=>{clearInterval(iv);if(stream)stream.getTracks().forEach(t=>t.stop());ov.remove();if(c){FS.bc=c;fsBarcode(c)}};
+  try{
+    stream=await navigator.mediaDevices.getUserMedia({video:{facingMode:"environment"}});
+    const v=ov.querySelector("video");v.srcObject=stream;await v.play();
+    const det=new BarcodeDetector({formats:["ean_13","ean_8","upc_a","upc_e"]});
+    iv=setInterval(async()=>{try{const b=await det.detect(v);if(b.length)done(b[0].rawValue)}catch(e){console.warn(e)}},350);
+    ov.querySelector("button").onclick=()=>done();
+  }catch(e){done();FS.msg="Camera unavailable: "+e.message;renderFood()}
+}
+function renderFood(){
+  const b=$("foodBox");if(!b)return;
+  const list=(S.flog&&S.flog[S.sel])||[],t=k=>list.reduce((a,x)=>a+(x[k]||0),0);
+  b.innerHTML=`<div class="d">Search the Open Food Facts database or scan a barcode. Logged foods count toward "Eaten so far".</div>
+  <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:10px"><input id="fsQ" placeholder="Search foods, e.g. greek yogurt" value="${esc(FS.q)}" style="flex:1;min-width:180px"/><select id="fsCc" style="min-width:120px">${[["united-states","United States"],["canada","Canada"],["united-kingdom","United Kingdom"],["australia","Australia"],["","Anywhere"]].map(([v,l])=>`<option value="${v}"${FS.cc===v?" selected":""}>${l}</option>`).join("")}</select><button class="btn pri" id="fsGo">Search</button></div>
+  <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:8px"><input id="fsBc" inputmode="numeric" placeholder="Barcode number" value="${esc(FS.bc)}" style="flex:1;min-width:140px"/><button class="btn" id="fsBcGo">Look up</button>${"BarcodeDetector" in window?'<button class="btn" id="fsScan">Scan</button>':""}</div>
+  ${FS.msg?`<div class="d" style="margin-top:8px">${esc(FS.msg)}</div>`:""}
+  ${FS.res.map((it,i)=>`<div class="row"><div class="body"><div class="t">${esc(it.n)}</div><div class="d">per 100 g: ${Math.round(it.per.kcal)} kcal · Protein ${r1(it.per.p)} g · Carbs ${r1(it.per.c)} g · Fat ${r1(it.per.f)} g</div><div class="perfrow"><input class="perf" type="number" inputmode="decimal" id="fsG${i}" value="${it.srv}"/><span>g</span><button class="btn pri" data-fsadd="${i}">Add</button></div></div></div>`).join("")}
+  <h3>Logged ${S.sel===TODAY?"today":esc(S.sel)}</h3>
+  ${list.length?list.map(x=>`<div class="irow"><span>${esc(x.n)} · ${x.g} g</span><span class="ims">${x.kcal} kcal · Protein ${x.p} · Carbs ${x.c} · Fat ${x.f} <button class="rest" data-fsdel="${esc(x.id)}">Remove</button></span></div>`).join("")+`<div class="irow itot"><span>Total</span><span class="ims">${Math.round(t("kcal"))} kcal · Protein ${Math.round(t("p"))} · Carbs ${Math.round(t("c"))} · Fat ${Math.round(t("f"))}</span></div>`:'<div class="d">Nothing logged yet.</div>'}`;
+}
+function renderMicro(){
+  const b=$("microBox");if(!b)return;
+  const list=(S.flog&&S.flog[S.sel])||[],f=S.prof.sex==="f";
+  if(!list.length){b.innerHTML='<div class="d">Log foods above to see fiber, sodium and key minerals for the day.</div>';return}
+  let kc=2000;try{kc=selDay().macros.kcal||2000}catch(e){console.warn(e)}
+  const R=[["fiber","Fiber","g",Math.round(14*kc/1000),0],["sodium","Sodium (limit)","mg",2300,1],["k","Potassium","mg",f?2600:3400,0],["ca","Calcium","mg",1000,0],["mg","Magnesium","mg",f?310:400,0],["iron","Iron","mg",f?18:8,0],["vd","Vitamin D","µg",15,0],["vc","Vitamin C","mg",f?75:90,0]];
+  b.innerHTML=R.map(([k,l,u,ref,lim])=>{
+    const v=list.reduce((a,x)=>a+((x.m||{})[k]||0),0),pct=v/ref*100;
+    return `<div class="vrow"><span>${l}</span><div class="vbar"><i style="width:${Math.min(100,pct)}%;background:${lim&&pct>100?"var(--red)":"var(--green)"}"></i></div><small>${Math.round(pct)}%</small><span>${r1(v)} ${u}</span></div>`;
+  }).join("")+'<div class="d" style="margin-top:8px">Counts only foods logged here, and only nutrients the product label lists. Planned meals are not included. Targets are approximate US adult RDA or AI values; sodium is an upper limit.</div>';
+}
+PLANX.push(renderFood,renderMicro);
+document.addEventListener("input",e=>{const t=e.target;if(t.id==="fsQ")FS.q=t.value;else if(t.id==="fsBc")FS.bc=t.value;else if(t.id==="fsCc")FS.cc=t.value});
+document.addEventListener("keydown",e=>{if(e.key!=="Enter")return;if(e.target.id==="fsQ")fsSearch();else if(e.target.id==="fsBc")fsBarcode(FS.bc)});
+document.addEventListener("click",e=>{
+  const t=e.target.closest("button");if(!t)return;
+  if(t.id==="fsGo")fsSearch();
+  else if(t.id==="fsBcGo")fsBarcode(FS.bc);
+  else if(t.id==="fsScan")fsScan();
+  else if(t.dataset.fsadd!==undefined)fsAdd(+t.dataset.fsadd,$("fsG"+t.dataset.fsadd).value);
+  else if(t.dataset.fsdel){S.flog[S.sel]=(S.flog[S.sel]||[]).filter(x=>x.id!==t.dataset.fsdel);save();renderPlan()}
+});
+
+/* ===== SET LOG + PLATE CALCULATOR ===== */
+function setsHTML(uid){
+  const a=S.sets[uid+"|"+S.sel]||[];
+  return a.length?`Sets: ${a.map(x=>(x.w>0?dW(x.w)+" × ":"")+x.r).join(" · ")} <button class="rest" data-undoset="${esc(uid)}">Undo last</button>`:"";
+}
+function addSet(uid){
+  const wi=document.querySelector('[data-pw="'+uid+'"]'),ri=document.querySelector('[data-pr="'+uid+'"]');
+  const r=parseInt(ri.value)||0;if(r<=0)return;
+  const w=wi.value===""?0:fromW(parseFloat(wi.value)),k=uid+"|"+S.sel;
+  (S.sets[k]=S.sets[k]||[]).push({w,r});
+  topSet(uid);
+}
+function undoSet(uid){
+  const k=uid+"|"+S.sel,a=S.sets[k]||[];a.pop();
+  if(a.length)topSet(uid);else{delete S.sets[k];save();renderPlan()}
+}
+function topSet(uid){
+  const k=uid+"|"+S.sel,a=S.sets[k],best=a.reduce((b,x)=>valOf(x)>valOf(b)?x:b,a[0]);
+  S.perf[uid]={w:best.w||"",r:best.r};
+  S.hist[k]={u:uid,n:NM[uid]||uid,d:S.sel,w:best.w||0,r:best.r};
+  save();renderPlan();
+}
+function platesFor(total,bar,plates){
+  let side=(total-bar)/2;if(!(side>=0))return null;
+  const out=[];
+  for(const p of plates){const n=Math.floor(side/p+1e-9);if(n>0){out.push([p,n]);side-=n*p}}
+  return {out,left:Math.round(side*100)/100};
+}
+let PL={t:"",bar:""};
+const PLATES=()=>metric()?[25,20,15,10,5,2.5,1.25]:[45,35,25,10,5,2.5];
+function plateOut(){
+  const el=$("plateOut");if(!el)return;
+  const t=parseFloat(PL.t),bar=PL.bar===""?(metric()?20:45):parseFloat(PL.bar);
+  if(!(t>0)){el.textContent="Enter the total weight you want on the bar.";return}
+  const r=platesFor(t,bar,PLATES());
+  if(!r){el.textContent="That is lighter than the empty bar ("+bar+" "+wU()+").";return}
+  const loaded=r1(t-2*r.left);
+  el.innerHTML=(r.out.length?"Each side: <b>"+r.out.map(([p,n])=>n+" × "+p).join(", ")+"</b>":"Bar only")+` · loads ${loaded} ${wU()}`+(r.left>0?`<br>Closest loadable is ${loaded} ${wU()}; ${r1(2*r.left)} ${wU()} short of ${t}.`:"");
+}
+function renderPlate(){
+  const b=$("plateBox");if(!b)return;
+  b.innerHTML=`<div class="d">Works out which plates go on each side. Standard plates: ${PLATES().join(", ")} ${wU()}.</div><div class="fgrid" style="margin-top:8px"><div class="cg"><label>Total weight (${wU()})</label><input type="number" inputmode="decimal" id="plT" value="${esc(PL.t)}"/></div><div class="cg"><label>Empty bar (${wU()})</label><input type="number" inputmode="decimal" id="plB" placeholder="${metric()?20:45}" value="${esc(PL.bar)}"/></div></div><div class="d" id="plateOut" style="margin-top:8px"></div>`;
+  plateOut();
+}
+PLANX.push(renderPlate);
+document.addEventListener("input",e=>{const t=e.target;if(t.id==="plT"){PL.t=t.value;plateOut()}else if(t.id==="plB"){PL.bar=t.value;plateOut()}});
+document.addEventListener("click",e=>{
+  const t=e.target.closest("button");if(!t)return;
+  if(t.dataset.addset)addSet(t.dataset.addset);
+  else if(t.dataset.undoset)undoSet(t.dataset.undoset);
+});
+
+/* ===== PROGRESS PHOTOS (IndexedDB, this device only) ===== */
+const PH={pose:"front",urls:[],cmp:false,msg:""};
+const phDB=()=>new Promise((res,rej)=>{const r=indexedDB.open("eliteos-photos",1);r.onupgradeneeded=()=>r.result.createObjectStore("p",{keyPath:"id"});r.onsuccess=()=>res(r.result);r.onerror=()=>rej(r.error)});
+async function phTx(mode,fn){
+  const db=await phDB();
+  return new Promise((res,rej)=>{const t=db.transaction("p",mode),q=fn(t.objectStore("p"));t.oncomplete=()=>{db.close();res(q&&q.result)};t.onerror=()=>{db.close();rej(t.error)}});
+}
+async function phShrink(file){
+  const bmp=await createImageBitmap(file),k=Math.min(1,1000/Math.max(bmp.width,bmp.height)),c=document.createElement("canvas");
+  c.width=Math.round(bmp.width*k);c.height=Math.round(bmp.height*k);
+  c.getContext("2d").drawImage(bmp,0,0,c.width,c.height);
+  return new Promise((res,rej)=>c.toBlob(b=>b?res(b):rej(new Error("encode failed")),"image/jpeg",.82));
+}
+async function phAdd(file,pose,date){
+  const blob=await phShrink(file);
+  await phTx("readwrite",st=>st.put({id:Date.now().toString(36)+Math.random().toString(36).slice(2,5),date:date||TODAY,pose,blob}));
+}
+async function renderPhotos(){
+  const b=$("photoBox");if(!b)return;
+  let all;
+  try{all=await phTx("readonly",st=>st.getAll())}catch(e){b.innerHTML='<div class="d">Photos are unavailable in this browser mode: '+esc(e.message)+"</div>";return}
+  PH.urls.forEach(u=>URL.revokeObjectURL(u));PH.urls=[];
+  const mine=all.filter(p=>p.pose===PH.pose).sort((a,c)=>a.date<c.date?1:a.date>c.date?-1:0);
+  const url=p=>{const u=URL.createObjectURL(p.blob);PH.urls.push(u);return u};
+  const first=mine[mine.length-1],last=mine[0];
+  b.innerHTML=`<div class="d">Stays on this device only. It is not synced, not in your account and not in backups. Photos are shrunk to save space.</div>
+  <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:10px;align-items:center"><select id="phPose">${["front","side","back"].map(x=>`<option value="${x}"${PH.pose===x?" selected":""}>${x[0].toUpperCase()+x.slice(1)}</option>`).join("")}</select><button class="btn pri" id="phAdd">Add photo</button>${mine.length>1?`<button class="btn" id="phCmp">${PH.cmp?"Hide comparison":"Compare first and latest"}</button>`:""}</div>
+  ${PH.msg?`<div class="d" style="margin-top:8px">${esc(PH.msg)}</div>`:""}
+  ${PH.cmp&&mine.length>1?`<div class="fgrid" style="margin-top:10px">${[first,last].map((p,i)=>`<figure style="margin:0"><img src="${url(p)}" alt="${esc(p.pose)} ${esc(p.date)}" style="width:100%;border-radius:10px"/><figcaption class="d">${i?"Latest":"First"} · ${esc(p.date)}</figcaption></figure>`).join("")}</div>`:""}
+  <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(110px,1fr));gap:10px;margin-top:10px">${mine.map(p=>`<figure style="margin:0"><img src="${url(p)}" alt="${esc(p.pose)} ${esc(p.date)}" loading="lazy" style="width:100%;aspect-ratio:3/4;object-fit:cover;border-radius:8px"/><figcaption class="d">${esc(p.date)} <button class="rest" data-phdel="${esc(p.id)}">Delete</button></figcaption></figure>`).join("")||'<div class="d">No photos for this pose yet.</div>'}</div>`;
+}
+PROGX.push(renderPhotos);
+document.addEventListener("change",async e=>{
+  const t=e.target;
+  if(t.id==="phPose"){PH.pose=t.value;PH.cmp=false;renderPhotos()}
+  else if(t.id==="phFile"){
+    try{for(const f of t.files)await phAdd(f,PH.pose,logDate||TODAY);PH.msg=""}catch(err){PH.msg="Could not save the photo: "+err.message}
+    t.value="";renderPhotos();
+  }
+});
+document.addEventListener("click",async e=>{
+  const t=e.target.closest("button");if(!t)return;
+  if(t.id==="phAdd")$("phFile").click();
+  else if(t.id==="phCmp"){PH.cmp=!PH.cmp;renderPhotos()}
+  else if(t.dataset.phdel){if(confirm("Delete this photo? It cannot be recovered.")){await phTx("readwrite",st=>st.delete(t.dataset.phdel));renderPhotos()}}
+});
+
+/* ===== HEALTH IMPORT: weight and steps from CSV, JSON or a link ===== */
+const HS={unit:"",msg:""};
+function hDate(v){
+  const m=String(v||"").match(/(\d{4})-(\d{1,2})-(\d{1,2})/);
+  if(m)return m[1]+"-"+m[2].padStart(2,"0")+"-"+m[3].padStart(2,"0");
+  const d=new Date(v);return isNaN(d)?null:iso(d);
+}
+function hRow(date,w,steps,unit){
+  const d=hDate(date);if(!d)return null;
+  w=nz(w);steps=Math.round(nz(steps));
+  return {d,w:w>0?(unit==="lb"?w/2.20462:w):0,steps:steps>0?steps:0};
+}
+function parseHealth(txt,unit){
+  txt=String(txt||"").trim();if(!txt)return [];
+  if(txt[0]==="{"||txt[0]==="["){
+    const j=JSON.parse(txt),arr=Array.isArray(j)?j:Object.entries(j).map(([d,v])=>Object.assign({date:d},v));
+    return arr.map(x=>hRow(x.date||x.d,x.weight??x.w,x.steps??x.s,unit)).filter(Boolean);
+  }
+  return txt.split(/[\r\n;]+/).map(l=>{const c=l.split(/[,\t]/).map(x=>x.trim());return c.length>=2&&/\d{4}/.test(c[0])?hRow(c[0],c[1],c[2],unit):null}).filter(Boolean);
+}
+function importHealth(txt,unit){
+  let rows;
+  try{rows=parseHealth(txt,unit||HS.unit||(metric()?"kg":"lb"))}catch(e){HS.msg="Could not read that: "+e.message;return renderHealth()}
+  let w=0,st=0;
+  rows.forEach(r=>{if(r.w){(S.log[r.d]=S.log[r.d]||{}).w=r.w;w++}if(r.steps){S.steps[r.d]=r.steps;st++}});
+  HS.msg=w||st?`Imported ${w} weigh-ins and ${st} days of steps.`:"No rows found. Use one line per day: date, weight, steps.";
+  if(w||st){save();regen();renderAll()}else renderHealth();
+}
+function renderHealth(){
+  const b=$("healthBox");if(!b)return;
+  const days=[];for(let i=13;i>=0;i--)days.push(addD(TODAY,-i));
+  const v=days.map(d=>S.steps[d]||0),last7=v.slice(7).filter(x=>x>0),avg=last7.length?Math.round(last7.reduce((a,c)=>a+c,0)/last7.length):0,mx=Math.max(1,...v);
+  const u=HS.unit||(metric()?"kg":"lb");
+  b.innerHTML=`<div class="kpis"><div class="kpi"><div class="l">Steps, 7-day average</div><div class="v">${avg?avg.toLocaleString():"–"}</div><div class="s">${S.steps[logDate]?S.steps[logDate].toLocaleString()+" on "+esc(logDate):"None logged for "+esc(logDate)}</div></div></div>
+  <div style="display:flex;align-items:flex-end;gap:3px;height:56px;margin:8px 0">${v.map((x,i)=>`<div title="${esc(days[i])}: ${x}" style="flex:1;height:${Math.max(3,x/mx*100)}%;background:${x?"var(--accent)":"var(--border)"};border-radius:3px"></div>`).join("")}</div>
+  <div class="d">Last 14 days.</div>
+  <div class="fgrid" style="margin-top:10px"><div class="cg"><label>Steps on ${esc(logDate)}</label><input type="number" inputmode="numeric" id="hsSteps" value="${S.steps[logDate]||""}"/></div></div>
+  <h3>Import weight and steps</h3>
+  <div class="d">One line per day: <b>date, weight, steps</b> (for example 2026-11-03, 165.4, 8421). CSV or JSON from Apple Health exporters, Garmin, Google Fit or a spreadsheet works. Existing weights for those dates are replaced.</div>
+  <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:8px"><select id="hsUnit"><option value="lb"${u==="lb"?" selected":""}>Weights are in lb</option><option value="kg"${u==="kg"?" selected":""}>Weights are in kg</option></select><button class="btn" id="hsPick">Choose file</button></div>
+  <textarea id="hsTxt" placeholder="2026-11-03, 165.4, 8421&#10;2026-11-02, 165.0, 9100" style="margin-top:8px"></textarea>
+  <div style="display:flex;gap:8px;margin-top:8px"><button class="btn pri" id="hsGo">Import</button></div>
+  ${HS.msg?`<div class="d" style="margin-top:8px">${esc(HS.msg)}</div>`:""}
+  <details class="rec"><summary>Import from a link (for an iPhone Shortcut)</summary><div class="d" style="margin-top:6px">Open this page with the data after a # sign and it imports on load: <code>${esc(location.origin+location.pathname)}#h=2026-11-03,165.4,8421;2026-11-02,165.0,9100&amp;u=lb</code>. A Shortcut can build that text from your Health data and use its Open URL action.</div></details>`;
+}
+PROGX.push(renderHealth);
+document.addEventListener("input",e=>{
+  const t=e.target;
+  if(t.id==="hsSteps"){const n=Math.round(nz(t.value));if(n>0)S.steps[logDate]=n;else delete S.steps[logDate];save()}
+  else if(t.id==="hsUnit")HS.unit=t.value;
+});
+document.addEventListener("click",e=>{
+  const t=e.target.closest("button");if(!t)return;
+  if(t.id==="hsGo")importHealth($("hsTxt").value,$("hsUnit").value);
+  else if(t.id==="hsPick")$("hsFile").click();
+});
+document.addEventListener("change",e=>{
+  if(e.target.id!=="hsFile")return;
+  const f=e.target.files[0];if(!f)return;
+  f.text().then(x=>importHealth(x,($("hsUnit")||{}).value)).finally(()=>{e.target.value=""});
+});
+function healthHash(){
+  if(!location.hash.startsWith("#h="))return;
+  const p=new URLSearchParams(location.hash.slice(1));
+  history.replaceState(null,"",location.pathname+location.search);
+  importHealth(p.get("h"),p.get("u")||(metric()?"kg":"lb"));
+}
+setTimeout(healthHash,0);
+
 initTheme();regen();renderAll();initSync();
 
 </script>
