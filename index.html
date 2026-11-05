@@ -195,6 +195,91 @@
   html[data-theme=light] .btn.danger{color:#b42323}
   html[data-theme=light] .btn.pri{color:#fff}
   @media(prefers-reduced-motion:reduce){*{transition:none!important;scroll-behavior:auto!important}}
+  /* ---------- nav, segments, train builder ---------- */
+  .seg{display:flex;gap:4px;background:var(--panel2);border:1px solid var(--border);border-radius:12px;padding:4px;margin-bottom:14px}
+  .seg button{flex:1;background:transparent;border:none;color:var(--muted);padding:10px 8px;border-radius:9px;font-weight:700;font-size:.92rem;cursor:pointer;min-height:44px}
+  .seg button.on{background:var(--accent);color:#fff;box-shadow:0 2px 10px var(--glow)}
+  .seg button:not(.on):hover{color:var(--text)}
+  .planseg{display:none}
+  @media(max-width:960px){
+    .planseg{display:flex;position:sticky;top:0;z-index:12}
+    #pane-plan[data-seg="w"] [data-s="m"],#pane-plan[data-seg="m"] [data-s="w"]{display:none}
+  }
+  @media(min-width:701px){
+    .tabs{position:sticky;top:0;z-index:15;padding:8px 0;background:linear-gradient(var(--bg) 80%,transparent);backdrop-filter:blur(6px)}
+    .tab.active{box-shadow:0 4px 16px var(--glow)}
+    .tab .ic{display:inline;margin-right:7px}
+  }
+  .tab .ic{font-size:1.1rem}
+  @media(max-width:700px){.tab .ic{display:block}.tab{min-height:56px;font-size:.7rem;font-weight:700}}
+  #wList .row{background:var(--panel2);border:1px solid var(--border);border-radius:12px;padding:14px;margin-bottom:10px}
+  #wList .row:last-child{border-bottom:1px solid var(--border)}
+  #wList .row.done{opacity:.6}
+  #wList .row .t{font-size:1.06rem}
+  #wList{counter-reset:ex}
+  #wList .row{counter-increment:ex}
+  #wList .row .t::before{content:counter(ex);display:inline-grid;place-items:center;width:24px;height:24px;margin-right:8px;border-radius:50%;background:var(--glow);color:var(--accent2);font-size:.78rem;font-weight:800}
+  #wList .row .d b{color:var(--text);font-size:1rem}
+  .trgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(340px,1fr));gap:16px;align-items:start}
+  @media(max-width:700px){.trgrid{grid-template-columns:1fr}}
+  .trgrid .card{margin-bottom:0}
+  .trname{width:100%;margin-bottom:10px;font-weight:700}
+  .trex{background:var(--panel2);border:1px solid var(--border);border-radius:12px;padding:12px;margin-bottom:10px}
+  .trh{display:flex;gap:10px;align-items:center}
+  .trh>div:nth-child(2){flex:1;min-width:0}
+  .trh b{display:block;font-size:1rem;overflow-wrap:anywhere}
+  .trh small{color:var(--muted);font-size:.8rem}
+  .trnum{display:grid;place-items:center;width:26px;height:26px;border-radius:50%;background:var(--glow);color:var(--accent2);font-size:.8rem;font-weight:800;flex:none}
+  .trbtn{display:flex;gap:4px;flex:none}
+  .trbtn .rest{min-width:38px;min-height:38px;padding:4px 8px}
+  .rest:disabled{opacity:.35;cursor:default}
+  .trf{display:grid;grid-template-columns:1fr 1.3fr 1fr;gap:10px;margin-top:10px}
+  .trf label{display:flex;flex-direction:column;gap:3px;font-size:.7rem;text-transform:uppercase;letter-spacing:.05em;color:var(--muted);font-weight:700}
+  .trf input{width:100%;font-size:16px;min-height:42px}
+  .trchk{display:flex;gap:8px;align-items:center;margin-top:12px;font-size:.92rem;cursor:pointer}
+  .trchk input{width:18px;height:18px;accent-color:var(--green)}
+  .trpicker{background:var(--bg);border:1px solid var(--border);border-radius:12px;padding:12px;margin-top:6px}
+  .trpicker>input{width:100%}
+  .trres{max-height:300px;overflow:auto;display:flex;flex-direction:column;gap:6px;-webkit-overflow-scrolling:touch}
+  .trpick{text-align:left;background:var(--panel);border:1px solid var(--border);color:var(--text);border-radius:10px;padding:10px 12px;cursor:pointer;display:flex;flex-direction:column;min-height:48px}
+  .trpick:hover{border-color:var(--accent)}
+  .trpick small{color:var(--muted);font-size:.78rem}
+  .trcust{display:flex;gap:8px;flex-wrap:wrap}.trcust input{flex:1 1 160px}
+  /* ---------- workout mode, builder extras, timer ---------- */
+  #timer:not(.run):not(.end){display:none}
+  #wm{position:fixed;inset:0;z-index:100;background:var(--bg);display:flex;flex-direction:column;padding:14px 16px 0;overflow:auto}
+  #wm[hidden]{display:none}
+  .wm-top{display:flex;gap:12px;align-items:center;max-width:640px;width:100%;margin:0 auto}
+  .wm-prog{flex:1;font-size:.9rem;color:var(--muted);font-weight:700}
+  .wm-prog .bar{height:8px;background:var(--panel2);border-radius:4px;margin-top:6px;overflow:hidden}
+  .wm-prog .bar div{height:100%;background:linear-gradient(90deg,var(--accent),var(--green))}
+  .wm-body{flex:1;max-width:640px;width:100%;margin:0 auto;padding:18px 0;display:flex;flex-direction:column;gap:10px}
+  .wm-name{font-size:clamp(1.5rem,6vw,2.1rem);line-height:1.2;letter-spacing:-.01em}
+  .wm-target{font-size:1.2rem}
+  .wm-dots{display:flex;gap:8px;margin:6px 0}
+  .wm-dots i{flex:1;max-width:48px;height:12px;border-radius:6px;background:var(--panel2);border:1px solid var(--border)}
+  .wm-dots i.on{background:var(--green);border-color:var(--green)}
+  .wm-inputs{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+  .wm-inputs label{display:flex;flex-direction:column;gap:4px;font-size:.78rem;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);font-weight:700}
+  .wm-inputs input{font-size:1.7rem;font-weight:800;text-align:center;min-height:64px;width:100%}
+  .wm-log{min-height:64px;font-size:1.2rem}
+  .wm-nav{position:sticky;bottom:0;display:flex;gap:10px;max-width:640px;width:100%;margin:0 auto;padding:12px 0 calc(12px + env(safe-area-inset-bottom));background:var(--bg)}
+  .wm-nav .btn{flex:1;min-height:56px;font-size:1.05rem}
+  .btn:disabled{opacity:.4;cursor:default}
+  body.wm-open #timer{z-index:120;bottom:calc(84px + env(safe-area-inset-bottom));left:8px;right:8px;max-width:560px;margin:0 auto}
+  body.wm-open{overflow:hidden}
+  .wu{color:var(--amber);font-size:.84rem}
+  .trdrag{cursor:grab;touch-action:none;user-select:none;font-size:1.3rem;color:var(--muted);padding:2px 6px;line-height:1}
+  .trex.drag{opacity:.55;border-color:var(--accent)}
+  .trmore{margin-top:10px}
+  .trmore summary{cursor:pointer;font-size:.82rem;font-weight:700;color:var(--accent2)}
+  .trf2{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:10px}
+  .trf2 label{display:flex;flex-direction:column;gap:3px;font-size:.7rem;text-transform:uppercase;letter-spacing:.05em;color:var(--muted);font-weight:700}
+  .trf2 label.trchk{grid-column:1/-1;flex-direction:row;text-transform:none;letter-spacing:0;font-size:.9rem;color:var(--text);margin:0}
+  .trf2 select,.trf2 input[type=number]{width:100%;min-height:42px;font-size:16px}
+  .trplans{display:flex;gap:8px;flex-wrap:wrap;align-items:flex-end;margin-top:12px}
+  .trplans label{display:flex;flex-direction:column;gap:3px;flex:1 1 180px;font-size:.7rem;text-transform:uppercase;letter-spacing:.05em;color:var(--muted);font-weight:700}
+  .trcopy{font-size:.78rem;padding:4px 8px;min-height:32px;max-width:120px}
 </style>
 </head>
 <body>
@@ -204,44 +289,48 @@
   <button class="btn" id="btnTheme">☀️ Light</button>
 </header>
 <div class="overall"><span class="sub">This week</span><div class="bar"><div id="overallFill" style="width:0"></div></div><b id="overallTxt"></b></div>
-<nav class="tabs">
-  <button class="tab" data-tab="profile"><span class="ic">👤</span><span class="full">1. Profile & Goals</span><span class="short">Profile</span></button>
-  <button class="tab" data-tab="overview"><span class="ic">📊</span><span class="full">2. Overview</span><span class="short">Overview</span></button>
-  <button class="tab active" data-tab="plan"><span class="ic">🏋️</span><span class="full">3. Week Plan</span><span class="short">Plan</span></button>
-  <button class="tab" data-tab="grocery"><span class="ic">🛒</span><span class="full">4. Groceries</span><span class="short">Groceries</span></button>
-  <button class="tab" data-tab="kitchen"><span class="ic">🍳</span><span class="full">5. Kitchen</span><span class="short">Kitchen</span></button>
-  <button class="tab" data-tab="progress"><span class="ic">📈</span><span class="full">6. Progress & Auto-adjust</span><span class="short">Progress</span></button>
+<nav class="tabs" aria-label="Sections">
+  <button class="tab active" data-tab="plan"><span class="ic">🏠</span><span class="full">Today</span><span class="short">Today</span></button>
+  <button class="tab" data-tab="train"><span class="ic">🏋️</span><span class="full">Train</span><span class="short">Train</span></button>
+  <button class="tab" data-tab="food"><span class="ic">🍽️</span><span class="full">Food</span><span class="short">Food</span></button>
+  <button class="tab" data-tab="progress"><span class="ic">📈</span><span class="full">Progress</span><span class="short">Progress</span></button>
+  <button class="tab" data-tab="overview"><span class="ic">📊</span><span class="full">Targets</span><span class="short">Targets</span></button>
+  <button class="tab" data-tab="profile"><span class="ic">👤</span><span class="full">Profile</span><span class="short">Profile</span></button>
 </nav>
 
+<section id="pane-train" class="pane"></section>
 <section id="pane-profile" class="pane"></section>
 <section id="pane-overview" class="pane"></section>
 
-<section id="pane-plan" class="pane active">
+<section id="pane-plan" class="pane active" data-seg="w">
   <div class="wknav" id="weekNav"></div>
   <div class="days" id="days"></div>
   <div class="kpis" id="kpis"></div>
   <div id="peakNote"></div>
-  <div class="card"><h2><span>Readiness check</span><span class="badge" id="rdBadge"></span></h2><div id="readyBox"></div></div>
+  <div class="seg planseg" role="tablist"><button class="on" data-pseg="w">🏋️ Workout</button><button data-pseg="m">🍽️ Nutrition</button></div>
+  <div class="card" data-s="w"><h2><span>Readiness check</span><span class="badge" id="rdBadge"></span></h2><div id="readyBox"></div></div>
   <div class="grid2">
-    <div class="card"><h2><span id="wTitle"></span><span class="badge" id="wBadge"></span></h2><div id="wList"></div></div>
+    <div class="card" data-s="w"><h2><span id="wTitle"></span><span style="display:flex;gap:8px;align-items:center"><span class="badge" id="wBadge"></span><button class="btn pri" id="wStart" data-wm="open" hidden>▶ Start workout</button><button class="btn" id="wEdit" data-goto="train" hidden>✎ Edit plan</button></span></h2><div id="wList"></div></div>
     <div>
-      <div class="card"><h2><span>Meals</span><span class="badge" id="mBadge"></span></h2><div id="mList"></div></div>
-      <div class="card"><h2><span>Daily habits</span></h2><div id="hList"></div></div>
-      <div class="card"><h2><span>Ate something else?</span></h2><div id="exBox"></div></div>
-      <div class="card"><h2><span>Log food</span></h2><div id="foodBox"></div></div>
-      <div class="card"><h2><span>Micronutrients</span></h2><div id="microBox"></div></div>
-      <div class="card"><h2><span>Plate calculator</span></h2><div id="plateBox"></div></div>
+      <div class="card" data-s="m"><h2><span>Meals</span><span class="badge" id="mBadge"></span></h2><div id="mList"></div></div>
+      <div class="card" data-s="m"><h2><span>Daily habits</span></h2><div id="hList"></div></div>
+      <div class="card" data-s="m"><h2><span>Ate something else?</span></h2><div id="exBox"></div></div>
+      <div class="card" data-s="m"><h2><span>Log food</span></h2><div id="foodBox"></div></div>
+      <div class="card" data-s="m"><h2><span>Micronutrients</span></h2><div id="microBox"></div></div>
+      <div class="card" data-s="w"><h2><span>Plate calculator</span></h2><div id="plateBox"></div></div>
     </div>
   </div>
 </section>
 
 <section id="pane-grocery" class="pane">
+  <div class="seg foodseg"><button data-food="grocery">🛒 Groceries</button><button data-food="kitchen">🍳 Kitchen</button></div>
   <div class="card"><h2><span>Shopping list for the displayed week</span><span style="display:flex;gap:8px;align-items:center"><span class="badge" id="gBadge"></span><button class="btn" id="gShare">Share / copy</button></span></h2><div id="gList"></div></div>
   <div class="card"><h2><span>Your items</span><button class="btn" id="btnGcClear">Clear checked</button></h2><div style="display:flex;gap:8px;margin-top:4px"><input id="gcIn" placeholder="Add an item, e.g. 2 lb ground turkey" style="flex:1"/><button class="btn" id="btnGcAdd">Add</button></div><div id="gCustom"></div><div id="gRecipes"></div></div>
   <div class="card"><h2><span>Batch cook plan</span><span class="badge">Meal prep</span></h2><div id="prepList"></div></div>
 </section>
 
 <section id="pane-kitchen" class="pane">
+  <div class="seg foodseg"><button data-food="grocery">🛒 Groceries</button><button data-food="kitchen">🍳 Kitchen</button></div>
   <div class="grid2">
     <div>
       <div class="card"><h2><span>Foods I like and dislike</span><span class="badge" id="kfBadge"></span></h2><div class="d">Tap a food to cycle: neutral, liked 👍, disliked 🚫. Disliked foods leave your plan right away. Liked foods show up more often.</div><input id="kq" placeholder="Search foods" style="width:100%;margin:8px 0"/><div id="kFoods"></div></div>
@@ -293,6 +382,7 @@
 <input type="file" id="phFile" accept="image/*" multiple hidden />
 <input type="file" id="hsFile" accept=".csv,.json,.txt,text/csv,application/json,text/plain" hidden />
 <div id="cook" hidden></div>
+<div id="wm" hidden role="dialog" aria-label="Workout mode"></div>
 <div id="timer"><span class="sub">Rest</span><span class="clk" id="clk">0:00</span>
   <button class="btn" data-t="45">45</button><button class="btn" data-t="60">60</button><button class="btn" data-t="90">90</button><button class="btn" data-t="120">120</button><button class="btn" data-t="180">180</button><button class="btn" id="tStop">Stop</button></div>
 
@@ -794,6 +884,29 @@ function instSession(sess,p,wk){
             note:e.bmReps?`Sets at max (${p[e.bm+"Max"]}) − ${rir} RIR`:""};
   })};
 }
+/* Custom plan: sessions come from the user's own weekday builder (st.cplan). Returns null when not in custom mode or empty. */
+function planDays(cp){
+  if(cp.plans){const p=cp.plans[cp.active];return p&&!p.deleted?p.days:null}
+  return cp.days||null;
+}
+function customSessions(st,p,wk){
+  const cp=st.cplan;
+  if(!cp||cp.mode!=="custom")return null;
+  const days=planDays(cp);if(!days)return null;
+  const rir=RIR[p.exp][wk],out=[];
+  for(let dow=0;dow<7;dow++){
+    const d=days[dow];
+    if(!d||!Array.isArray(d.ex)||!d.ex.length)continue;
+    out.push({name:d.name||"Workout",dow,wk,rir,ex:d.ex.map((x,ix,arr)=>{
+      const base=Math.max(1,Math.min(10,Math.round(+x.sets)||3));
+      const sets=(wk===3&&cp.deload!==false)?Math.max(2,Math.ceil(base*.6)):base;
+      const reps=String(x.reps||"8\u201312"),hm=reps.match(/(\d+)\D*$/);
+      return {id:x.id||x.uid,uid:x.uid,name:x.name,slot:x.slot||"custom",key:"cust",sets,reps,rir,rest:Math.max(0,Math.min(600,Math.round(+x.rest)||90)),cue:x.cue||"",load:x.load||"Load for target RIR",mu:x.mu||"chest",mu2:x.mu2||[],bmReps:false,hi:hm?+hm[1]:0,note:"",
+        ss:!!x.ss&&ix<arr.length-1,wu:Math.max(0,Math.min(4,Math.round(+x.wu)||0)),prog:x.prog==="reps"?"reps":"dbl",inc:Math.max(0,+x.inc||0)};
+    })});
+  }
+  return out.length?out:null;
+}
 function pumpCircuit(p,block,rounds){
   const used=new Set(),ex=[];
   ["hpush","vpull","lateral","biceps","triceps"].forEach(sl=>{
@@ -904,11 +1017,12 @@ function buildMeals(p,macros,seed,swapOff,st){
 
 /* ---------- WEEK BUILDER ---------- */
 function buildWeek(p,st,monISO,todayISO){
-  const nTrain=(SPLIT[p.days]||SPLIT[4]).length;
   const bw=Math.floor(diffD(st.blockStart,monISO)/7),wk=mod(bw,4),block=Math.floor(bw/4)+(st.blockOffset||0);
   const T=baseTargets(p),notes=T.notes.slice();
   const program=buildProgram(p,block,st.swaps||{});
-  const sess=program.map(s=>instSession(s,p,wk));
+  const cust=customSessions(st,p,wk);
+  const sess=cust||program.map(s=>instSession(s,p,wk));
+  const nTrain=sess.length;
   const ev=p.goal==="peak"&&p.event?p.event:null;
   const toEv=ev?diffD(todayISO,ev):null;
   const peak=ev&&toEv>=0&&toEv<=7;
@@ -938,9 +1052,10 @@ function buildWeek(p,st,monISO,todayISO){
     days.push({i,date,label,kind,session,macros,meals,actual:act,phase,cost});
   }
   const vol=weeklyVolume(sess);
-  if((p.inj||[]).length)notes.push("Exercises that commonly aggravate "+p.inj.join(", ")+" were removed. Stop anything that hurts and see a clinician for persistent pain.");
+  if(cust)notes.push("You are on your own training plan (Train tab). Meals and calories still follow your profile. Auto-rotation and swaps are off for your exercises.");
+  if((p.inj||[]).length&&!cust)notes.push("Exercises that commonly aggravate "+p.inj.join(", ")+" were removed. Stop anything that hurts and see a clinician for persistent pain.");
   if(ev&&!peak)notes.push(`Peak week starts ${addD(ev,-6)}. Until then the plan runs at maintenance.`);
-  return {T,days,wk,block,bw,vol,sessions:sess,peak:!!peak,notes,rir:RIR[p.exp][wk],nTrain};
+  return {T,days,wk,block,bw,vol,sessions:sess,peak:!!peak,notes,rir:RIR[p.exp][wk],nTrain,custom:!!cust};
 }
 
 /* ---------- GROCERIES ---------- */
@@ -988,13 +1103,13 @@ function advice(p,tr){
 const KEY="elitePeakingState_v3";
 const TODAY=iso(new Date());
 const DEFP={sex:"m",age:30,cm:175,kg:75,bf:0,units:"imperial",goal:"recomp",rate:"cons",act:"mod",exp:"int",days:4,len:60,style:"cal",pullMax:5,pushMax:15,bagKg:0,eq:["pullbar","bands"],pri:[],diet:"omni",excl:[],meals:4,event:"",kcalAdj:0,inj:[],budget:"std",priceF:1,wtime:"17:30",mealRem:"no"};
-function freshState(){return {prof:JSON.parse(JSON.stringify(DEFP)),log:{},checks:{},perf:{},extra:{},hist:{},done:{},prefs:{foods:{},meals:{}},recipes:[],groc:[],water:{},swaps:{},mswaps:{},blockStart:mondayOf(TODAY),blockOffset:0,weekOffset:0,sel:TODAY,confirmed:false,flog:{},sets:{},steps:{}}}
+function freshState(){return {prof:JSON.parse(JSON.stringify(DEFP)),log:{},checks:{},perf:{},extra:{},hist:{},done:{},prefs:{foods:{},meals:{}},recipes:[],groc:[],water:{},swaps:{},mswaps:{},blockStart:mondayOf(TODAY),blockOffset:0,weekOffset:0,sel:TODAY,confirmed:false,flog:{},sets:{},steps:{},cplan:{mode:"auto",deload:true,active:"p1",mt:0,plans:{p1:{name:"My plan",mt:0,days:{}}}}}}
 function loadState(){
   try{const v=JSON.parse(localStorage.getItem(KEY)||"null");if(v&&v.prof){const f=freshState();return Object.assign(f,v,{prof:Object.assign(f.prof,v.prof)})}}catch(e){console.warn("state load failed",e)}
   return freshState();
 }
 let S=loadState(),W=null;
-const SYNCKEYS=["prof","log","checks","perf","extra","hist","done","prefs","recipes","groc","water","swaps","mswaps","blockStart","blockOffset","confirmed","flog","sets","steps"];
+const SYNCKEYS=["prof","log","checks","perf","extra","hist","done","prefs","recipes","groc","water","swaps","mswaps","blockStart","blockOffset","confirmed","flog","sets","steps","cplan"];
 const snapOf=()=>JSON.stringify(SYNCKEYS.map(k=>S[k]));
 let lastSnap=snapOf();
 const save=()=>{
@@ -1105,7 +1220,7 @@ function onMulti(box,input){
 function commit(){save();regen();renderAll(true)}
 
 /* ---------- recipes with tabs ---------- */
-const UIR={},UIT={},HI={};
+const UIR={},UIT={},HI={},PG={},EXI={};
 function recipeHTML(mm,date,i){
   if(!mm.rec)return "";
   const key=date+"|"+i,v=mm.var,tab=UIT[key]||(S.prof.budget==="budget"&&v?"bud":"std");
@@ -1223,12 +1338,13 @@ function renderPlan(){
     const s=d.session,rd=readiness(d.date);
     $("wTitle").textContent=`${s.name}`;
     $("wBadge").textContent=`Week ${s.wk+1} · ${s.rir} RIR`;
-    $("wList").innerHTML=`<div class="d" style="margin-bottom:6px">Warm-up: 5 min easy cardio and joint circles, then 2 ramp-up sets of the first exercise.</div>`+
-     s.ex.map((e,i)=>row(`${d.date}|ex|${i}`,esc(e.name)+formLink(e.name),`${setLine(e,rd)}<br>${esc(e.load)}`,
+    $("wEdit").hidden=false;$("wStart").hidden=!s.ex.length;
+    $("wList").innerHTML=`<div class="d" style="margin-bottom:6px">Warm-up: 5 min easy cardio and joint circles, then 2 ramp-up sets of the first exercise.</div><label class="trchk" style="margin:0 0 10px"><input type="checkbox" id="autoRest" ${autoRestOn()?"checked":""}/> Auto-start the rest timer when I log a set</label>`+
+     s.ex.map((e,i)=>row(`${d.date}|ex|${i}`,esc(e.name)+(e.ss?' <span class="badge a">Superset ↓</span>':(i>0&&s.ex[i-1].ss?' <span class="badge a">Superset pair</span>':""))+formLink(e.name),`${setLine(e,rd)}<br>${esc(e.load)}${e.wu?`<br><span class="wu">Warm-up: ${WU[e.wu]}</span>`:""}`,
       `${e.note?`<div class="d">${esc(e.note)}</div>`:""}<div class="cue">${esc(e.cue)}</div>${perfHTML(e)}`,
-      `<button type="button" class="rest" data-t="${e.rest}">⏱ ${e.rest}s</button>${e.key!=="pump"?`<button type="button" class="rest" data-swap="${esc(e.key)}">↻ swap</button>`:""}`)).join("");
+      `${e.ss?"":`<button type="button" class="rest" data-t="${e.rest}">⏱ ${e.rest}s</button>`}${e.key!=="pump"&&e.key!=="cust"?`<button type="button" class="rest" data-swap="${esc(e.key)}">↻ swap</button>`:""}`)).join("");
   }else{
-    $("wTitle").textContent=d.label;$("wBadge").textContent=d.kind==="rest"?"Recovery":"No lifting";
+    $("wTitle").textContent=d.label;$("wBadge").textContent=d.kind==="rest"?"Recovery":"No lifting";$("wEdit").hidden=false;$("wStart").hidden=true;
     const walk=d.kind==="flush"?"35 min Zone 2 walk, nasal breathing. 4 × 45s dead hangs. 5 × 20s stomach vacuums.":d.kind==="posing"?"10 min mobility, 5 × 20s stomach vacuums, practice poses. No hard training.":(T.goal==="cut"?"30–40 min Zone 2 walk (conversational pace) plus 10 min mobility. Target 9–11k steps.":"20–30 min easy walk plus 10 min mobility. Target 7–9k steps.");
     $("wList").innerHTML=`<div class="d" style="font-size:.88rem">${walk}</div>`;
   }
@@ -1320,17 +1436,358 @@ function renderOverall(){
   let n=0,t=0;W.days.forEach(d=>{const p=dayProg(d);n+=p.n;t+=p.t});
   const pct=t?Math.round(n/t*100):0;
   $("overallFill").style.width=pct+"%";$("overallTxt").textContent=`${pct}% of the week · ${n}/${t}`;
-  $("sub").textContent=`${S.prof.goal==="cut"?"Fat loss":S.prof.goal==="bulk"?"Lean muscle gain":S.prof.goal==="peak"?"Event peak":"Recomp"} · ${S.prof.days} days · ${S.prof.style==="cal"?"calisthenics-first":S.prof.style==="wt"?"weights-first":"hybrid"} · saves on this device${streak()?` · ${streak()}-day streak`:""}`;
+  $("sub").textContent=`${S.prof.goal==="cut"?"Fat loss":S.prof.goal==="bulk"?"Lean muscle gain":S.prof.goal==="peak"?"Event peak":"Recomp"} · ${W.nTrain} training days${W.custom?" (your plan)":""} · ${S.prof.style==="cal"?"calisthenics-first":S.prof.style==="wt"?"weights-first":"hybrid"} · saves on this device${streak()?` · ${streak()}-day streak`:""}`;
 }
 function renderAll(skipProfile){
   if(!skipProfile)buildProfile();
-  renderOverview();renderPlan();renderGrocery();renderProgress();renderOverall();renderKitchen();
+  renderOverview();renderPlan();renderGrocery();renderProgress();renderOverall();renderKitchen();renderTrain();
 }
+
+/* ---------- NAVIGATION ---------- */
+const TABK="eliteTab";
+let TAB="plan",FOODSUB="grocery",PSEG="w";
+function showTab(n,sub){
+  if(sub)FOODSUB=sub;
+  TAB=n;
+  const pane=n==="food"?FOODSUB:n;
+  document.querySelectorAll(".tab").forEach(x=>x.classList.toggle("active",x.dataset.tab===n));
+  document.querySelectorAll(".pane").forEach(x=>x.classList.toggle("active",x.id==="pane-"+pane));
+  document.querySelectorAll("[data-food]").forEach(b=>b.classList.toggle("on",b.dataset.food===FOODSUB));
+  try{localStorage.setItem(TABK,JSON.stringify([n,FOODSUB]))}catch(e){}
+  window.scrollTo({top:0});
+}
+function setPlanSeg(k){
+  PSEG=k;$("pane-plan").dataset.seg=k;
+  document.querySelectorAll("[data-pseg]").forEach(b=>b.classList.toggle("on",b.dataset.pseg===k));
+  try{localStorage.setItem(TABK+"Seg",k)}catch(e){}
+}
+function restoreNav(){
+  try{
+    const v=JSON.parse(localStorage.getItem(TABK)||"null");
+    if(v&&["plan","train","food","progress","overview","profile"].includes(v[0]))showTab(v[0],["grocery","kitchen"].includes(v[1])?v[1]:"grocery");
+    else showTab("plan");
+    const sg=localStorage.getItem(TABK+"Seg");if(sg==="w"||sg==="m")setPlanSeg(sg);
+  }catch(e){showTab("plan")}
+}
+
+/* ---------- TRAIN: build your own plan ---------- */
+const DAYN=["Monday","Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday"];
+const TR={open:-1,q:"",mu:"all"};
+const NOW=()=>Date.now();
+/* cplan = {mode, deload, active, mt, plans:{id:{name, mt, deleted?, days:{0..6:{name, mt, ex:[...]}}}}}. Every edit stamps mt so two devices can merge per day. */
+function normCP(c){
+  if(!c||typeof c!=="object")c={};
+  if(!c.mode)c.mode="auto";
+  if(c.deload===undefined)c.deload=true;
+  if(!c.plans||typeof c.plans!=="object"){c.plans={p1:{name:"My plan",mt:0,days:c.days||{}}};c.active="p1"}
+  delete c.days;
+  if(!c.active||!c.plans[c.active]||c.plans[c.active].deleted){
+    const id=Object.keys(c.plans).find(k=>!c.plans[k].deleted);
+    if(id)c.active=id;else{c.plans.p1={name:"My plan",mt:NOW(),days:{}};c.active="p1"}
+  }
+  Object.values(c.plans).forEach(p=>{if(!p.days)p.days={}});
+  return c;
+}
+const CP=()=>S.cplan=normCP(S.cplan);
+const PLN=()=>{const c=CP();return c.plans[c.active]};
+const PD=()=>PLN().days;
+const tomb=()=>({name:"",ex:[],mt:NOW()});
+function touch(dd){const t=NOW(),p=PLN();p.mt=t;CP().mt=t;if(dd!==undefined&&p.days[dd])p.days[dd].mt=t}
+/* Merge two devices' custom plans: newest edit wins per day, never whole-plan. */
+function mergeCP(a,b){
+  const A=normCP(JSON.parse(JSON.stringify(a||{}))),B=normCP(JSON.parse(JSON.stringify(b||{})));
+  const top=(B.mt||0)>=(A.mt||0)?B:A,o={mode:top.mode,deload:top.deload,active:top.active,mt:Math.max(A.mt||0,B.mt||0),plans:{}};
+  new Set([...Object.keys(A.plans),...Object.keys(B.plans)]).forEach(id=>{
+    const pa=A.plans[id],pb=B.plans[id];
+    if(!pa||!pb){o.plans[id]=pa||pb;return}
+    const nw=(pb.mt||0)>=(pa.mt||0)?pb:pa,days={};
+    new Set([...Object.keys(pa.days),...Object.keys(pb.days)]).forEach(k=>{
+      const da=pa.days[k],db=pb.days[k];
+      days[k]=!da?db:!db?da:((db.mt||0)>=(da.mt||0)?db:da);
+    });
+    o.plans[id]={name:nw.name,mt:nw.mt,deleted:nw.deleted,days};
+  });
+  return normCP(o);
+}
+const cleanReps=v=>String(v||"").replace(/[^0-9A-Za-z–\-+ /]/g,"").slice(0,12).trim();
+const cleanName=v=>String(v||"").replace(/[\u0000-\u001f]/g,"").trim().slice(0,60);
+const muLabel=k=>(MUSCLES.find(m=>m[0]===k)||[k,k])[1];
+const eqLabel=k=>(EQUIP.find(m=>m[0]===k)||[k,k])[1];
+const mkEx=o=>Object.assign({mu2:[],cue:"",load:"Load for target RIR",wu:0,ss:false,prog:"dbl",inc:0},o);
+function libToEx(e){
+  return mkEx({uid:`${e.slot}:${e.id}`,id:e.id,slot:e.slot,name:e.n,mu:e.mu,mu2:e.mu2||[],sets:e.c?3:2,reps:`${e.rr[0]}–${e.rr[1]}${e.unit||""}`,rest:e.rest,cue:e.cue||"",load:loadText(e,S.prof)});
+}
+function seedFromAuto(){
+  const p=PLN(),t=NOW();
+  const a=buildWeek(S.prof,Object.assign({},S,{cplan:{mode:"auto"},blockStart:weekMon()}),weekMon(),TODAY);
+  const days={};
+  for(let d=0;d<7;d++)days[d]={name:"",ex:[],mt:t};
+  a.sessions.forEach(s=>{days[s.dow]={name:s.name,mt:t,ex:s.ex.map(x=>{
+    const lib=EX.find(e=>e.slot===x.slot&&e.id===x.id);
+    return mkEx({uid:x.uid,id:x.id,slot:x.slot,name:x.name,mu:x.mu,mu2:x.mu2||[],sets:x.sets,reps:(x.bmReps&&lib)?`${lib.rr[0]}–${lib.rr[1]}`:x.reps,rest:x.rest,cue:x.cue,load:x.load});
+  })}});
+  p.days=days;p.mt=t;CP().mt=t;
+}
+function trCommit(structural){
+  save();regen();
+  if(structural){renderAll(true)}
+  else{renderPlan();renderOverview();renderOverall()}
+}
+function trResults(){
+  const has=k=>S.prof.eq.includes(k),q=TR.q.trim().toLowerCase();
+  const list=EX.map((e,i)=>[e,i]).filter(([e])=>(TR.mu==="all"||e.mu===TR.mu||(e.mu2||[]).includes(TR.mu))&&(!q||e.n.toLowerCase().includes(q)));
+  if(!list.length)return '<div class="d">No match. Add it as a custom exercise below.</div>';
+  return list.slice(0,40).map(([e,i])=>{
+    const miss=e.eq.filter(k=>!has(k));
+    return `<button type="button" class="trpick" data-tr="add" data-v="${i}"><b>${esc(e.n)}</b><small>${esc(muLabel(e.mu))}${miss.length?` · needs ${esc(miss.map(eqLabel).join(", "))}`:""}</small></button>`;
+  }).join("")+(list.length>40?`<div class="d">Showing 40 of ${list.length}. Search or filter to narrow.</div>`:"");
+}
+function trPicker(d){
+  return `<div class="trpicker">
+   <input id="trQ" type="search" placeholder="Search exercises (e.g. row, squat, curl)" value="${esc(TR.q)}" autocomplete="off"/>
+   <div class="chips" style="margin:8px 0">${[["all","All"]].concat(MUSCLES).map(([k,l])=>`<button type="button" class="fchip ${TR.mu===k?"s1":""}" data-tr="mu" data-v="${k}">${esc(l)}</button>`).join("")}</div>
+   <div class="trres" id="trRes">${trResults()}</div>
+   <h3>Not in the list? Add your own</h3>
+   <div class="trcust"><input id="trCn" placeholder="Exercise name" maxlength="60"/><select id="trCm">${MUSCLES.map(([k,l])=>`<option value="${k}">${esc(l)}</option>`).join("")}</select><button type="button" class="btn pri" data-tr="addc" data-v="${d}">Add</button></div>
+   <button type="button" class="btn" data-tr="close" style="margin-top:8px">Done</button>
+  </div>`;
+}
+function trExRow(d,i,x,n){
+  const tags=[x.wu?x.wu+" warm-up":"",x.ss?"superset":"",x.prog==="reps"?"reps-only":"",x.inc>0?"+"+x.inc+" "+wU():""].filter(Boolean);
+  return `<div class="trex" data-d="${d}" data-i="${i}">
+    <div class="trh"><span class="trdrag" title="Drag to reorder" aria-label="Drag to reorder">⠿</span><span class="trnum">${i+1}</span><div><b>${esc(x.name)}</b><small>${esc(muLabel(x.mu))}</small></div>
+     <div class="trbtn"><button type="button" class="rest" data-tr="up" data-v="${d}|${i}" aria-label="Move up" ${i===0?"disabled":""}>▲</button><button type="button" class="rest" data-tr="down" data-v="${d}|${i}" aria-label="Move down" ${i===n-1?"disabled":""}>▼</button><button type="button" class="rest" data-tr="del" data-v="${d}|${i}" aria-label="Remove">✕</button></div></div>
+    <div class="trf">
+     <label>Sets<input type="number" inputmode="numeric" min="1" max="10" data-trf="sets" data-d="${d}" data-i="${i}" value="${esc(x.sets)}"/></label>
+     <label>Reps<input type="text" data-trf="reps" data-d="${d}" data-i="${i}" value="${esc(x.reps)}" maxlength="12"/></label>
+     <label>Rest (s)<input type="number" inputmode="numeric" min="0" max="600" step="15" data-trf="rest" data-d="${d}" data-i="${i}" value="${esc(x.rest)}"/></label>
+    </div>
+    <details class="trmore" ${tags.length?"open":""}><summary>Warm-up, superset, progression${tags.length?` <span class="badge">${esc(tags.join(" · "))}</span>`:""}</summary>
+     <div class="trf2">
+      <label>Warm-up sets<select data-trf="wu" data-d="${d}" data-i="${i}">${[0,1,2,3,4].map(k=>`<option value="${k}" ${+x.wu===k?"selected":""}>${k?k+" ramp-up":"None"}</option>`).join("")}</select></label>
+      <label>Progression<select data-trf="prog" data-d="${d}" data-i="${i}"><option value="dbl" ${x.prog!=="reps"?"selected":""}>Add load at top of range</option><option value="reps" ${x.prog==="reps"?"selected":""}>Add reps only</option></select></label>
+      <label>Load step (${wU()})<input type="number" inputmode="decimal" step="0.5" min="0" max="100" data-trf="inc" data-d="${d}" data-i="${i}" value="${x.inc>0?esc(x.inc):""}" placeholder="auto"/></label>
+      ${i<n-1?`<label class="trchk"><input type="checkbox" data-trf="ss" data-d="${d}" data-i="${i}" ${x.ss?"checked":""}/> Superset with the next exercise</label>`:""}
+     </div></details></div>`;
+}
+function trDayCard(d){
+  const day=PD()[d],ex=(day&&day.ex)||[];
+  return `<div class="card trday"><h2><span>${DAYN[d]}</span><span style="display:flex;gap:8px;align-items:center">${ex.length?`<select class="trcopy" data-trf="copyto" data-d="${d}" aria-label="Copy ${DAYN[d]} to another day"><option value="">Copy to…</option>${DAYN.map((n,k)=>k!==d?`<option value="${k}">${n}</option>`:"").join("")}</select>`:""}<span class="badge ${ex.length?"g":""}">${ex.length?ex.length+" exercises":"Rest day"}</span></span></h2>
+   ${ex.length||TR.open===d?`<input class="trname" data-trf="name" data-d="${d}" placeholder="Session name (e.g. Push, Legs, Upper)" maxlength="40" value="${esc((day&&day.name)||"")}"/>`:""}
+   <div class="trlist" data-d="${d}">${ex.map((x,i)=>trExRow(d,i,x,ex.length)).join("")}</div>
+   ${TR.open===d?trPicker(d):`<button type="button" class="btn ${ex.length?"":"pri"}" data-tr="open" data-v="${d}">+ Add exercise</button>${ex.length?`<button type="button" class="btn danger" data-tr="clearday" data-v="${d}" style="margin-left:8px">Clear day</button>`:""}`}
+  </div>`;
+}
+function renderTrain(){
+  const el=$("pane-train");if(!el)return;
+  const c=CP(),custom=c.mode==="custom",live=Object.entries(c.plans).filter(([,p])=>!p.deleted);
+  let body=`<div class="card"><h2><span>Training plan</span><span class="badge ${custom?"g":""}">${custom?esc(PLN().name):"Auto plan"}</span></h2>
+   <div class="seg"><button class="${custom?"":"on"}" data-tr="mode" data-v="auto">⚙️ Auto-built</button><button class="${custom?"on":""}" data-tr="mode" data-v="custom">✍️ Build my own</button></div>
+   <div class="d" style="margin-top:10px">${custom
+     ?"You choose the days, exercises, sets, reps, rest, warm-ups, supersets and progression. Meals and calories keep following your profile. Logged lifts, PRs and the readiness check work the same."
+     :"The app builds a split from your profile (days, equipment, level, injuries) and rotates exercises every 4 weeks. Switch to <b>Build my own</b> to take over."}</div>
+   ${custom?`<div class="trplans"><label>Saved plan<select data-trf="plan">${live.map(([id,p])=>`<option value="${esc(id)}" ${id===c.active?"selected":""}>${esc(p.name)}</option>`).join("")}</select></label>
+     <button class="btn" data-tr="newplan">+ New plan</button><button class="btn" data-tr="renameplan">Rename</button><button class="btn danger" data-tr="delplan" ${live.length<2?"disabled":""}>Delete</button></div>
+   <label class="trchk"><input type="checkbox" data-trf="deload" ${c.deload!==false?"checked":""}/> Cut sets ~40% in week 4 of each block (deload)</label>
+   <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:10px"><button class="btn" data-tr="seed">↺ Reset this plan to the auto plan</button><button class="btn danger" data-tr="clearall">Clear this plan</button></div>`:""}
+  </div>`;
+  if(custom){
+    body+=`<div class="trgrid">${[0,1,2,3,4,5,6].map(trDayCard).join("")}</div>`;
+    const n=Object.values(PD()).filter(x=>x&&x.ex&&x.ex.length).length;
+    if(!n)body+=`<div class="note">This plan has no exercises yet, so the Today tab is still showing the auto plan. Add an exercise to a day, or tap <b>Reset this plan to the auto plan</b> for a starting template.</div>`;
+  }else if(W){
+    body+=`<div class="trgrid">${W.sessions.map(s=>`<div class="card"><h2><span>${DAYN[s.dow]}: ${esc(s.name)}</span><span class="badge">${s.ex.length} exercises</span></h2>${s.ex.map(x=>`<div class="row" style="cursor:default"><div class="body"><div class="t">${esc(x.name)}</div><div class="d">${x.sets} × ${esc(x.reps)} · rest ${x.rest}s</div></div></div>`).join("")}</div>`).join("")}</div>
+     <div class="d">This is this week's auto plan. <b>Build my own</b> starts you from a copy of it, so you only change what you want.</div>`;
+  }
+  const keep=document.activeElement&&document.activeElement.id;
+  el.innerHTML=body;
+  if(keep==="trQ"){const q=$("trQ");if(q){q.focus();q.setSelectionRange(q.value.length,q.value.length)}}
+}
+function trClick(t){
+  const b=t.closest("[data-tr]");
+  if(!b)return false;
+  const c=CP(),a=b.dataset.tr,v=b.dataset.v;
+  if(a==="mode"){
+    c.mode=v;c.mt=NOW();
+    if(v==="custom"&&!Object.values(PD()).some(x=>x&&x.ex&&x.ex.length))seedFromAuto();
+    trCommit(true);
+  }else if(a==="seed"){
+    if(confirm("Replace everything in this plan with a fresh copy of the auto plan?")){seedFromAuto();TR.open=-1;trCommit(true)}
+  }else if(a==="clearall"){
+    if(confirm("Delete every exercise from this plan?")){const p=PLN();for(let d=0;d<7;d++)p.days[d]=tomb();touch();TR.open=-1;trCommit(true)}
+  }else if(a==="clearday"){
+    if(confirm("Clear "+DAYN[+v]+"?")){PD()[+v]=tomb();touch();trCommit(true)}
+  }else if(a==="newplan"){
+    const n=cleanName(prompt("Name the new plan (it starts as a copy of the current one):","")||"");
+    if(n){const id="p"+NOW().toString(36),t=NOW();c.plans[id]={name:n,mt:t,days:JSON.parse(JSON.stringify(PD()))};Object.values(c.plans[id].days).forEach(d=>d.mt=t);c.active=id;c.mt=t;trCommit(true)}
+  }else if(a==="renameplan"){
+    const n=cleanName(prompt("Rename plan:",PLN().name)||"");
+    if(n){PLN().name=n;touch();trCommit(true)}
+  }else if(a==="delplan"){
+    const live=Object.keys(c.plans).filter(k=>!c.plans[k].deleted);
+    if(live.length>1&&confirm('Delete plan "'+PLN().name+'"?')){const p=PLN();p.deleted=true;p.mt=NOW();c.mt=NOW();c.active=live.find(k=>k!==c.active);trCommit(true)}
+  }else if(a==="open"){TR.open=+v;TR.q="";TR.mu="all";renderTrain();const q=$("trQ");if(q)q.focus()}
+  else if(a==="close"){TR.open=-1;renderTrain()}
+  else if(a==="mu"){TR.mu=v;renderTrain()}
+  else if(a==="add"){
+    const e=EX[+v];if(!e||TR.open<0)return true;
+    const d=PD()[TR.open]=PD()[TR.open]||{name:"",ex:[]};
+    d.ex.push(libToEx(e));touch(TR.open);trCommit(true);
+  }else if(a==="addc"){
+    const n=cleanName($("trCn").value),mu=$("trCm").value;
+    if(!n){$("trCn").focus();return true}
+    const dd=+v,d=PD()[dd]=PD()[dd]||{name:"",ex:[]};
+    d.ex.push(mkEx({uid:"cx:"+(n.toLowerCase().replace(/[^a-z0-9]+/g,"-").replace(/^-|-$/g,"")||"custom"),id:"custom",slot:"custom",name:n,mu:MUSCLES.some(m=>m[0]===mu)?mu:"chest",sets:3,reps:"8–12",rest:90}));
+    touch(dd);trCommit(true);
+  }else if(a==="up"||a==="down"||a==="del"){
+    const [dd,i]=v.split("|").map(Number),d=PD()[dd];if(!d)return true;
+    if(a==="del")d.ex.splice(i,1);
+    else{const j=a==="up"?i-1:i+1;if(j>=0&&j<d.ex.length){const x=d.ex[i];d.ex[i]=d.ex[j];d.ex[j]=x}}
+    if(d.ex.length)d.ex[d.ex.length-1].ss=false;
+    touch(dd);trCommit(true);
+  }
+  return true;
+}
+function trChange(t){
+  if(!t.dataset||t.dataset.trf===undefined)return false;
+  const c=CP(),f=t.dataset.trf;
+  if(f==="deload"){c.deload=t.checked;c.mt=NOW();trCommit(false);return true}
+  if(f==="plan"){if(c.plans[t.value]&&!c.plans[t.value].deleted){c.active=t.value;c.mt=NOW();trCommit(true)}return true}
+  const dd=+t.dataset.d,d=PD()[dd];
+  if(f==="name"){if(d){d.name=cleanName(t.value);touch(dd);trCommit(false)}return true}
+  if(f==="copyto"){
+    const to=+t.value;t.value="";
+    if(!d||isNaN(to)||to===dd)return true;
+    const tgt=PD()[to];
+    if(tgt&&tgt.ex&&tgt.ex.length&&!confirm("Replace "+DAYN[to]+" with a copy of "+DAYN[dd]+"?"))return true;
+    PD()[to]=JSON.parse(JSON.stringify(d));touch(to);trCommit(true);return true;
+  }
+  const x=d&&d.ex[+t.dataset.i];if(!x)return true;
+  if(f==="sets"){x.sets=Math.max(1,Math.min(10,Math.round(+t.value)||3));t.value=x.sets}
+  else if(f==="rest"){x.rest=Math.max(0,Math.min(600,Math.round(+t.value)||0));t.value=x.rest}
+  else if(f==="reps"){x.reps=cleanReps(t.value)||"8–12";t.value=x.reps}
+  else if(f==="wu"){x.wu=Math.max(0,Math.min(4,Math.round(+t.value)||0))}
+  else if(f==="prog"){x.prog=t.value==="reps"?"reps":"dbl"}
+  else if(f==="inc"){x.inc=Math.max(0,Math.min(100,parseFloat(t.value)||0));t.value=x.inc>0?x.inc:""}
+  else if(f==="ss"){x.ss=!!t.checked}
+  touch(dd);
+  trCommit(f==="wu"||f==="prog"||f==="ss"||f==="inc");return true;
+}
+function trInput(t){
+  if(t.id!=="trQ")return false;
+  TR.q=t.value;$("trRes").innerHTML=trResults();return true;
+}
+/* drag to reorder (pointer events: works with mouse and touch via the ⠿ handle) */
+let DRG=null;
+document.addEventListener("pointerdown",e=>{
+  const h=e.target.closest&&e.target.closest(".trdrag");if(!h)return;
+  const ex=h.closest(".trex");if(!ex)return;
+  DRG={ex,d:+ex.dataset.d};ex.classList.add("drag");e.preventDefault();
+});
+document.addEventListener("pointermove",e=>{
+  if(!DRG)return;
+  if(e.clientY<90)window.scrollBy(0,-14);else if(e.clientY>innerHeight-90)window.scrollBy(0,14);
+  const el=document.elementFromPoint(e.clientX,e.clientY),tg=el&&el.closest(".trex");
+  if(!tg||tg===DRG.ex||+tg.dataset.d!==DRG.d)return;
+  const r=tg.getBoundingClientRect();
+  tg.parentNode.insertBefore(DRG.ex,e.clientY<r.top+r.height/2?tg:tg.nextSibling);
+});
+function dragEnd(apply){
+  if(!DRG)return;
+  const g=DRG;DRG=null;g.ex.classList.remove("drag");
+  const d=PD()[g.d];if(!d)return;
+  const order=[...g.ex.parentNode.querySelectorAll(".trex")].map(x=>+x.dataset.i);
+  if(apply&&order.some((v,i)=>v!==i)&&order.length===d.ex.length){
+    d.ex=order.map(i=>d.ex[i]);d.ex.forEach((x,i)=>{if(i===d.ex.length-1)x.ss=false});
+    touch(g.d);trCommit(true);
+  }else renderTrain();
+}
+document.addEventListener("pointerup",()=>dragEnd(true));
+document.addEventListener("pointercancel",()=>dragEnd(false));
+
+/* ---------- REST TIMER (adaptive) + SET LOGGING ---------- */
+const autoRestOn=()=>{try{return localStorage.getItem("eliteAutoRest")!=="0"}catch(e){return true}};
+function setAutoRest(v){try{localStorage.setItem("eliteAutoRest",v?"1":"0")}catch(e){}}
+function miscChange(t){if(t.id==="autoRest"){setAutoRest(t.checked);return true}return false}
+/* rest = the exercise's rest, +30 s when the set fell short of the bottom of the rep range */
+function adaptRest(x,r){let s=x.rest||90;if(x.lo&&r&&r<x.lo)s+=30;return Math.min(600,s)}
+function autoRest(uid,r){
+  if(!autoRestOn())return;
+  const x=EXI[uid];if(!x||x.ss||!(x.rest>0))return;
+  startTimer(adaptRest(x,r));
+}
+function pushSet(uid,w,r){
+  const k=uid+"|"+S.sel;(S.sets[k]=S.sets[k]||[]).push({w,r});
+  topSet(uid);autoRest(uid,r);
+}
+
+/* ---------- WORKOUT MODE ---------- */
+const WM={on:false,i:0,date:"",sess:null};
+const WU={1:"1 set of 5 at 60% of your working weight",2:"5 reps at 50%, then 3 reps at 75%",3:"6 reps at 40%, 4 at 60%, 2 at 80%",4:"6 reps at 40%, 4 at 55%, 3 at 70%, 1 at 85%"};
+function wmReg(e){HI[e.uid]=e.hi;NM[e.uid]=e.name;PG[e.uid]={inc:e.inc,mode:e.prog};EXI[e.uid]={rest:e.rest,hi:e.hi,lo:parseInt(e.reps)||0,ss:!!e.ss}}
+function wmOpen(){
+  const d=selDay();if(!d.session||!d.session.ex||!d.session.ex.length)return;
+  WM.on=true;WM.date=d.date;WM.sess=d.session;
+  d.session.ex.forEach(wmReg);
+  const idx=d.session.ex.findIndex((e,i)=>!S.checks[`${d.date}|ex|${i}`]);WM.i=idx<0?0:idx;
+  $("wm").hidden=false;document.body.classList.add("wm-open");wmDraw();
+}
+function wmClose(){WM.on=false;$("wm").hidden=true;document.body.classList.remove("wm-open");renderPlan();renderOverall();renderProgExtra()}
+function wmDraw(){
+  const s=WM.sess,e=s.ex[WM.i],n=s.ex.length,rd=readiness(WM.date),a=adjusted(e,rd);
+  const done=S.sets[e.uid+"|"+WM.date]||[],last=done[done.length-1],v=perfOf(e.uid);
+  const w0=last?last.w:(v.w===""?0:v.w),wv=w0>0?r1(dW(w0)):"",r0=last?last.r:(v.r||"");
+  const nxt=s.ex[WM.i+1];
+  const dots=Array.from({length:Math.max(a.sets,done.length)},(_,k)=>`<i class="${k<done.length?"on":""}"></i>`).join("");
+  $("wm").innerHTML=`
+   <div class="wm-top"><button class="btn" data-wm="close">✕ Exit</button><div class="wm-prog">${esc(s.name)} · exercise ${WM.i+1} of ${n}<div class="bar"><div style="width:${WM.i/n*100}%"></div></div></div></div>
+   <div class="wm-body">
+    <h2 class="wm-name">${esc(e.name)}</h2>
+    ${e.ss?'<div><span class="badge a">Superset: straight to the next exercise, rest after the pair</span></div>':""}
+    <div class="wm-target">${setLine(e,rd)}</div>
+    <div class="d">${esc(e.load)}${formLink(e.name)}</div>
+    ${e.wu&&!done.length?`<div class="note">Warm-up first: ${WU[e.wu]}</div>`:""}
+    ${e.cue?`<div class="cue">${esc(e.cue)}</div>`:""}
+    <div class="wm-dots" aria-label="Sets done">${dots}</div>
+    <div class="wm-inputs"><label>${wU()}<input id="wmW" type="number" inputmode="decimal" step="0.5" value="${esc(wv)}"/></label><label>Reps<input id="wmR" type="number" inputmode="numeric" value="${esc(r0)}"/></label></div>
+    <button class="btn pri wm-log" data-wm="log">Log set ${done.length+1} ✓</button>
+    <div class="d">${esc(sugText(e.uid))}</div>
+    ${done.length?`<div class="d">Done: ${done.map(x=>(x.w>0?dW(x.w)+" × ":"")+x.r).join(" · ")} <button class="rest" data-wm="undo">Undo last</button></div>`:""}
+    ${nxt?`<div class="d" style="margin-top:12px">Up next: <b>${esc(nxt.name)}</b></div>`:""}
+   </div>
+   <div class="wm-nav"><button class="btn" data-wm="prev" ${WM.i===0?"disabled":""}>‹ Prev</button><button class="btn ${WM.i===n-1?"pri":""}" data-wm="next">${WM.i===n-1?"Finish ✓":"Next ›"}</button></div>`;
+}
+function wmLog(){
+  const s=WM.sess,e=s.ex[WM.i],r=parseInt($("wmR").value)||0;
+  if(r<=0){$("wmR").focus();return}
+  const wv=$("wmW").value,w=wv===""?0:fromW(parseFloat(wv));
+  pushSet(e.uid,w,r);
+  const cnt=(S.sets[e.uid+"|"+WM.date]||[]).length;
+  if(cnt>=adjusted(e,readiness(WM.date)).sets){const key=`${WM.date}|ex|${WM.i}`;S.checks[key]=true;markDone(key);save()}
+  /* superset rotation: A, B, A, B ... then move on */
+  const prev=WM.i>0?s.ex[WM.i-1]:null;
+  if(e.ss&&WM.i<s.ex.length-1)WM.i++;
+  else if(prev&&prev.ss&&(S.sets[prev.uid+"|"+WM.date]||[]).length<adjusted(prev,readiness(WM.date)).sets)WM.i--;
+  wmDraw();
+}
+function wmClick(t){
+  const b=t.closest("[data-wm]");if(!b)return false;
+  const a=b.dataset.wm;
+  if(a==="open")wmOpen();
+  else if(a==="close")wmClose();
+  else if(a==="log")wmLog();
+  else if(a==="undo"){undoSet(WM.sess.ex[WM.i].uid);wmDraw()}
+  else if(a==="prev"&&WM.i>0){WM.i--;wmDraw()}
+  else if(a==="next"){if(WM.i<WM.sess.ex.length-1){WM.i++;wmDraw()}else wmClose()}
+  return true;
+}
+document.addEventListener("keydown",e=>{if(e.key==="Escape"&&WM.on)wmClose()});
 
 /* ---------- EVENTS ---------- */
 let deb=null;
 document.addEventListener("input",e=>{
   const t=e.target;
+  if(trInput(t))return;
   if(kitchenInput(t))return;
   if(t.matches("[data-p]")){clearTimeout(deb);deb=setTimeout(()=>onField(t),t.type==="number"?250:0);if(t.tagName==="SELECT"||t.type==="date"){clearTimeout(deb);onField(t)}}
   else if(t.matches("[data-m] input")){onMulti(t.closest("[data-m]"),t)}
@@ -1350,6 +1807,7 @@ document.addEventListener("input",e=>{
 });
 document.addEventListener("change",e=>{
   const t=e.target;
+  if(trChange(t)||miscChange(t))return;
   if(kitchenChange(t))return;
   if(t.dataset&&t.dataset.k){S.checks[t.dataset.k]=t.checked;markDone(t.dataset.k);save();renderPlan();renderGrocery();renderOverall();renderProgExtra()}
   else if(t.dataset&&t.dataset.rd)onReady(t);
@@ -1376,7 +1834,14 @@ document.addEventListener("click",e=>{
   const wk=t.closest("[data-wk]");
   if(wk){const v=+wk.dataset.wk;S.weekOffset=v===0?0:S.weekOffset+v;save();regen();renderAll(true);return}
   const tab=t.closest(".tab");
-  if(tab){document.querySelectorAll(".tab").forEach(x=>x.classList.toggle("active",x===tab));document.querySelectorAll(".pane").forEach(x=>x.classList.toggle("active",x.id==="pane-"+tab.dataset.tab));return}
+  if(tab){showTab(tab.dataset.tab);return}
+  const gt=t.closest("[data-goto]");
+  if(gt){showTab(gt.dataset.goto);return}
+  const fd=t.closest("[data-food]");
+  if(fd){showTab("food",fd.dataset.food);return}
+  const sg=t.closest("[data-pseg]");
+  if(sg){setPlanSeg(sg.dataset.pseg);return}
+  if(wmClick(t)||trClick(t))return;
   switch(t.id){
     case "btnWake":toggleWake();break;
     case "btnCopyRep":{const r=weekReport(),txt="Last 7 days\n"+r.lines.join("\n")+"\n\nNext week\n"+r.focus.join("\n");if(navigator.clipboard)navigator.clipboard.writeText(txt).then(()=>alert("Report copied")).catch(()=>alert(txt));else alert(txt);break}
@@ -1419,6 +1884,7 @@ function syncData(){return {mtime:S.mtime||Date.now(),data:Object.fromEntries(SY
 function applyData(d,mtime){
   SYNCKEYS.forEach(k=>{if(d[k]!==undefined)S[k]=d[k]});
   S.prof=Object.assign(JSON.parse(JSON.stringify(DEFP)),S.prof);
+  S.cplan=normCP(S.cplan);
   lastSnap=snapOf();S.mtime=mtime||Date.now();save();regen();renderAll();
 }
 /* Two devices edited since the last sync: keep entries from both. Same key on both sides: the newer side wins. */
@@ -1428,6 +1894,7 @@ function mergeData(older,newer){
   MAPK.forEach(k=>{o[k]=Object.assign({},older[k],newer[k])});
   ["recipes","groc"].forEach(k=>{const ids=new Set((newer[k]||[]).map(x=>x.id));o[k]=(newer[k]||[]).concat((older[k]||[]).filter(x=>!ids.has(x.id)))});
   {const a=older.flog||{},b=newer.flog||{},m={};new Set([...Object.keys(a),...Object.keys(b)]).forEach(d=>{const ids=new Set((b[d]||[]).map(x=>x.id));m[d]=(b[d]||[]).concat((a[d]||[]).filter(x=>!ids.has(x.id)))});o.flog=m}
+  if(older.cplan||newer.cplan)o.cplan=mergeCP(older.cplan,newer.cplan);
   const po=older.prefs||{},pn=newer.prefs||{};
   o.prefs=Object.assign({},pn,{foods:Object.assign({},po.foods,pn.foods),meals:Object.assign({},po.meals,pn.meals)});
   return o;
@@ -1596,7 +2063,7 @@ function setLine(e,rd){
   let reps=e.reps;
   if(e.bmReps&&a.rir!==e.rir)reps=String(Math.max(1,parseInt(e.reps)-(a.rir-e.rir)));
   const changed=a.sets!==e.sets||a.rir!==e.rir;
-  return `<b>${a.sets} × ${reps}</b> · ${a.rir} RIR · rest ${e.rest}s${changed?` <span class="badge a">readiness</span>`:""}`;
+  return `<b>${a.sets} × ${reps}</b> · ${a.rir} RIR · ${e.ss?"no rest, straight to the next":"rest "+e.rest+"s"}${changed?` <span class="badge a">readiness</span>`:""}`;
 }
 function renderReady(){
   const d=selDay(),l=S.log[d.date]||{},rd=readiness(d.date);
@@ -1622,10 +2089,10 @@ const e1=(w,r)=>w>0&&r>0?w*(1+Math.min(r,12)/30):0;
 const valOf=h=>h.w>0?e1(h.w,h.r):h.r;
 function bestBefore(uid,date){let b=0;Object.values(S.hist).forEach(h=>{if(h.u===uid&&h.d<date){const v=valOf(h);if(v>b)b=v}});return b}
 function sugText(uid){
-  const v=perfOf(uid),r=parseFloat(v.r),hi=HI[uid],step=metric()?2.5:5,wd=v.w===""?0:dW(v.w);
+  const v=perfOf(uid),r=parseFloat(v.r),hi=HI[uid],pg=PG[uid]||{},step=pg.inc>0?pg.inc:(metric()?2.5:5),wd=v.w===""?0:dW(v.w);
   if(!r)return "Log your best set to get a target for next time.";
   let t;
-  if(hi&&r>=hi)t=wd?`Top of the range. Next time: ${r1(wd+step)} ${wU()} for ${Math.max(1,r-3)}+ reps.`:"Top of the range. Add load (bag, vest, dumbbell) or a harder variation.";
+  if(hi&&r>=hi&&pg.mode!=="reps")t=wd?`Top of the range. Next time: ${r1(wd+step)} ${wU()} for ${Math.max(1,r-3)}+ reps.`:"Top of the range. Add load (bag, vest, dumbbell) or a harder variation.";
   else t=wd?`Next time: ${wd} ${wU()} for ${r+1}+ reps.`:`Next time: ${r+1}+ reps.`;
   const cur=valOf({w:v.w===""?0:v.w,r}),prev=bestBefore(uid,S.sel);
   if(prev>0&&cur>prev)t+=" 🏆 New PR!";
@@ -1635,7 +2102,7 @@ function sugText(uid){
   return t;
 }
 function perfHTML(e){
-  const v=perfOf(e.uid);HI[e.uid]=e.hi;NM[e.uid]=e.name;
+  const v=perfOf(e.uid);HI[e.uid]=e.hi;NM[e.uid]=e.name;PG[e.uid]={inc:e.inc,mode:e.prog};EXI[e.uid]={rest:e.rest,hi:e.hi,lo:parseInt(e.reps)||0,ss:!!e.ss};
   return `<div class="perfrow"><input class="perf" type="number" inputmode="decimal" step="0.5" data-pw="${esc(e.uid)}" placeholder="${wU()}" value="${v.w===""?"":esc(dW(v.w))}"/><span>×</span><input class="perf" type="number" inputmode="numeric" data-pr="${esc(e.uid)}" placeholder="reps" value="${esc(v.r)}"/></div><div class="perfrow"><button class="btn" data-addset="${esc(e.uid)}">+ Log set</button></div><div class="cue" data-setlist="${esc(e.uid)}">${setsHTML(e.uid)}</div><div class="cue" data-sug="${esc(e.uid)}">${esc(sugText(e.uid))}</div>`;
 }
 function onPerfInput(t){
@@ -2144,9 +2611,8 @@ function setsHTML(uid){
 function addSet(uid){
   const wi=document.querySelector('[data-pw="'+uid+'"]'),ri=document.querySelector('[data-pr="'+uid+'"]');
   const r=parseInt(ri.value)||0;if(r<=0)return;
-  const w=wi.value===""?0:fromW(parseFloat(wi.value)),k=uid+"|"+S.sel;
-  (S.sets[k]=S.sets[k]||[]).push({w,r});
-  topSet(uid);
+  const w=wi.value===""?0:fromW(parseFloat(wi.value));
+  pushSet(uid,w,r);
 }
 function undoSet(uid){
   const k=uid+"|"+S.sel,a=S.sets[k]||[];a.pop();
@@ -2304,7 +2770,7 @@ function healthHash(){
 }
 setTimeout(healthHash,0);
 
-initTheme();regen();renderAll();initSync();
+initTheme();regen();renderAll();restoreNav();initSync();
 
 </script>
 </body>
