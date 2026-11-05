@@ -345,6 +345,14 @@
   html[data-theme=light] .card,html[data-theme=light] .kpi{border-color:#dfe5ee}
   html[data-theme=light] h1{background:linear-gradient(90deg,#14202e,#2563eb);-webkit-background-clip:text;background-clip:text}
   .grid2>*{min-width:0}
+  /* ---------- iPhone notch / status bar: the page draws under it (viewport-fit=cover), so reserve the space ---------- */
+  body{padding-top:calc(20px + env(safe-area-inset-top));padding-left:max(20px,env(safe-area-inset-left));padding-right:max(20px,env(safe-area-inset-right))}
+  @media(max-width:700px){body{padding-top:calc(12px + env(safe-area-inset-top));padding-left:max(12px,env(safe-area-inset-left));padding-right:max(12px,env(safe-area-inset-right))}}
+  body::before{content:"";position:fixed;top:0;left:0;right:0;height:env(safe-area-inset-top);background:var(--bg);z-index:150;pointer-events:none}
+  @media(min-width:701px){.tabs{top:env(safe-area-inset-top)}}
+  @media(max-width:960px){.planseg{top:env(safe-area-inset-top)}}
+  #wm{padding-top:calc(14px + env(safe-area-inset-top))}
+  #cook{padding-top:calc(16px + env(safe-area-inset-top))}
   .card h2{flex-wrap:wrap;row-gap:8px}
   .card h2>span:last-child{flex-wrap:wrap}
   @media(prefers-reduced-motion:reduce){*{animation:none!important}}
@@ -1953,7 +1961,7 @@ document.addEventListener("click",e=>{
 });
 
 /* ---------- APP VERSION, UPDATE PROMPT, INSTALL PROMPT ---------- */
-const APP_VER="2026.11.05.3";
+const APP_VER="2026.11.05.4";
 let UPD=false,BIP=null;
 const inFrame=()=>{try{return window.self!==window.top}catch(e){return true}};
 const isStandalone=()=>matchMedia("(display-mode: standalone)").matches||navigator.standalone===true;
