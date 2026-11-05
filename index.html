@@ -325,6 +325,7 @@
   details.more .menu{position:absolute;right:0;top:calc(100% + 6px);z-index:30;background:var(--panel);border:1px solid var(--border);border-radius:12px;padding:6px;display:flex;flex-direction:column;gap:4px;min-width:240px;box-shadow:var(--shadow)}
   details.more .menu .btn{text-align:left;background:transparent;border-color:transparent;width:100%}
   details.more .menu .btn:hover{background:var(--glow)}
+  .mver{font-size:.74rem;color:var(--muted);padding:6px 14px 2px;border-top:1px solid var(--border);margin-top:2px}
   @media(max-width:700px){
     .kpis{display:flex;overflow-x:auto;scroll-snap-type:x mandatory;gap:10px;padding-bottom:6px;margin-left:-12px;margin-right:-12px;padding-left:12px;padding-right:12px;scrollbar-width:none}
     .kpis::-webkit-scrollbar{display:none}
@@ -393,8 +394,8 @@
   <button class="tab active" data-tab="plan"><span class="ic">🏠</span><span class="full">Today</span><span class="short">Today</span></button>
   <button class="tab" data-tab="train"><span class="ic">🏋️</span><span class="full">Train</span><span class="short">Train</span></button>
   <button class="tab" data-tab="food"><span class="ic">🍽️</span><span class="full">Food</span><span class="short">Food</span></button>
-  <button class="tab" data-tab="progress"><span class="ic">📈</span><span class="full">Progress</span><span class="short">Progress</span></button>
   <button class="tab" data-tab="overview"><span class="ic">📊</span><span class="full">Targets</span><span class="short">Targets</span></button>
+  <button class="tab" data-tab="progress"><span class="ic">📈</span><span class="full">Progress</span><span class="short">Progress</span></button>
   </nav>
 
 <section id="pane-train" class="pane"></section>
@@ -1417,7 +1418,7 @@ function renderPlan(){
   const mon=weekMon();
   $("weekNav").innerHTML=peakShown
     ?`<span class="badge a">Peak week · event ${dateLabel(p.event)}</span><button class="btn" id="btnIcs">📅 Add week to calendar</button>`
-    :`<button class="btn" data-wk="-1">‹</button><b>${dateLabel(mon,{month:"short",day:"numeric"})} – ${dateLabel(addD(mon,6),{month:"short",day:"numeric"})}</b><button class="btn" data-wk="1">›</button>${S.weekOffset?'<button class="btn" data-wk="0">Today</button>':""}<span class="badge"><span class="bfull">Week ${W.wk+1} of 4 · RIR ${W.rir}${W.wk===3?" · deload":""}</span><span class="bshort">W${W.wk+1} · RIR ${W.rir}${W.wk===3?" · DL":""}</span></span><details class="more"><summary class="btn" aria-label="More week options" title="More">⋯</summary><div class="menu"><button class="btn" id="btnRotate">🔄 New block (rotate exercises)</button><button class="btn" id="btnIcs">📅 Add week to calendar</button><button class="btn" data-ui="ics4">⏰ Reminders: next 4 weeks</button><button class="btn" id="btnWake">${wlWant?"🔆 Screen stays on ✓":"🔆 Keep screen on"}</button></div></details>`;
+    :`<button class="btn" data-wk="-1">‹</button><b>${dateLabel(mon,{month:"short",day:"numeric"})} – ${dateLabel(addD(mon,6),{month:"short",day:"numeric"})}</b><button class="btn" data-wk="1">›</button>${S.weekOffset?'<button class="btn" data-wk="0">Today</button>':""}<span class="badge"><span class="bfull">Week ${W.wk+1} of 4 · RIR ${W.rir}${W.wk===3?" · deload":""}</span><span class="bshort">W${W.wk+1} · RIR ${W.rir}${W.wk===3?" · DL":""}</span></span><details class="more"><summary class="btn" aria-label="More week options" title="More">⋯</summary><div class="menu"><button class="btn" id="btnRotate">🔄 New block (rotate exercises)</button><button class="btn" id="btnIcs">📅 Add week to calendar</button><button class="btn" data-ui="ics4">⏰ Reminders: next 4 weeks</button><button class="btn" id="btnWake">${wlWant?"🔆 Screen stays on ✓":"🔆 Keep screen on"}</button><div class="mver">Version ${APP_VER}</div></div></details>`;
   $("days").innerHTML=W.days.map(x=>{
     const pr=dayProg(x);
     return `<button aria-pressed="${x.date===d.date}" class="day ${x.date===d.date?"active":""} ${pr.t&&pr.n===pr.t?"done":""}" data-day="${x.date}"><b>${dateLabel(x.date,{weekday:"short"})}${x.date===TODAY?" · today":""}</b><small>${dateLabel(x.date,{month:"short",day:"numeric"})}</small><small>${esc(x.label)}</small><div class="mini"><i style="width:${pr.pct*100}%"></i></div></button>`;
@@ -1961,7 +1962,7 @@ document.addEventListener("click",e=>{
 });
 
 /* ---------- APP VERSION, UPDATE PROMPT, INSTALL PROMPT ---------- */
-const APP_VER="2026.11.05.4";
+const APP_VER="2026.11.05.5";
 let UPD=false,BIP=null;
 const inFrame=()=>{try{return window.self!==window.top}catch(e){return true}};
 const isStandalone=()=>matchMedia("(display-mode: standalone)").matches||navigator.standalone===true;
