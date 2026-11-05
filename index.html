@@ -1962,7 +1962,7 @@ document.addEventListener("click",e=>{
 });
 
 /* ---------- APP VERSION, UPDATE PROMPT, INSTALL PROMPT ---------- */
-const APP_VER="2026.11.05.5";
+const APP_VER="2026.11.05.6";
 let UPD=false,BIP=null;
 const inFrame=()=>{try{return window.self!==window.top}catch(e){return true}};
 const isStandalone=()=>matchMedia("(display-mode: standalone)").matches||navigator.standalone===true;
@@ -2146,6 +2146,7 @@ document.addEventListener("click",e=>{
     case "btnSyncNow":syncNow();break;
     case "btnSyncOff":SY={};saveSY();setMsg("Signed out");renderSync();break;
     case "btnSyncLink":shareLink();break;
+    case "btnInvite":inviteFriend();break;
     case "btnConfirm":S.confirmed=true;save();fillProfile();break;
     case "btnRotate":S.blockOffset++;S.blockStart=mondayOf(TODAY);S.swaps={};S.weekOffset=0;save();regen();renderAll(true);break;
     case "btnApply":S.prof.kcalAdj=Math.max(-500,Math.min(500,(S.prof.kcalAdj||0)+(+t.dataset.delta)));commit();break;
@@ -2270,7 +2271,8 @@ function renderSync(){
   let h;
   if(SY.sess)h=`<div class="d">Signed in as <b>${esc(SY.sess.email)}</b>. Your progress is private to this account. Changes upload a few seconds after you make them, and every signed-in device checks for newer data every minute and when you open the app.</div><div style="${row}"><button class="btn pri" id="btnSyncNow">Sync now</button><button class="btn" id="btnSyncOff">Sign out</button></div><h3>Danger zone</h3><div class="d">Deletes your account and the copy stored online. Progress already on this device stays.</div><div style="${row}"><button class="btn danger" id="btnSbDel">Delete my account and cloud data</button></div>`;
   else h=`<div class="d">Make an account to keep your own progress and sync it to every device. Sign in with the same email on each device.</div><div style="${row}"><input type="email" id="sbEmail" placeholder="Email" autocomplete="email" style="flex:1;min-width:200px"/><input type="password" id="sbPw" placeholder="Password (6+ characters)" autocomplete="current-password" style="flex:1;min-width:200px"/></div><div style="${row}"><button class="btn pri" id="btnSbIn">Sign in</button><button class="btn" id="btnSbUp">Create account</button></div>`;
-  h+=`<h3>No account? Send a link</h3><div class="d">Creates a link holding your progress. Open it on your other device to load it there.</div><div style="margin-top:10px"><button class="btn" id="btnSyncLink">Share sync link</button></div>`;
+  h+=`<h3>Invite a friend</h3><div class="d">Sends the plain app link. Your friend starts with a fresh, empty profile and never sees your data.</div><div style="margin-top:10px"><button class="btn pri" id="btnInvite">👋 Invite a friend</button></div>`;
+  h+=`<h3>No account? Move your data to your own device</h3><div class="d">⚠️ Makes a link that <b>contains all your data</b>: weight, lifts, plans and notes. Only open it on your own phone or computer. Never send it to anyone else.</div><div style="margin-top:10px"><button class="btn" id="btnSyncLink">📲 Send my data to my other device</button></div>`;
   box.innerHTML=h;
 }
 async function toB64(obj){
@@ -2284,10 +2286,20 @@ async function fromB64(t){
   const buf=Uint8Array.from(s,c=>c.charCodeAt(0));
   return JSON.parse(await new Response(new Blob([buf]).stream().pipeThrough(new DecompressionStream("gzip"))).text());
 }
+const APP_URL="https://showacquisitions.github.io/elite-peaking-os/";
+async function inviteFriend(){
+  const url=location.protocol.startsWith("http")?location.origin+location.pathname:APP_URL,text="Training and nutrition planner I use. Free, no ads, works offline:";
+  try{
+    if(navigator.share)await navigator.share({title:"Elite OS",text,url});
+    else if(navigator.clipboard){await navigator.clipboard.writeText(url);alert("App link copied. It does not include any of your data.")}
+    else prompt("Copy this link",url);
+  }catch(e){if(e.name!=="AbortError")prompt("Copy this link",url)}
+}
 async function shareLink(){
+  if(!confirm("This link contains ALL your data: weight, lifts, plans and notes.\n\nOnly use it to move your data to your own device. To invite a friend, use \"Invite a friend\" instead.\n\nCreate the private link?"))return;
   try{
     const url=location.href.split("#")[0]+"#s="+await toB64(syncData());
-    if(navigator.share)await navigator.share({title:"Elite OS progress",url});
+    if(navigator.share)await navigator.share({title:"My Elite OS data (private)",url});
     else if(navigator.clipboard){await navigator.clipboard.writeText(url);alert("Sync link copied. Open it on your other device.")}
     else prompt("Copy this link",url);
   }catch(e){if(e.name!=="AbortError")alert("Could not make the link: "+e.message)}

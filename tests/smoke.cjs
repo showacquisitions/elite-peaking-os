@@ -87,6 +87,10 @@ async function page(browser, vp) {
   ok(await pg.locator("#wlogBox .row").count() >= 1, "workout history lists the session");
   ok(pg.errors.length === 0, "no JS errors during the full run " + pg.errors.join(" | "));
 
+  console.log("Sharing");
+  const inv = await pg.evaluate(async () => { let got = null; const sh = navigator.share; navigator.share = async o => { got = o.url }; await inviteFriend(); navigator.share = sh; return got });
+  ok(inv && !inv.includes("#") && !/[?&]s=/.test(inv), "Invite a friend shares the plain app link, never your data");
+
   const vf = path.join(path.dirname(file), "version.json");
   if (fs.existsSync(vf)) {
     const v = JSON.parse(fs.readFileSync(vf, "utf8")).v, av = await pg.evaluate(() => APP_VER);
