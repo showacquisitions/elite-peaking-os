@@ -140,11 +140,15 @@ async function page(browser, vp) {
   const mock = async (pgx, calls) => pgx.route(SB + "/**", async r => {
     const u = new URL(r.request().url()), m = r.request().method(); calls.push(m + " " + u.pathname + u.search);
     const J = (b, st) => r.fulfill({ status: st || 200, contentType: "application/json", body: JSON.stringify(b) });
+    if (m !== "GET") { calls.bodies = calls.bodies || {}; calls.bodies[u.pathname] = r.request().postData() }
+    if (u.pathname.startsWith("/storage/v1/object/list/")) return J([{ name: "abc_front_2026-10-01.jpg" }, { name: "abd_front_2026-11-01.jpg" }]);
+    if (u.pathname.startsWith("/storage/v1/object/authenticated/")) return r.fulfill({ status: 200, contentType: "image/jpeg", body: Buffer.from("/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAgGBgcGBQgHBwcJCQgKDBQNDAsLDBkSEw8UHRofHh0aHBwgJC4nICIsIxwcKDcpLDAxNDQ0Hyc5PTgyPC4zNDL/wAALCAABAAEBAREA/8QAFAABAAAAAAAAAAAAAAAAAAAACf/EABQQAQAAAAAAAAAAAAAAAAAAAAD/2gAIAQEAAD8AKp//2Q==", "base64") });
     if (u.pathname === "/auth/v1/recover") return J({});
     if (u.pathname === "/auth/v1/user") return J({ id: me, email: "c@x.y" });
     if (u.pathname === "/rest/v1/progress" && m === "GET" && u.search.includes("user_id=in.")) return J([{ user_id: cl, mtime: 1, data: { prof: { days: 3, units: "metric" }, wlog: { [new Date(Date.now() - 2 * 864e5).toISOString().slice(0, 10)]: { name: "Push", end: 1, sets: 12, reps: 90, mins: 50 } }, log: {}, sets: {}, hist: {}, checks: {}, steps: {} } }]);
     if (u.pathname === "/rest/v1/progress" && m === "GET") return calls.fail400 ? J({ message: "bad" }, 400) : J([]);
-    if (u.pathname === "/rest/v1/coach_links") return J([{ coach_id: me, client_id: cl, coach_name: "Me", client_name: "Jordan", habits: ["10k steps"], created_at: "2026-11-01" }]);
+    if (u.pathname === "/rest/v1/coach_links") return J([{ coach_id: me, client_id: cl, coach_name: "Me", client_name: "Jordan", habits: ["10k steps"], created_at: "2026-11-01", coach_read_at: "2026-11-01T00:00:00Z", share_photos: !!calls.share }]);
+    if (u.pathname === "/rest/v1/messages" && m === "GET") return J([{ id: 1, client_id: cl, coach_id: me, author: cl, body: "hey coach", created_at: "2026-11-05T10:00:00Z" }]);
     if (u.pathname === "/rest/v1/checkins" && u.search.includes("client_id=in.")) return J([{ client_id: cl, week: "2026-11-02", data: { energy: 4, wins: "PR", auto: { workouts: 3, planned: 3 } }, reply: "" }]);
     return J(m === "GET" ? [] : null, m === "GET" ? 200 : 204);
   });
@@ -304,6 +308,53 @@ async function page(browser, vp) {
     const A = { ua_public: "BCVxsr7N_eNgVRqvHtD0zTZsEc6-VV-JvLexhqUzORcxaOzi6-AYWXvTBHm4bjyPjs7Vd8pZGH6SRpkNtoIAiw4", as_public: "BP4z9KsN6nGRTbVYI_c7VJSPQTBtkgcy27mlmlMoZIIgDll6e3vCYLocInmYWAmS6TlzAC8wEqKK6PBru3jl7A8", ecdh: "kyrL1jIIOHEzg3sM2ZWRHDRB62YACZhhSlknJ672kSs", auth: "BTBZMqHH6r4Tts7J_aSIgg", salt: "DGv6ra1nlYgDCS1FRnbzlw" };
     const kk = await deriveKeys(unb64u(A.ecdh), unb64u(A.auth), unb64u(A.ua_public), unb64u(A.as_public), unb64u(A.salt));
     ok(b64u(kk.cek) === "oIhVW04MRdy2XN9CiKLxTg" && b64u(kk.nonce) === "4h_95klXJ5E_qnoN", "push key schedule matches the RFC 8291 test vector");
+  }
+
+  console.log("v3.2: auto supersets, demos, progression, unread, photos, copyright");
+  {
+    const p8 = await page(browser, { width: 390, height: 900 });
+    const r = await p8.evaluate(() => {
+      S.prof.autoSS = "acc"; regen(); const ss = W.sessions.map(s => s.ex.map(x => x.ss ? 1 : 0).join("")); const anySS = W.sessions.some(s => s.ex.some(x => x.ss)), mainClean = W.sessions.every(s => !s.ex[0].ss && !s.ex[1].ss);
+      S.prof.autoSS = "off"; regen(); const off = W.sessions.every(s => s.ex.every(x => !x.ss));
+      return { anySS, mainClean, off, ss };
+    });
+    ok(r.anySS && r.mainClean && r.off, `auto plan pairs accessories into supersets only when turned on (${r.ss.join(" ")})`);
+    const demo = await p8.evaluate(() => {
+      const c = CP(); c.mode = "custom"; const dow = (new Date().getDay() + 6) % 7; const ex = [Object.assign(libToEx(EX[0]), { demo: "https://youtu.be/abc123" }), libToEx(EX[7])];
+      PLN().days = { [dow]: { name: "Demo day", mt: NOW(), ex } }; touch(); save(); regen(); S.sel = TODAY; showTab("plan"); renderPlan();
+      const a = document.querySelector("#wList a.vid-c"); const res = a && a.getAttribute("href"); c.mode = "auto"; save(); regen(); renderAll(true); return res;
+    });
+    ok(demo === "https://youtu.be/abc123", "a demo video link on an exercise replaces the generic form search");
+    const ur = await p8.evaluate(() => {
+      SY.sess = { at: "t", rt: "r", exp: Date.now() + 36e5, uid: "me", email: "e@x.y" };
+      S.cx = { links: [{ coach_id: "co", client_id: "me", coach_name: "Sam", client_read_at: "2026-11-01T00:00:00Z" }], asg: {}, ci: {}, msgs: [{ coach_id: "co", client_id: "me", author: "co", body: "Nice work", created_at: "2026-11-05T09:00:00Z" }] };
+      TAB = "train"; renderPlan(); const b = document.querySelector('.tab[data-tab="plan"] .tbadge');
+      const out = { n: clientUnread(), badge: b && b.textContent }; SY = {}; S.cx = {}; renderPlan(); return out;
+    });
+    ok(ur.n === 1 && ur.badge === "1", "client sees an unread badge for a new coach message");
+    ok(/© 2026 Show Acquisitions/.test(await p8.textContent(".appfoot")) && fs.existsSync(path.join(path.dirname(file), "LICENSE")), "copyright notice in the app footer and a LICENSE file");
+    ok(p8.errors.length === 0, "no JS errors " + p8.errors.join(" | "));
+    await p8.close();
+  }
+  {
+    const p9 = await page(browser, { width: 390, height: 900 }), calls = [];
+    await mock(p9, calls);
+    await p9.evaluate(() => { SY.sess = { at: "t", rt: "r", exp: Date.now() + 36e5, uid: "11111111-1111-1111-1111-111111111111", email: "c@x.y" }; lsSet("eliteCoachOn", "1"); CP().mode = "custom"; seedFromAuto(); save(); renderNavCoach(); showTab("coach") });
+    await p9.waitForSelector(".cocard");
+    ok(/1 new message/.test(await p9.textContent(".cocard")) && (await p9.textContent('.tab[data-tab="coach"] .tbadge')) === "1", "coach sees unread messages on the client card and the Clients tab");
+    await p9.click(".cocard"); await p9.waitForTimeout(100);
+    ok(calls.some(c => c.startsWith("POST /rest/v1/rpc/msg_read")), "opening a client marks their messages read");
+    ok(/Not shared/.test(await p9.textContent("#coPhotos")), "client photos stay hidden until the client shares them");
+    await p9.selectOption("#coProgP", "wave"); await p9.selectOption("#coWeeks", "4"); await p9.click("#coAssignProg"); await p9.waitForTimeout(200);
+    const rows = JSON.parse(calls.bodies["/rest/v1/assignments"] || "[]").filter(x => x.session.ex.length);
+    const byWeek = w => rows.filter(x => /^Week (\d+)/.exec(x.note) && +/^Week (\d+)/.exec(x.note)[1] === w)[0];
+    const s1 = byWeek(1) && byWeek(1).session.ex[0].sets, s3 = byWeek(3) && byWeek(3).session.ex[0].sets, s4 = byWeek(4) && byWeek(4).session.ex[0].sets;
+    ok(rows.length > 0 && s3 === s1 + 2 && s4 < s1 && /deload/.test(byWeek(4).note), `4-week wave builds sets, then deloads (week 1: ${s1}, week 3: ${s3}, week 4: ${s4})`);
+    calls.share = true; await p9.evaluate(() => loadClients()); await p9.waitForFunction(() => !CO.loading);
+    await p9.waitForSelector("#coPhotos img[src^='blob:']", { timeout: 5000 }).catch(() => {});
+    ok(await p9.locator("#coPhotos img").count() === 2, "coach sees first and latest shared photos once the client opts in");
+    ok(p9.errors.length === 0, "no JS errors in coach v3.2 " + p9.errors.join(" | "));
+    await p9.close();
   }
 
   const vf = path.join(path.dirname(file), "version.json");

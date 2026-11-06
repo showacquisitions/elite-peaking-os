@@ -14,13 +14,14 @@
 - [x] Web push for messages, assignments, check-ins, rest timer and workout reminders (v3.1).
 - [x] Coach sets client calories and macros (v3.1).
 - [ ] Owner: turn on notifications on your phone (Profile → Notifications) and tap Send a test.
-- [ ] Unread tracking for messages (currently "Message waiting" means the last message came from the client).
-- [ ] Coach: copy one client's week to another client; program templates with progression per week.
-- [ ] Coach: client progress photos (needs Supabase Storage with per-client RLS; photos are device-only today).
+- [x] Unread tracking for messages (v3.2).
+- [ ] Coach: copy one client's week to another client.
+- [x] Coach: client progress photos, opt-in (v3.2).
 - [ ] Group superset drag: drag a whole group as one unit in the builder.
+- [x] Supersets in the auto plan (v3.2), coach program progression (v3.2), demo video links (v3.2).
 
 ## Later (v4)
-- [ ] Native wrapper (Capacitor) for one-tap Apple Health / Health Connect, background sync, and push without the Shortcut.
+- [ ] Native wrapper (Capacitor) for one-tap Apple Health / Health Connect (the only way to auto-sync Android Health).
 - [ ] Payments for coaches (Stripe) if the coaching side gets paying clients.
 - [ ] Split `index.html` into modules with a build step once it passes ~5,000 lines.
 

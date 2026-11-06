@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+<!-- Elite OS · © 2026 Show Acquisitions. All rights reserved. Proprietary; see LICENSE. -->
 <html lang="en">
 <head>
 <meta charset="UTF-8" />
@@ -12,6 +13,8 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
 <meta name="apple-mobile-web-app-title" content="Elite OS" />
 <title>Elite Aesthetic Training & Nutrition OS</title>
+<meta name="copyright" content="© 2026 Show Acquisitions. All rights reserved."/>
+<meta name="author" content="Show Acquisitions"/>
 <style>
   :root{--bg:#0a0d13;--panel:#121722;--panel2:#19202e;--border:#263045;--text:#e8eef5;--muted:#8793a3;--accent:#3b82f6;--glow:rgba(59,130,246,.18);--green:#10b981;--amber:#f59e0b;--red:#ef4444;--font:'Inter',-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif}
   *{box-sizing:border-box;margin:0;padding:0}
@@ -465,6 +468,14 @@
   .putog{display:flex!important;gap:12px;align-items:flex-start;padding:10px 2px;border-bottom:1px solid var(--ring);text-transform:none!important;letter-spacing:0!important;color:var(--text)!important;font-size:.9rem!important;cursor:pointer}
   .putog input{width:20px!important;height:20px!important;min-height:0!important;margin:2px 0 0!important;flex:none;accent-color:var(--accent)}
   .putog b{display:block;font-weight:700}.putog small{display:block;color:var(--muted);font-size:.8rem;margin-top:2px}
+  .appfoot{text-align:center;font-size:.72rem;color:var(--muted);padding:18px 16px calc(96px + env(safe-area-inset-bottom));opacity:.8}
+  .appfoot a{color:inherit}
+  @media(min-width:701px){.appfoot{padding-bottom:28px}}
+  .vid-c{color:var(--coach)!important;font-weight:700}
+  .tbadge{display:inline-grid;place-items:center;min-width:17px;height:17px;padding:0 5px;border-radius:999px;background:var(--red);color:#fff;font-size:.66rem;font-weight:800;margin-left:4px;vertical-align:2px}
+  .tab .tbadge{position:absolute;top:4px;right:calc(50% - 22px)}
+  .tab{position:relative}
+  .cophg{display:grid;grid-template-columns:1fr 1fr;gap:10px}.cophg figure{margin:0}.cophg img{width:100%;aspect-ratio:3/4;object-fit:cover;border-radius:12px;background:var(--panel2)}.cophg figcaption{font-size:.75rem;color:var(--muted);margin-top:4px}
   .sechl{font-size:.72rem;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin:2px 0 8px}
   .sechl b{color:var(--text);letter-spacing:0;text-transform:none;font-size:.85rem;margin-left:6px}
   .sw-auto{margin:0 2px 12px!important;font-size:.82rem;color:var(--muted)}
@@ -602,8 +613,8 @@
   <div class="card"><h2><span>Privacy and data</span></h2>
     <details class="rec" open><summary>What is stored and where</summary>
       <ol>
-        <li><b>On this device:</b> your profile, plan, logs, recipes and food entries are saved in this browser. Progress photos are saved here too and never leave this device.</li>
-        <li><b>If you create an account:</b> your email and your progress data (not photos) are stored online with Supabase so they sync between your devices. The data is private to your account from other users, but it is not end-to-end encrypted, so the person who runs this app's database can technically read it.</li>
+        <li><b>On this device:</b> your profile, plan, logs, recipes and food entries are saved in this browser. Progress photos are saved here too and stay here unless you choose to share them with your coach.</li>
+        <li><b>If you create an account:</b> your email and your progress data are stored online with Supabase so they sync between your devices. If you connect Apple Health, the daily health numbers you send are stored there too. If you turn on notifications, your device's push address is stored so reminders can reach you. If you share photos with a coach, a copy is kept in private storage that only you and that coach can open, and turning sharing off deletes it. The data is private to your account from other users, but it is not end-to-end encrypted, so the person who runs this app's database can technically read it.</li>
         <li><b>Food search:</b> the words or barcode you search are sent to Open Food Facts, which can see your network address. Nothing else is sent to them.</li>
         <li><b>Hosting:</b> the page is served by GitHub Pages, which logs ordinary page requests.</li>
         <li><b>No ads, no analytics, no tracking scripts, and your data is never sold.</b></li>
@@ -614,6 +625,7 @@
   </div>
 </section>
 
+<footer class="appfoot">© 2026 Show Acquisitions. All rights reserved. Elite OS v<span id="footVer"></span> · <a href="LICENSE" target="_blank" rel="noopener">License</a> · Food data © Open Food Facts contributors (ODbL)</footer>
 <input type="file" id="fileIn" accept="application/json" hidden />
 <input type="file" id="phFile" accept="image/*" multiple hidden />
 <input type="file" id="hsFile" accept=".csv,.json,.txt,text/csv,application/json,text/plain" hidden />
@@ -1109,6 +1121,12 @@ function buildProgram(p,block,swaps){
   return out;
 }
 function instSession(sess,p,wk){
+  const s=instSession0(sess,p,wk);
+  /* Optional: pair accessory work (from the 3rd exercise on) into supersets of two different muscles. Main lifts stay as straight sets. */
+  if(p.autoSS==="acc")for(let i=2;i+1<s.ex.length;i+=2){const a=s.ex[i],b=s.ex[i+1];if(a.mu!==b.mu&&!a.bmReps&&!b.bmReps){a.ss=true;b.rest=Math.max(a.rest,b.rest)}else i--}
+  return s;
+}
+function instSession0(sess,p,wk){
   const rir=RIR[p.exp][wk];
   return {name:sess.name,dow:sess.dow,wk,rir,ex:sess.ex.map(x=>{
     const e=x.e,sets=setsFor(p,e,wk,x.pri);
@@ -1138,7 +1156,7 @@ function customSessions(st,p,wk){
       const sets=(wk===3&&cp.deload!==false)?Math.max(2,Math.ceil(base*.6)):base;
       const reps=String(x.reps||"8\u201312"),hm=reps.match(/(\d+)\D*$/);
       return {id:x.id||x.uid,uid:x.uid,name:x.name,slot:x.slot||"custom",key:"cust",sets,reps,rir,rest:Math.max(0,Math.min(600,Math.round(+x.rest)||90)),cue:x.cue||"",load:x.load||"Load for target RIR",mu:x.mu||"chest",mu2:x.mu2||[],bmReps:false,hi:hm?+hm[1]:0,note:"",
-        ss:!!x.ss&&ix<arr.length-1,wu:Math.max(0,Math.min(4,Math.round(+x.wu)||0)),prog:x.prog==="reps"?"reps":"dbl",inc:Math.max(0,+x.inc||0)};
+        demo:/^https:\/\//.test(x.demo||"")?String(x.demo).slice(0,300):"",ss:!!x.ss&&ix<arr.length-1,wu:Math.max(0,Math.min(4,Math.round(+x.wu)||0)),prog:x.prog==="reps"?"reps":"dbl",inc:Math.max(0,+x.inc||0)};
     })});
   }
   return out.length?out:null;
@@ -1343,7 +1361,7 @@ function advice(p,tr){
 /* ===================== UI ===================== */
 const KEY="elitePeakingState_v3";
 const TODAY=iso(new Date());
-const DEFP={sex:"m",age:30,cm:175,kg:75,bf:0,units:"imperial",goal:"recomp",rate:"cons",act:"mod",exp:"int",days:4,len:60,style:"cal",pullMax:5,pushMax:15,bagKg:0,eq:["pullbar","bands"],pri:[],diet:"omni",excl:[],meals:4,event:"",kcalAdj:0,inj:[],budget:"std",priceF:1,wtime:"17:30",mealRem:"no"};
+const DEFP={sex:"m",age:30,cm:175,kg:75,bf:0,units:"imperial",goal:"recomp",rate:"cons",act:"mod",exp:"int",days:4,len:60,style:"cal",pullMax:5,pushMax:15,bagKg:0,eq:["pullbar","bands"],pri:[],diet:"omni",excl:[],meals:4,event:"",kcalAdj:0,inj:[],budget:"std",priceF:1,wtime:"17:30",mealRem:"no",autoSS:"off"};
 function freshState(){return {prof:JSON.parse(JSON.stringify(DEFP)),log:{},checks:{},perf:{},extra:{},hist:{},done:{},prefs:{foods:{},meals:{}},recipes:[],groc:[],water:{},swaps:{},mswaps:{},blockStart:mondayOf(TODAY),blockOffset:0,weekOffset:0,sel:TODAY,confirmed:false,flog:{},sets:{},steps:{},wlog:{},cardio:{},cplan:{mode:"auto",deload:true,active:"p1",mt:0,plans:{p1:{name:"My plan",mt:0,days:{}}}}}}
 function loadState(){
   try{const v=JSON.parse(localStorage.getItem(KEY)||"null");if(v&&v.prof){const f=freshState();return Object.assign(f,v,{prof:Object.assign(f.prof,v.prof)})}}catch(e){console.warn("state load failed",e)}
@@ -1389,6 +1407,7 @@ const OPT={
  meals:[[3,"3 meals"],[4,"4 meals"],[5,"5 meals"],[6,"6 meals"]],
  budget:[["std","Standard (best quality)"],["budget","Budget (cheapest good options)"]],
  mealRem:[["no","Workouts only"],["yes","Workouts and meals"]],
+ autoSS:[["off","Off: straight sets"],["acc","Pair accessories (saves ~10 min)"]],
  units:[["imperial","Imperial (lb, in)"],["metric","Metric (kg, cm)"]]
 };
 const NUMF={age:[14,90],cm:[120,230],kg:[35,200],bf:[0,60],pullMax:[0,60],pushMax:[0,100],bagKg:[0,60],priceF:[0.3,5]};
@@ -1409,7 +1428,7 @@ function buildProfile(){
    </div>
    <div>
     <div class="card"><h2><span>Training</span></h2>
-     <div class="fgrid">${selHTML("exp","Experience")}${selHTML("days","Days per week")}${selHTML("len","Session length")}${selHTML("style","Style")}${numHTML("pullMax","Max strict pull-ups")}${numHTML("pushMax","Max strict push-ups")}${numHTML("bagKg","Weighted bag load")}<div class="cg"><label>Usual workout time</label><input type="time" data-p="wtime"/></div>${selHTML("mealRem","Calendar export includes")}</div>
+     <div class="fgrid">${selHTML("exp","Experience")}${selHTML("days","Days per week")}${selHTML("len","Session length")}${selHTML("style","Style")}${selHTML("autoSS","Supersets (auto plan)")}${numHTML("pullMax","Max strict pull-ups")}${numHTML("pushMax","Max strict push-ups")}${numHTML("bagKg","Weighted bag load")}<div class="cg"><label>Usual workout time</label><input type="time" data-p="wtime"/></div>${selHTML("mealRem","Calendar export includes")}</div>
      <h3>Equipment you have</h3>${chkHTML("eq",EQUIP)}<h3>Aches or injuries to work around</h3>${chkHTML("inj",[["shoulder","Shoulder"],["elbow","Elbow"],["wrist","Wrist"],["back","Lower back"],["knee","Knee"]])}</div>
     <div class="card"><h2><span>Nutrition</span></h2>
      <div class="fgrid">${selHTML("diet","Diet")}${selHTML("meals","Meals per day")}${selHTML("budget","Food budget")}${numHTML("priceF","Local price factor (1 = US prices)",.1)}</div>
@@ -1479,7 +1498,7 @@ function recipeHTML(mm,date,i){
   const tabs=[["std","Standard"],["bud","Budget"],["gour","Gourmet"]].filter(x=>panels[x[0]]);
   return `<details class="rec" data-rk="${key}" ${UIR[key]?"open":""}><summary>Recipe · ${esc(mm.rec[0])}</summary>${macroChips(mm,mm.user?"your planned portion":"")}<button type="button" class="btn" data-cook="${date}|${i}" style="margin-top:8px">Cook mode</button><div class="rtabs">${tabs.map(x=>`<button type="button" class="rtab ${x[0]===tab?"on":""}" data-rt="${x[0]}" data-rk="${key}">${x[1]}</button>`).join("")}</div>${tabs.map(x=>`<div class="rpanel" data-rp="${x[0]}" ${x[0]===tab?"":"hidden"}>${panels[x[0]]}</div>`).join("")}${v?`<div class="d">Prices are rough estimates. Macros stay close to the standard version.</div>`:""}</details>`;
 }
-const formLink=n=>` <a class="vid" href="https://www.youtube.com/results?search_query=${encodeURIComponent(n+" proper form")}" target="_blank" rel="noopener">▶ form</a>`;
+const formLink=(n,demo)=>/^https:\/\/[^\s"<>]{4,300}$/.test(demo||"")?` <a class="vid vid-c" href="${esc(demo)}" target="_blank" rel="noopener">▶ demo</a>`:` <a class="vid" href="https://www.youtube.com/results?search_query=${encodeURIComponent(n+" proper form")}" target="_blank" rel="noopener">▶ form</a>`;
 /* ---------- helpers for rows ---------- */
 function row(key,title,desc,extra,right){
   const on=!!S.checks[key];
@@ -1588,7 +1607,7 @@ function renderPlan(){
     $("wEdit").hidden=false;$("wStart").hidden=!s.ex.length;
     $("wList").innerHTML=warmHTML(d)+`<div class="sech"><span>💪 Main work</span><small>${s.ex.length} exercises · ${s.ex.reduce((a,x)=>a+adjusted(x,rd).sets,0)} sets</small></div><label class="trchk sw-auto"><input type="checkbox" id="autoRest" ${autoRestOn()?"checked":""}/> Auto-start rest timer when I log a set</label>`+
      (()=>{const G=ssGroups(s.ex);return s.ex.map((e,i)=>{const gi=G[i];
-      const r=row(`${d.date}|ex|${i}`,(gi?`<span class="ssl">${gi.g}${gi.k}</span>`:"")+esc(e.name)+formLink(e.name),`${setLine(e,rd,gi)}<div class="exload">${esc(e.load)}</div>${e.wu?`<div class="wuchip">🔥 Ramp-up first: ${WU[e.wu]}</div>`:""}`,
+      const r=row(`${d.date}|ex|${i}`,(gi?`<span class="ssl">${gi.g}${gi.k}</span>`:"")+esc(e.name)+formLink(e.name,e.demo),`${setLine(e,rd,gi)}<div class="exload">${esc(e.load)}</div>${e.wu?`<div class="wuchip">🔥 Ramp-up first: ${WU[e.wu]}</div>`:""}`,
       `${e.note?`<div class="d">${esc(e.note)}</div>`:""}<div class="cue">${esc(e.cue)}</div>${perfHTML(e)}`,
       `${e.ss?"":`<button type="button" class="rest" data-t="${e.rest}">⏱ ${e.rest}s</button>`}${e.key!=="pump"&&e.key!=="cust"?`<button type="button" class="rest" data-swap="${esc(e.key)}">↻ swap</button>`:""}`);
       if(!gi)return r;
@@ -1822,6 +1841,7 @@ function trExRow(d,i,x,n,gi,prevIn){
       <label>Warm-up sets<select data-trf="wu" data-d="${d}" data-i="${i}">${[0,1,2,3,4].map(k=>`<option value="${k}" ${+x.wu===k?"selected":""}>${k?k+" ramp-up":"None"}</option>`).join("")}</select></label>
       <label>Progression<select data-trf="prog" data-d="${d}" data-i="${i}"><option value="dbl" ${x.prog!=="reps"?"selected":""}>Add load at top of range</option><option value="reps" ${x.prog==="reps"?"selected":""}>Add reps only</option></select></label>
       <label>Load step (${wU()})<input type="number" inputmode="decimal" step="0.5" min="0" max="100" data-trf="inc" data-d="${d}" data-i="${i}" value="${x.inc>0?esc(x.inc):""}" placeholder="auto"/></label>
+      <label style="grid-column:1/-1">Demo video link (optional)<input type="url" data-trf="demo" data-d="${d}" data-i="${i}" value="${esc(x.demo||"")}" placeholder="https://youtube.com/…" maxlength="300"/></label>
      </div></details></div>`;
 }
 function trDayCard(d){
@@ -1924,6 +1944,7 @@ function trChange(t){
   else if(f==="prog"){x.prog=t.value==="reps"?"reps":"dbl"}
   else if(f==="inc"){x.inc=Math.max(0,Math.min(100,parseFloat(t.value)||0));t.value=x.inc>0?x.inc:""}
   else if(f==="ss"){x.ss=!!t.checked}
+  else if(f==="demo"){const v=String(t.value||"").trim();x.demo=/^https:\/\/\S{4,300}$/.test(v)?v:"";t.value=x.demo}
   touch(dd);
   trCommit(f==="wu"||f==="prog"||f==="ss"||f==="inc");return true;
 }
@@ -2009,7 +2030,7 @@ function wmDraw(){
     <h2 class="wm-name">${esc(e.name)}</h2>
     ${ssBox}
     <div class="wm-target">${gi?`<span class="ssl">${gi.g}${gi.k}</span>`:""}${setLine(e,rd,gi)}</div>
-    <div class="d">${esc(e.load)}${formLink(e.name)}</div>
+    <div class="d">${esc(e.load)}${formLink(e.name,e.demo)}</div>
     ${WM.i===0&&!s.ex.some(x=>(S.sets[x.uid+"|"+WM.date]||[]).length)?warmHTML({session:s,date:WM.date}):e.wu&&!done.length?callout("warm","🔥","Ramp-up first","",WU[e.wu]):""}
     ${e.cue?`<div class="cue">${esc(e.cue)}</div>`:""}
     <div class="wm-dots" aria-label="Sets done">${dots}</div>
@@ -2132,7 +2153,7 @@ document.addEventListener("click",e=>{
 });
 
 /* ---------- APP VERSION, UPDATE PROMPT, INSTALL PROMPT ---------- */
-const APP_VER="2026.11.06.4",APP_MAJOR="3.1";
+const APP_VER="2026.11.06.5",APP_MAJOR="3.2";
 let UPD=false,BIP=null;
 const inFrame=()=>{try{return window.self!==window.top}catch(e){return true}};
 const isStandalone=()=>matchMedia("(display-mode: standalone)").matches||navigator.standalone===true;
@@ -2404,6 +2425,7 @@ async function signIn(up){
 async function delAccount(){
   if(!confirm("Permanently delete your account and cloud data? Progress stored on this device is kept."))return;
   try{
+    if(typeof delPhotoCopies==="function")await delPhotoCopies();
     await sbFetch("/rest/v1/rpc/delete_me",{method:"POST",body:"{}"},await sbToken());
     localStorage.removeItem(OWNK);SY={};saveSY();renderSync();setMsg("Account deleted");
   }catch(e){setMsg(e.status===404?"Delete is not set up. Run the updated setup SQL in Supabase":e.message)}
@@ -3229,7 +3251,7 @@ async function renderPhotos(){
   const mine=all.filter(p=>p.pose===PH.pose).sort((a,c)=>a.date<c.date?1:a.date>c.date?-1:0);
   const url=p=>{const u=URL.createObjectURL(p.blob);PH.urls.push(u);return u};
   const first=mine[mine.length-1],last=mine[0];
-  b.innerHTML=`<div class="d">Stays on this device only. It is not synced, not in your account and not in backups. Photos are shrunk to save space.</div>
+  b.innerHTML=`<div class="d">Saved on this device and shrunk to save space. Not synced or backed up${typeof sharingPhotos==="function"&&SY.sess&&sharingPhotos()?", except the copies you share with your coach":""}.</div>
   <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:10px;align-items:center"><select id="phPose">${["front","side","back"].map(x=>`<option value="${x}"${PH.pose===x?" selected":""}>${x[0].toUpperCase()+x.slice(1)}</option>`).join("")}</select><button class="btn pri" id="phAdd">Add photo</button>${mine.length>1?`<button class="btn" id="phCmp">${PH.cmp?"Hide comparison":"Compare first and latest"}</button>`:""}</div>
   ${PH.msg?`<div class="d" style="margin-top:8px">${esc(PH.msg)}</div>`:""}
   ${PH.cmp&&mine.length>1?`<div class="fgrid" style="margin-top:10px">${[first,last].map((p,i)=>`<figure style="margin:0"><img src="${url(p)}" alt="${esc(p.pose)} ${esc(p.date)}" style="width:100%;border-radius:10px"/><figcaption class="d">${i?"Latest":"First"} · ${esc(p.date)}</figcaption></figure>`).join("")}</div>`:""}
@@ -3422,7 +3444,7 @@ async function pullV3(){
   try{
     S.hd=S.hd||{};const me=uidMe(),from=addD(TODAY,-21);
     const [links,asg,msgs,ci,hd]=await Promise.all([
-      sbGet("/rest/v1/coach_links?select=coach_id,client_id,coach_name,client_name,habits,targets"),
+      sbGet("/rest/v1/coach_links?select=coach_id,client_id,coach_name,client_name,habits,targets,client_read_at,share_photos"),
       sbGet(`/rest/v1/assignments?select=coach_id,date,session,note,updated_at&client_id=eq.${me}&date=gte.${from}`),
       sbGet(`/rest/v1/messages?select=id,coach_id,client_id,author,date,body,created_at&client_id=eq.${me}&order=created_at.desc&limit=60`),
       sbGet(`/rest/v1/checkins?select=week,data,reply,replied_at&client_id=eq.${me}&week=gte.${addD(TODAY,-70)}`),
@@ -3598,7 +3620,7 @@ async function loadClients(){
   if(!SY.sess)return;
   CO.loading=true;renderCoach();
   try{
-    const links=await sbGet(`/rest/v1/coach_links?select=coach_id,client_id,coach_name,client_name,habits,targets,created_at&coach_id=eq.${uidMe()}`);
+    const links=await sbGet(`/rest/v1/coach_links?select=coach_id,client_id,coach_name,client_name,habits,targets,created_at,coach_read_at,share_photos&coach_id=eq.${uidMe()}`);
     cx().links=cx().links.filter(l=>l.coach_id!==uidMe()).concat(links||[]);
     const ids=(links||[]).map(l=>l.client_id);
     if(ids.length){
@@ -3656,9 +3678,9 @@ function clientStats(id){
   if(adh<.6&&CO.rows[id])flags.push(["a","Adherence "+Math.round(adh*100)+"%"]);
   if(ci&&!ci.reply)flags.push(["b","Check-in to review"]);
   if(lr&&lr.lv==="red")flags.push(["r","Readiness red"]);
-  const lm=(CO.msgs[id]||[])[0];
-  if(lm&&lm.author===id)flags.push(["b","Message waiting"]);
-  return {st,last,n7,n28,perWk,adh,habAdh,mealAdh,cardio7,wNow:wNow[wNow.length-1]||0,wDelta,wv:wv.filter(x=>x>0),steps,ci,ciThis,prs,lr,score,flags};
+  const lk=CO_link(id),unread=(CO.msgs[id]||[]).filter(m=>m.author===id&&(!lk||!lk.coach_read_at||m.created_at>lk.coach_read_at)).length;
+  if(unread)flags.push(["b",unread+" new message"+(unread>1?"s":"")]);
+  return {unread,st,last,n7,n28,perWk,adh,habAdh,mealAdh,cardio7,wNow:wNow[wNow.length-1]||0,wDelta,wv:wv.filter(x=>x>0),steps,ci,ciThis,prs,lr,score,flags};
 }
 const CO_link=id=>cx().links.find(l=>l.coach_id===uidMe()&&l.client_id===id);
 const flagW=s=>s.flags.reduce((t,f)=>t+(f[0]==="r"?3:f[0]==="a"?2:1),0);
@@ -3726,6 +3748,7 @@ function renderClient(id){
     <div class="fgrid" style="margin-top:6px"><div class="cg"><label>Your plan</label><select id="coProg">${coPlans().map(([pid,p])=>`<option value="${esc(pid)}">${esc(p.name)} (${Object.values(p.days).filter(x=>x&&x.ex&&x.ex.length).length} days)</option>`).join("")}</select></div>
      <div class="cg"><label>Start (Monday)</label><input type="date" id="coStart" value="${esc(addD(mondayOf(TODAY),7))}"/></div>
      <div class="cg"><label>Weeks</label><select id="coWeeks">${[1,2,3,4,6,8,12].map(n=>`<option ${n===4?"selected":""}>${n}</option>`).join("")}</select></div></div>
+    <div class="fgrid" style="margin-top:6px"><div class="cg"><label>Progression</label><select id="coProgP"><option value="same">Same every week</option><option value="sets">Build: +1 set per exercise each week (max +2)</option><option value="wave" selected>4-week wave: build 3 weeks, deload week 4</option></select></div></div>
     <label class="trchk"><input type="checkbox" id="coRest" checked/> Make the other days rest days</label>
     <button class="btn pri" id="coAssignProg" style="margin-top:6px">Assign program</button></div>
 
@@ -3739,10 +3762,12 @@ function renderClient(id){
       <div class="d">${["energy","hunger","stress","sleepq","adh"].filter(k=>d[k]).map(k=>({energy:"Energy",hunger:"Hunger",stress:"Stress",sleepq:"Sleep quality",adh:"Adherence"})[k]+" "+d[k]+"/5").join(" · ")}</div>
       ${d.wins?`<div class="cue">👍 ${esc(d.wins)}</div>`:""}${d.hard?`<div class="cue">⚠️ ${esc(d.hard)}</div>`:""}${d.ask?`<div class="cue">❓ ${esc(d.ask)}</div>`:""}
       <textarea data-coreply="${esc(c.week)}" placeholder="Reply to this check-in" maxlength="2000">${esc(c.reply||"")}</textarea><button class="btn" data-coreplygo="${esc(c.week)}" style="margin-top:4px">${c.reply?"Update reply":"Send reply"}</button></div>`}).join(""):'<div class="d">No check-ins yet. Clients send them from Progress → Weekly check-in.</div>'}</div>
+    <div class="card"><h2><span>📸 Progress photos</span></h2><div id="coPhotos"></div></div>
     <div class="card"><h2><span>💬 Messages</span></h2>${ms.length?ms.map(m=>msgHTML(m,uidMe())).join(""):'<div class="d">No messages yet.</div>'}
      <div style="display:flex;gap:8px;margin-top:8px"><input id="coMsgIn" placeholder="Message ${esc(l.client_name||"client")}" maxlength="2000" style="flex:1;min-width:0"/><button class="btn pri" id="coMsgSend">Send</button></div></div>
     <div class="card"><h2><span>Remove client</span></h2><div class="d">Ends access to their data and deletes your assignments and messages with them.</div><button class="btn danger" id="coRemove" style="margin-top:6px">Remove ${esc(l.client_name||"client")}</button></div>
    </div></div>`;
+  if(typeof coPhotos==="function")setTimeout(()=>coPhotos(id),0);
 }
 const coPlans=()=>{const c=normCP(JSON.parse(JSON.stringify(S.cplan)));return Object.entries(c.plans).filter(([,p])=>!p.deleted)};
 function coSetsOf(st,date){
@@ -3762,6 +3787,7 @@ function coDayEditor(id,wk){
    <input id="coSesName" placeholder="Session name" maxlength="40" value="${esc(E.name)}" style="width:100%;margin-top:8px"/>
    ${E.ex.map((x,i)=>{const gi=G[i];return `<div class="trex ${gi?"ssin":""} ${gi&&gi.k<gi.n?"ssnext":""} ${gi&&gi.k>1?"ssprev":""}"><div class="trh"><span class="${gi?"ssl":"trnum"}">${gi?gi.g+gi.k:i+1}</span><div><b>${esc(x.name)}</b><small>${esc(muLabel(x.mu))}</small></div><div class="trbtn"><button type="button" class="rest" data-coex="up|${i}" ${i===0?"disabled":""}>▲</button><button type="button" class="rest" data-coex="down|${i}" ${i===E.ex.length-1?"disabled":""}>▼</button><button type="button" class="rest" data-coex="del|${i}">✕</button></div></div>
      <div class="trf"><label>Sets<input type="number" min="1" max="10" data-coef="sets|${i}" value="${esc(x.sets)}"/></label><label>Reps<input data-coef="reps|${i}" value="${esc(x.reps)}" maxlength="12"/></label><label>Rest (s)<input type="number" min="0" max="600" step="15" data-coef="rest|${i}" value="${esc(x.rest)}"/></label></div>
+     <input type="url" data-coef="demo|${i}" value="${esc(x.demo||"")}" placeholder="Demo video link (optional, https://…)" maxlength="300" style="width:100%;margin-top:8px"/>
      ${i<E.ex.length-1?`<label class="trss"><input type="checkbox" data-coef="ss|${i}" ${x.ss?"checked":""}/> ⛓ Superset with the next exercise</label>`:""}</div>`}).join("")}
    <div style="display:flex;gap:8px;margin-top:6px"><input id="coAddQ" list="coExList" placeholder="Add exercise (type to search)" style="flex:1;min-width:0"/><datalist id="coExList">${EX.map(e=>`<option value="${esc(e.n)}">`).join("")}</datalist><button class="btn" id="coAddEx">Add</button></div>
    <textarea id="coNote" placeholder="Note for the client (focus, tempo, how heavy)" maxlength="500" style="margin-top:8px">${esc(E.note)}</textarea>
@@ -3777,19 +3803,21 @@ async function coSaveDay(clear){
   }catch(e){alert(v3Err(e))}
 }
 async function coAssignProgram(id){
-  const pid=$("coProg").value,start=mondayOf($("coStart").value||TODAY),weeks=+$("coWeeks").value||4,rest=$("coRest").checked;
+  const pid=$("coProg").value,start=mondayOf($("coStart").value||TODAY),weeks=+$("coWeeks").value||4,rest=$("coRest").checked,pr=($("coProgP")||{}).value||"same";
+  const wkEx=(ex,w)=>{const cyc=w%4,dl=pr==="wave"&&cyc===3,add=pr==="sets"?Math.min(2,w):pr==="wave"&&!dl?Math.min(2,cyc):0;return ex.map((e,i,a)=>Object.assign({},e,{ss:!!e.ss&&i<a.length-1,sets:dl?Math.max(2,Math.ceil((+e.sets||3)*.6)):Math.min(10,(+e.sets||3)+add)}))};
+  const wkNote=w=>pr==="wave"?(w%4===3?`Week ${w+1} of ${weeks} · deload: lighter, leave 3–4 reps in reserve`:`Week ${w+1} of ${weeks} · build`):pr==="sets"?`Week ${w+1} of ${weeks}`:"";
   const p=coPlans().find(([k])=>k===pid);if(!p)return alert("Make a plan in your Train tab first (Build my own).");
   const rows=[];
   for(let w=0;w<weeks;w++)for(let dw=0;dw<7;dw++){
     const x=p[1].days[dw],date=addD(start,w*7+dw);
-    if(x&&x.ex&&x.ex.length)rows.push({coach_id:uidMe(),client_id:id,date,session:{name:x.name||"Workout",ex:x.ex.map((e,i,a)=>Object.assign({},e,{ss:!!e.ss&&i<a.length-1}))},note:"",updated_at:new Date().toISOString()});
+    if(x&&x.ex&&x.ex.length)rows.push({coach_id:uidMe(),client_id:id,date,session:{name:x.name||"Workout",ex:wkEx(x.ex,w)},note:wkNote(w),updated_at:new Date().toISOString()});
     else if(rest)rows.push({coach_id:uidMe(),client_id:id,date,session:{name:"Rest",ex:[]},note:"",updated_at:new Date().toISOString()});
   }
   if(!confirm(`Assign "${p[1].name}" for ${weeks} week${weeks>1?"s":""} from ${dateLabel(start)}? This replaces your assignments on those ${rows.length} days.`))return;
   try{await sbUpsert("assignments",rows,"coach_id,client_id,date");await loadClients()}catch(e){alert(v3Err(e))}
 }
 function coClick(t){
-  const c=t.closest("[data-co]");if(c){CO.sel=c.dataset.co;CO.day="";CO.edit=null;CO.wk=0;renderCoach();window.scrollTo({top:0});return true}
+  const c=t.closest("[data-co]");if(c){CO.sel=c.dataset.co;CO.day="";CO.edit=null;CO.wk=0;coMarkRead(CO.sel);renderCoach();window.scrollTo({top:0});return true}
   const wkb=t.closest("[data-cowk]");if(wkb){const v=+wkb.dataset.cowk;CO.wk=v===0?0:CO.wk+v;CO.day="";CO.edit=null;renderCoach();return true}
   const dy=t.closest("[data-coday]");if(dy){coSnap();CO.day=CO.day===dy.dataset.coday?"":dy.dataset.coday;CO.edit=null;renderCoach();return true}
   const ce=t.closest("[data-coex]");if(ce&&CO.edit){coSnap();const [op,i]=ce.dataset.coex.split("|"),k=+i,a=CO.edit.ex;if(op==="del")a.splice(k,1);else{const j=op==="up"?k-1:k+1;if(j>=0&&j<a.length)[a[k],a[j]]=[a[j],a[k]]}a.forEach((x,n)=>{if(n===a.length-1)x.ss=false});renderCoach();return true}
@@ -3827,7 +3855,7 @@ document.addEventListener("change",e=>{
   if(t.id==="coFrom"&&t.value&&CO.edit){coSnap();const [pid,dw]=t.value.split("|"),p=coPlans().find(([k])=>k===pid),x=p&&p[1].days[dw];if(x){CO.edit.name=x.name||"Workout";CO.edit.ex=x.ex.map(e=>Object.assign({},e))}renderCoach();return}
   const f=t.dataset&&t.dataset.coef;
   if(f&&CO.edit){const [k,i]=f.split("|"),x=CO.edit.ex[+i];if(!x)return;
-    if(k==="ss")x.ss=t.checked;else if(k==="sets")x.sets=Math.max(1,Math.min(10,Math.round(+t.value)||3));else if(k==="rest")x.rest=Math.max(0,Math.min(600,Math.round(+t.value)||0));else if(k==="reps")x.reps=cleanReps(t.value)||x.reps;
+    if(k==="ss")x.ss=t.checked;else if(k==="sets")x.sets=Math.max(1,Math.min(10,Math.round(+t.value)||3));else if(k==="rest")x.rest=Math.max(0,Math.min(600,Math.round(+t.value)||0));else if(k==="reps")x.reps=cleanReps(t.value)||x.reps;else if(k==="demo"){const v=String(t.value||"").trim();x.demo=/^https:\/\/\S{4,300}$/.test(v)?v:""}
     if(k==="ss"){coSnap();renderCoach()}}
 });
 document.addEventListener("keydown",e=>{if(e.key!=="Enter")return;const id=e.target.id;if(id==="cmIn")$("cmSend").click();else if(id==="coMsgIn")$("coMsgSend").click();else if(id==="cxCode")joinCoach()});
@@ -3952,6 +3980,81 @@ document.addEventListener("click",e=>{
 
 /* Progress: when a coach sets the numbers, the client's own auto-adjust steps aside */
 PROGX.push(function(){const el=$("trend");if(!el||!W||!W.T.coach)return;const c=el.querySelector(".callout");if(c)c.outerHTML=callout("coach","🎯","Calories are set by "+esc(W.T.coach.name),"Coach","Your weight trend is shared with your coach, who adjusts your targets. Message them if you think a change is needed.")});
+
+/* ===================== V3.2: UNREAD BADGES ===================== */
+function clientUnread(){const me=uidMe();if(!me)return 0;return cx().msgs.filter(m=>m.author!==me&&m.client_id===me&&(()=>{const l=cx().links.find(x=>x.coach_id===m.coach_id&&x.client_id===me);return !l||!l.client_read_at||m.created_at>l.client_read_at})()).length}
+function coachUnread(){return myClients().reduce((t,l)=>t+(CO.msgs[l.client_id]||[]).filter(m=>m.author===l.client_id&&(!l.coach_read_at||m.created_at>l.coach_read_at)).length,0)}
+function setTabBadge(tab,n){const b=document.querySelector(`.tab[data-tab="${tab}"]`);if(!b)return;let s=b.querySelector(".tbadge");if(n>0){if(!s){s=document.createElement("span");s.className="tbadge";b.appendChild(s)}s.textContent=n>9?"9+":n}else if(s)s.remove()}
+function renderBadges(){setTabBadge("plan",SY.sess?clientUnread():0);setTabBadge("coach",SY.sess&&coachOn()?coachUnread():0)}
+let readBusy=false;
+async function clientMarkRead(){
+  if(readBusy||!SY.sess||document.visibilityState!=="visible"||TAB!=="plan"||!clientUnread())return;
+  readBusy=true;const now=new Date().toISOString();
+  try{for(const l of myCoaches()){await sbRpc("msg_read",{coach:l.coach_id,client:uidMe()});l.client_read_at=now}save()}catch(e){console.warn(e)}
+  readBusy=false;renderBadges();
+}
+async function coMarkRead(id){const l=CO_link(id);if(!l)return;l.coach_read_at=new Date().toISOString();renderBadges();try{await sbRpc("msg_read",{coach:uidMe(),client:id})}catch(e){console.warn(e)}}
+PLANX.push(()=>{renderBadges();const n=clientUnread(),h=document.querySelector("#coachBox h2 .badge");if(h&&n)h.outerHTML=`<span class="badge rd">${n} new</span>`;setTimeout(clientMarkRead,2500)});
+(function(){const lc=loadClients;loadClients=async function(){await lc.apply(this,arguments);renderBadges()}})();
+
+/* ===================== V3.2: SHARE PROGRESS PHOTOS WITH YOUR COACH ===================== */
+/* Opt-in. Photos stay on the device; when sharing is on, a copy goes to a private bucket only you and your coach can read. Turning it off deletes the copies. */
+const PHB="progress-photos",PHUK="elitePhotoUp";
+const phUp=()=>{try{return JSON.parse(lsGet(PHUK)||"{}")}catch(e){return {}}};
+const sharingPhotos=()=>myCoaches().some(l=>l.share_photos);
+async function stFetch(path,opt){
+  const r=await fetch(SB_URL+"/storage/v1/"+path,Object.assign({},opt,{headers:Object.assign({apikey:SB_KEY,Authorization:"Bearer "+await sbToken()},(opt||{}).headers)}));
+  if(!r.ok){let m="HTTP "+r.status;try{const j=await r.json();m=j.message||j.error||m}catch(e){}const e=new Error(m);e.status=r.status;throw e}
+  return r;
+}
+const phName=p=>`${uidMe()}/${p.id}_${p.pose}_${p.date}.jpg`;
+async function phUploadAll(){
+  const all=await phTx("readonly",st=>st.getAll()),up=phUp();let n=0;
+  for(const p of all){if(up[p.id])continue;await stFetch(`object/${PHB}/${phName(p)}`,{method:"POST",headers:{"Content-Type":"image/jpeg","x-upsert":"true"},body:p.blob});up[p.id]=1;n++;lsSet(PHUK,JSON.stringify(up))}
+  return n;
+}
+async function phRemoteList(owner){const r=await stFetch(`object/list/${PHB}`,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({prefix:owner+"/",limit:1000,sortBy:{column:"name",order:"desc"}})});return (await r.json()).filter(o=>/\.jpg$/.test(o.name))}
+async function phRemoteDelete(names){if(!names.length)return;await stFetch(`object/${PHB}`,{method:"DELETE",headers:{"Content-Type":"application/json"},body:JSON.stringify({prefixes:names})})}
+async function setPhotoShare(on){
+  PH.msg=on?"Sharing photos…":"Removing shared copies…";renderPhotos();
+  try{
+    await sbRpc("set_photo_share",{on_:on});myCoaches().forEach(l=>l.share_photos=on);save();
+    if(on){const n=await phUploadAll();PH.msg=`Shared with your coach ✓ ${n} photo${n===1?"":"s"} uploaded. New photos are shared automatically.`}
+    else{const l=await phRemoteList(uidMe());await phRemoteDelete(l.map(o=>uidMe()+"/"+o.name));lsSet(PHUK,"{}");PH.msg="Sharing is off. The copies were deleted; your photos are still on this device."}
+  }catch(e){PH.msg=v3Err(e)}
+  renderPhotos();
+}
+/* hook: share new photos, delete removed ones */
+document.addEventListener("change",e=>{if(e.target.id==="phFile"&&SY.sess&&sharingPhotos())setTimeout(()=>phUploadAll().then(n=>{if(n){PH.msg=`Shared ${n} new photo${n===1?"":"s"} with your coach.`;renderPhotos()}}).catch(err=>console.warn(err)),800)});
+document.addEventListener("click",e=>{
+  const t=e.target.closest("button");if(!t)return;
+  if(t.dataset.phdel&&SY.sess&&sharingPhotos()){const id=t.dataset.phdel;setTimeout(async()=>{try{const left=await phTx("readonly",st=>st.get(id));if(left)return;const l=await phRemoteList(uidMe());await phRemoteDelete(l.filter(o=>o.name.startsWith(id+"_")).map(o=>uidMe()+"/"+o.name));const up=phUp();delete up[id];lsSet(PHUK,JSON.stringify(up))}catch(err){console.warn(err)}},1500)}
+  if(t.id==="phShareOn")setPhotoShare(true);else if(t.id==="phShareOff"&&confirm("Stop sharing photos with your coach? The shared copies are deleted. Photos on this device stay."))setPhotoShare(false);
+});
+(function(){const rp=renderPhotos;renderPhotos=async function(){await rp.apply(this,arguments);const b=$("photoBox");if(b&&!b.querySelector(".phshare")&&SY.sess&&myCoaches().length){const on=sharingPhotos();b.insertAdjacentHTML("afterbegin",`<div class="phshare">${on?callout("coach","🤝","Shared with your coach","On",`Your coach can see these photos. <button class="btn" id="phShareOff" style="margin-left:4px">Stop sharing</button>`):callout("info","🔒","Photos are private to this device","",`Want feedback on your physique? <button class="btn pri" id="phShareOn" style="margin-left:4px">Share with my coach</button><br><small>Only you and your coach can see them. Turning it off deletes the shared copies.</small>`)}</div>`)}};const k=PROGX.indexOf(rp);if(k>=0)PROGX[k]=renderPhotos})();
+async function delPhotoCopies(){try{if(SY.sess){const l=await phRemoteList(uidMe());await phRemoteDelete(l.map(o=>uidMe()+"/"+o.name))}}catch(e){console.warn(e)}}
+
+/* coach: client photos */
+const COPH={};
+async function coPhotos(id){
+  const box=$("coPhotos");if(!box)return;
+  const l=CO_link(id);if(!l||!l.share_photos){box.innerHTML=callout("info","🔒","Not shared","","The client hasn't shared progress photos. They can turn it on in Progress → Progress photos.");return}
+  box.innerHTML='<div class="d">Loading photos…</div>';
+  try{
+    const list=(await phRemoteList(id)).map(o=>{const m=o.name.match(/^([^_]+)_(front|side|back)_(\d{4}-\d{2}-\d{2})\.jpg$/);return m?{name:o.name,pose:m[2],date:m[3]}:null}).filter(Boolean).sort((a,b)=>a.date<b.date?1:-1);
+    if(!list.length){box.innerHTML='<div class="d">Sharing is on, but no photos yet.</div>';return}
+    const url=async p=>{const k=id+"/"+p.name;if(COPH[k])return COPH[k];const r=await stFetch(`object/authenticated/${PHB}/${k}`);return COPH[k]=URL.createObjectURL(await r.blob())};
+    const poses=["front","side","back"].filter(x=>list.some(p=>p.pose===x));
+    let h="";
+    for(const pose of poses){const ps=list.filter(p=>p.pose===pose),first=ps[ps.length-1],last=ps[0];
+      h+=`<div class="sechl" style="margin-top:8px">${pose} · ${ps.length} photo${ps.length>1?"s":""}</div><div class="cophg">${(ps.length>1?[first,last]:[last]).map((p,i)=>`<figure><img data-cop="${esc(p.name)}" alt="${esc(pose)} ${esc(p.date)}"/><figcaption>${ps.length>1?(i?"Latest":"First")+" · ":""}${esc(dateLabel(p.date))}</figcaption></figure>`).join("")}</div>`}
+    box.innerHTML=h;
+    for(const img of box.querySelectorAll("img[data-cop]")){const p=list.find(x=>x.name===img.dataset.cop);url(p).then(u=>img.src=u).catch(()=>img.alt="Could not load")}
+  }catch(e){box.innerHTML=callout("red","⚠️","Couldn't load photos","",esc(v3Err(e)))}
+}
+
+/* footer version */
+(function(){const f=$("footVer");if(f)f.textContent=APP_MAJOR+" ("+APP_VER+")"})();
 
 initTheme();regen();renderAll();restoreNav();initSync();initSys();renderNavCoach();
 

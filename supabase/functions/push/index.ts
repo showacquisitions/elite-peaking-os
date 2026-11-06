@@ -1,3 +1,4 @@
+// © 2026 Show Acquisitions. All rights reserved. Proprietary; see LICENSE.
 // Push sender. Woken by pg_net (public.push_kick) every 5 s when a notification is due, and right after instant events.
 // Auth: x-push-secret must match Vault 'push_cron_secret' (checked in SQL). VAPID private key also comes from Vault.
 import { sendPush } from "./webpush.mjs";

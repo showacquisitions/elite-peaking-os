@@ -1,3 +1,4 @@
+// © 2026 Show Acquisitions. All rights reserved. Proprietary; see LICENSE.
 // POST https://<project>.supabase.co/functions/v1/health?t=<sync key>
 // Body: Health Auto Export JSON, a single day {date, steps, weight, unit, sleep, rhr, hrv, kcal}, or a list of days.
 // The sync key is the only credential. It is checked inside health_ingest (hashed), never here.

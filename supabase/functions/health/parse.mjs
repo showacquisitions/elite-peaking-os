@@ -1,3 +1,4 @@
+// © 2026 Show Acquisitions. All rights reserved. Proprietary; see LICENSE.
 // Turns a Health Auto Export body, a Shortcut body, or a list of days into health_ingest rows.
 // Pure function, no I/O, shared by the edge function and the tests.
 export function toRows(body) {

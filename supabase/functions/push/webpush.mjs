@@ -1,3 +1,4 @@
+// © 2026 Show Acquisitions. All rights reserved. Proprietary; see LICENSE.
 // Web Push (RFC 8291 aes128gcm payload encryption + RFC 8292 VAPID), WebCrypto only.
 // Runs unchanged in Deno (Supabase Edge Functions) and Node 20+. No dependencies.
 const te = new TextEncoder();

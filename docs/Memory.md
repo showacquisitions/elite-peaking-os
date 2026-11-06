@@ -2,6 +2,18 @@
 
 State of the app and the decisions behind it. Newest first.
 
+## v3.2 — closes the v3 gap list, build 2026.11.06.5 (2026-11-06)
+
+- **Unread badges.** `coach_links.coach_read_at / client_read_at`, set by `msg_read(coach, client)`. Red count on the Today tab (client) and Clients tab (coach); per-client "N new messages" flag. Client marks read after 2.5 s on Today; coach marks read on opening the client.
+- **Photo sharing (opt-in).** Private bucket `progress-photos`, path `<uid>/<photoId>_<pose>_<date>.jpg`, JPEG ≤ 2 MB. Storage policies: owner full access; coach read only while `coach_links.share_photos` is true (set by the client through `set_photo_share`). Sharing uploads all local photos and new ones; turning it off deletes every shared copy; deleting a photo or the account deletes its copy. Coach sees first vs latest per pose. RLS verified in a rolled-back test (coach 0 → 1 → 0 photos across opt-in/out; stranger 0; no writes into another user's folder).
+- **Supersets in the auto plan.** Profile → Training → "Supersets (auto plan)": pairs accessory exercises (3rd onward, different muscles) into supersets; main lifts stay straight sets.
+- **Coach program progression.** Assign a program as "same every week", "+1 set per week (max +2)" or "4-week wave" (build 3 weeks, deload week 4 at 60% of sets). Each assigned day gets a "Week n of N" note.
+- **Demo videos.** Any exercise (own plan or coach-assigned) can carry an https demo link; it replaces the generic "▶ form" search with "▶ demo".
+- **Copyright.** `LICENSE` (proprietary, all rights reserved, Show Acquisitions), footer on every screen, meta tags, source headers. Open Food Facts attribution (ODbL) added to the footer — it was missing.
+- **Privacy text** updated for Health data, push addresses and opt-in photo copies.
+- Tests: 100 passed.
+- Edge function sources gained a copyright header after deploy; deployed code is otherwise identical (redeploy on next change).
+
 ## v3.1 — push notifications + coach macros, build 2026.11.06.4 (2026-11-06)
 
 **Coach nutrition targets.** `coach_links.targets` {P,C,F,note,at}, set only through `coach_set_targets` (validated: P 30–450, C 0–1000, F 15–300, ≥1000 kcal; only for your own client). The client pulls them into `S.cx.targets`; `buildWeek` runs `applyCoachTargets` on `baseTargets`, so meals, groceries and the Today numbers follow the coach while carb cycling still applies (training days +10% carbs). The client's auto-adjust is replaced by a "set by your coach" callout. Clearing restores profile numbers.
