@@ -9,6 +9,8 @@
 - [ ] Merge `claude/bold-bell-1sakoo` to `main` to deploy.
 
 ## Next (v3.1)
+- [ ] Verify the health edge function live with "Send a test", then one Health Auto Export run.
+- [ ] Live step counting while the app is open (DeviceMotion) — low value; the Health sync covers it.
 - [ ] Web push for messages, assignments and workout reminders (needs a VAPID key pair + a send function; iOS needs the app on the home screen).
 - [ ] Unread tracking for messages (currently "Message waiting" means the last message came from the client).
 - [ ] Coach: copy one client's week to another client; program templates with progression per week.

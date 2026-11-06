@@ -425,6 +425,83 @@
   #chSel{max-width:60%;font-size:.88rem}
   .bshort{display:none}
   @media(max-width:700px){.bfull{display:none}.bshort{display:inline}}
+
+  /* ===================== v3 PREMIUM POLISH ===================== */
+  :root{--r:18px;--shadow:0 1px 2px rgba(0,0,0,.12),0 10px 30px rgba(0,0,0,.18);--ring:color-mix(in srgb,var(--border) 75%,transparent);
+    --warm:#f97316;--cool:#06b6d4;--coach:#8b5cf6}
+  html[data-theme=light]{--shadow:0 1px 2px rgba(15,23,42,.04),0 10px 28px rgba(15,23,42,.07)}
+  body{-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
+  .card{border-radius:var(--r);border:1px solid var(--ring);box-shadow:var(--shadow)}
+  .card h2{border-bottom:0;padding-bottom:0;margin-bottom:14px;font-size:1.08rem;font-weight:750;letter-spacing:-.015em}
+  .card h3{font-size:.72rem;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin:18px 0 8px}
+  .badge{font-weight:700;letter-spacing:.01em}
+  .btn{border-radius:12px;font-weight:650;transition:transform .08s ease,box-shadow .15s ease,background .15s ease}
+  .btn:active{transform:scale(.97)}
+  input,select,textarea{border-radius:12px}
+  /* callouts */
+  .callout{--c:var(--accent);position:relative;border:1px solid color-mix(in srgb,var(--c) 35%,transparent);background:color-mix(in srgb,var(--c) 9%,var(--panel));border-radius:14px;padding:12px 14px 12px 16px;margin:0 0 12px;overflow:hidden}
+  .callout::before{content:"";position:absolute;left:0;top:0;bottom:0;width:4px;background:var(--c)}
+  .c-h{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+  .c-h b{font-size:.95rem;color:var(--text)}
+  .c-i{font-size:1.05rem;line-height:1}
+  .c-m{margin-left:auto;font-size:.72rem;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--c)}
+  .c-b{margin-top:6px;font-size:.88rem;line-height:1.55;color:var(--text);opacity:.92}
+  .c-warm{--c:var(--warm)}.c-cool{--c:var(--cool)}.c-good,.c-green{--c:var(--green)}.c-warn,.c-yellow{--c:var(--amber)}.c-red{--c:var(--red)}.c-info{--c:var(--accent)}.c-coach{--c:var(--coach)}
+  ol.cl,ul.cl{margin:8px 0 4px;padding-left:20px}ol.cl li,ul.cl li{margin:5px 0;padding-left:2px}
+  ol.cl li::marker{color:var(--c);font-weight:800}
+  .ccheck{display:inline-flex!important;width:auto!important;align-items:center;gap:8px;margin:8px 0 0!important;padding:7px 14px!important;line-height:1.2;text-transform:none!important;letter-spacing:0!important;color:var(--text)!important;border-radius:999px;border:1px solid color-mix(in srgb,var(--c) 45%,transparent);font-size:.82rem;font-weight:700;cursor:pointer;background:var(--panel)}
+  .ccheck.on{background:color-mix(in srgb,var(--c) 18%,var(--panel))}
+  .ccheck input{width:16px!important;height:16px!important;min-height:0!important;padding:0!important;margin:0!important;flex:none;accent-color:var(--c)}
+  .wm-sum b{font-size:clamp(1.05rem,4.6vw,1.4rem);line-height:1.2}
+  .note{border-radius:14px;border-left:4px solid var(--amber);padding:11px 14px}
+  /* section headers inside a card */
+  .sech{display:flex;align-items:baseline;justify-content:space-between;gap:10px;margin:16px 2px 10px;padding-top:12px;border-top:1px solid var(--ring)}
+  .sech span{font-size:.78rem;font-weight:800;letter-spacing:.08em;text-transform:uppercase}
+  .sech small{color:var(--muted);font-size:.8rem}
+  .pgsec{display:flex;align-items:center;gap:10px;margin:26px 4px 12px;font-size:.8rem;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+  .pgsec::after{content:"";flex:1;height:1px;background:var(--ring)}
+  .pgsec span{font-size:1rem;letter-spacing:0}
+  #pane-progress>.pgsec:first-child{margin-top:4px}
+  .sechl{font-size:.72rem;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin:2px 0 8px}
+  .sechl b{color:var(--text);letter-spacing:0;text-transform:none;font-size:.85rem;margin-left:6px}
+  .sw-auto{margin:0 2px 12px!important;font-size:.82rem;color:var(--muted)}
+  /* prescription chips */
+  .rx{display:flex;flex-wrap:wrap;gap:6px;margin:6px 0 4px}
+  .rx-main{font-size:1.05rem;font-weight:800;color:var(--text);padding:3px 10px;border-radius:9px;background:var(--glow)}
+  .rx-c{font-size:.78rem;font-weight:700;color:var(--muted);padding:4px 9px;border-radius:9px;border:1px solid var(--ring);align-self:center}
+  .rx-a{color:var(--amber);border-color:rgba(245,158,11,.4)}
+  .exload{font-size:.84rem;color:var(--muted);margin-top:2px}
+  .wuchip{display:inline-block;margin-top:6px;font-size:.78rem;font-weight:700;color:var(--warm);background:color-mix(in srgb,var(--warm) 12%,transparent);border-radius:8px;padding:4px 9px}
+  .wm-target .rx{justify-content:flex-start}
+  #wList .row .cue{font-size:.82rem;opacity:.85}
+  /* Health chips */
+  .hchips{display:flex;flex-wrap:wrap;gap:6px;margin:10px 0}
+  .hchips span{font-size:.8rem;font-weight:650;padding:5px 10px;border-radius:999px;background:var(--panel2);border:1px solid var(--ring)}
+  .hchips small{color:var(--muted);font-weight:500}
+  .hchips .hsrc{background:transparent;border-style:dashed;color:var(--muted)}
+  .hurl{border:1px solid var(--ring);border-radius:14px;padding:12px;margin:4px 0 10px;background:var(--panel2)}
+  .hurl label{display:block;font-size:.75rem;font-weight:700;color:var(--muted);margin-bottom:6px}
+  .hurlrow{display:flex;gap:8px}.hurlrow input{flex:1;min-width:0;font-family:ui-monospace,Menlo,monospace;font-size:.78rem}
+  .hurlbtns{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}
+  /* cardio */
+  .stepwrap{display:flex;gap:16px;align-items:center;margin-bottom:14px}
+  .stepring{position:relative;width:100px;height:100px;flex:none}
+  .stepnum{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center}
+  .stepnum b{font-size:1.15rem;font-weight:800;letter-spacing:-.02em}.stepnum small{font-size:.7rem;color:var(--muted)}
+  .stepside{flex:1;min-width:0}
+  .stepbars{position:relative;display:flex;align-items:flex-end;gap:5px;height:58px}
+  .stepbars::after{content:"";position:absolute;left:0;right:0;bottom:var(--goal);border-top:1px dashed var(--muted);opacity:.5}
+  .stepbars i{flex:1;border-radius:5px 5px 2px 2px;background:var(--panel2);border:1px solid var(--ring)}
+  .stepbars i.hit{background:var(--green);border-color:var(--green)}
+  .stepbars i.cur{outline:2px solid var(--accent);outline-offset:1px}
+  .stepsrc{margin-top:8px;font-size:.82rem}.stepsrc input{width:110px;margin-left:6px}
+  .cdbar{height:10px;border-radius:999px;background:var(--panel2);overflow:hidden;border:1px solid var(--ring)}
+  .cdbar i{display:block;height:100%;background:linear-gradient(90deg,var(--cool),var(--accent));border-radius:999px}
+  .cdrow{display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--ring);font-size:.88rem}
+  .cdt{font-weight:750;min-width:64px}.cdm{flex:1;color:var(--muted)}
+  .cdadd{display:grid;grid-template-columns:1.3fr .8fr .9fr auto;gap:8px;margin-top:10px}
+  .cdadd input,.cdadd select{min-width:0}
+  @media(max-width:400px){.stepwrap{gap:12px}.stepring{width:88px;height:88px}.stepring svg{width:88px;height:88px}}
 </style>
 </head>
 <body>
@@ -466,6 +543,7 @@
       <div class="card" data-s="m"><h2><span>Ate something else?</span></h2><div id="exBox"></div></div>
       <div class="card" data-s="m"><h2><span>Log food</span></h2><div id="foodBox"></div></div>
       <div class="card" data-s="m"><h2><span>Micronutrients</span></h2><div id="microBox"></div></div>
+      <div class="card" data-s="w"><h2><span>🏃 Cardio &amp; steps</span><span class="badge" id="cdBadge"></span></h2><div id="cardioBox"></div></div>
       <div class="card" data-s="w"><h2><span>Plate calculator</span></h2><div id="plateBox"></div></div>
     </div>
   </div>
@@ -493,6 +571,7 @@
 </section>
 
 <section id="pane-progress" class="pane">
+  <div class="pgsec"><span>📏</span> Body &amp; check-in</div>
   <div class="grid2">
     <div class="card"><h2><span>Daily log</span><input type="date" id="logDate"/></h2>
       <div class="log-grid">
@@ -509,11 +588,14 @@
     <div class="card"><h2><span>Trend & auto-adjust</span></h2><div id="trend"></div><h3>Weight, last 28 days</h3><div id="logWt"></div></div>
   </div>
   <div id="measBox"></div>
+  <div class="pgsec"><span>🏋️</span> Training</div>
   <div id="wlogBox"></div>
   <div id="chartBox"></div>
   <div id="progExtra"></div>
+  <div class="pgsec"><span>⌚</span> Health &amp; photos</div>
   <div class="card"><h2><span>Steps and health import</span></h2><div id="healthBox"></div></div>
   <div class="card"><h2><span>Progress photos</span></h2><div id="photoBox"></div></div>
+  <div class="pgsec"><span>🔒</span> Privacy</div>
   <div class="card"><h2><span>Privacy and data</span></h2>
     <details class="rec" open><summary>What is stored and where</summary>
       <ol>
@@ -1259,13 +1341,13 @@ function advice(p,tr){
 const KEY="elitePeakingState_v3";
 const TODAY=iso(new Date());
 const DEFP={sex:"m",age:30,cm:175,kg:75,bf:0,units:"imperial",goal:"recomp",rate:"cons",act:"mod",exp:"int",days:4,len:60,style:"cal",pullMax:5,pushMax:15,bagKg:0,eq:["pullbar","bands"],pri:[],diet:"omni",excl:[],meals:4,event:"",kcalAdj:0,inj:[],budget:"std",priceF:1,wtime:"17:30",mealRem:"no"};
-function freshState(){return {prof:JSON.parse(JSON.stringify(DEFP)),log:{},checks:{},perf:{},extra:{},hist:{},done:{},prefs:{foods:{},meals:{}},recipes:[],groc:[],water:{},swaps:{},mswaps:{},blockStart:mondayOf(TODAY),blockOffset:0,weekOffset:0,sel:TODAY,confirmed:false,flog:{},sets:{},steps:{},wlog:{},cplan:{mode:"auto",deload:true,active:"p1",mt:0,plans:{p1:{name:"My plan",mt:0,days:{}}}}}}
+function freshState(){return {prof:JSON.parse(JSON.stringify(DEFP)),log:{},checks:{},perf:{},extra:{},hist:{},done:{},prefs:{foods:{},meals:{}},recipes:[],groc:[],water:{},swaps:{},mswaps:{},blockStart:mondayOf(TODAY),blockOffset:0,weekOffset:0,sel:TODAY,confirmed:false,flog:{},sets:{},steps:{},wlog:{},cardio:{},cplan:{mode:"auto",deload:true,active:"p1",mt:0,plans:{p1:{name:"My plan",mt:0,days:{}}}}}}
 function loadState(){
   try{const v=JSON.parse(localStorage.getItem(KEY)||"null");if(v&&v.prof){const f=freshState();return Object.assign(f,v,{prof:Object.assign(f.prof,v.prof)})}}catch(e){console.warn("state load failed",e)}
   return freshState();
 }
 let S=loadState(),W=null;
-const SYNCKEYS=["prof","log","checks","perf","extra","hist","done","prefs","recipes","groc","water","swaps","mswaps","blockStart","blockOffset","confirmed","flog","sets","steps","cplan","wlog"];
+const SYNCKEYS=["prof","log","checks","perf","extra","hist","done","prefs","recipes","groc","water","swaps","mswaps","blockStart","blockOffset","confirmed","flog","sets","steps","cplan","wlog","cardio"];
 const snapOf=()=>JSON.stringify(SYNCKEYS.map(k=>S[k]));
 let lastSnap=snapOf();
 const save=()=>{
@@ -1402,6 +1484,7 @@ function row(key,title,desc,extra,right){
 function dayKeys(d){
   const k=[];
   if(d.session)d.session.ex.forEach((_,i)=>k.push(`${d.date}|ex|${i}`));
+  if(d.session&&d.session.ex.length&&d.kind==="train")k.push(`${d.date}|wu`,`${d.date}|cd`);
   d.meals.forEach((_,i)=>k.push(`${d.date}|meal|${i}`));
   ["water","move","sleep"].forEach(h=>k.push(`${d.date}|hab|${h}`));
   if(typeof cxHabits==="function")cxHabits().forEach((_,i)=>k.push(`${d.date}|hab|c${i}`));
@@ -1498,19 +1581,19 @@ function renderPlan(){
     $("wTitle").textContent=`${s.name}`;
     $("wBadge").textContent=`Week ${s.wk+1} · ${s.rir} RIR`;
     $("wEdit").hidden=false;$("wStart").hidden=!s.ex.length;
-    $("wList").innerHTML=`<div class="d" style="margin-bottom:6px">Warm-up: 5 min easy cardio and joint circles, then 2 ramp-up sets of the first exercise.</div><label class="trchk" style="margin:0 0 10px"><input type="checkbox" id="autoRest" ${autoRestOn()?"checked":""}/> Auto-start the rest timer when I log a set</label>`+
+    $("wList").innerHTML=warmHTML(d)+`<div class="sech"><span>💪 Main work</span><small>${s.ex.length} exercises · ${s.ex.reduce((a,x)=>a+adjusted(x,rd).sets,0)} sets</small></div><label class="trchk sw-auto"><input type="checkbox" id="autoRest" ${autoRestOn()?"checked":""}/> Auto-start rest timer when I log a set</label>`+
      (()=>{const G=ssGroups(s.ex);return s.ex.map((e,i)=>{const gi=G[i];
-      const r=row(`${d.date}|ex|${i}`,(gi?`<span class="ssl">${gi.g}${gi.k}</span>`:"")+esc(e.name)+formLink(e.name),`${setLine(e,rd,gi)}<br>${esc(e.load)}${e.wu?`<br><span class="wu">Warm-up: ${WU[e.wu]}</span>`:""}`,
+      const r=row(`${d.date}|ex|${i}`,(gi?`<span class="ssl">${gi.g}${gi.k}</span>`:"")+esc(e.name)+formLink(e.name),`${setLine(e,rd,gi)}<div class="exload">${esc(e.load)}</div>${e.wu?`<div class="wuchip">🔥 Ramp-up first: ${WU[e.wu]}</div>`:""}`,
       `${e.note?`<div class="d">${esc(e.note)}</div>`:""}<div class="cue">${esc(e.cue)}</div>${perfHTML(e)}`,
       `${e.ss?"":`<button type="button" class="rest" data-t="${e.rest}">⏱ ${e.rest}s</button>`}${e.key!=="pump"&&e.key!=="cust"?`<button type="button" class="rest" data-swap="${esc(e.key)}">↻ swap</button>`:""}`);
       if(!gi)return r;
       const head=gi.k===1?`<div class="ssg" role="group" aria-label="Superset ${gi.g}"><div class="ssh"><b>⛓ SUPERSET ${gi.g}</b><span>${gi.n===2?"2 exercises":gi.n===3?"Tri-set · 3 exercises":"Giant set · "+gi.n+" exercises"} · ${ssRounds(s.ex,gi,rd)} rounds</span><span>${s.ex.slice(gi.s,gi.e+1).map((x,k)=>gi.g+(k+1)).join(" → ")}, then rest ${s.ex[gi.e].rest}s</span></div>`:"";
       return head+r+(gi.k===gi.n?"</div>":"");
-     }).join("")})();
+     }).join("")})()+coolHTML(d);
   }else{
     $("wTitle").textContent=d.label;$("wBadge").textContent=d.kind==="rest"?"Recovery":"No lifting";$("wEdit").hidden=false;$("wStart").hidden=true;
     const walk=d.kind==="flush"?"35 min Zone 2 walk, nasal breathing. 4 × 45s dead hangs. 5 × 20s stomach vacuums.":d.kind==="posing"?"10 min mobility, 5 × 20s stomach vacuums, practice poses. No hard training.":(T.goal==="cut"?"30–40 min Zone 2 walk (conversational pace) plus 10 min mobility. Target 9–11k steps.":"20–30 min easy walk plus 10 min mobility. Target 7–9k steps.");
-    $("wList").innerHTML=`<div class="d" style="font-size:.88rem">${walk}</div>`;
+    $("wList").innerHTML=callout(d.kind==="rest"?"good":"info",d.kind==="rest"?"🌿":"🎯",d.kind==="rest"?"Recovery day":d.label,"",walk)+(d.kind==="rest"?callout("cool","🧘","Mobility · 10 min","",'<ul class="cl"><li>Cat-cow, 10 slow reps</li><li>World\'s greatest stretch, 5 each side</li><li>90/90 hip switches, 10 total</li><li>Dead hang or doorway chest stretch, 3 × 30 s</li></ul>'):"");
   }
   $("mBadge").textContent=`${d.meals.length} meals`;
   $("mList").innerHTML=d.meals.map((mm,i)=>{
@@ -1922,7 +2005,7 @@ function wmDraw(){
     ${ssBox}
     <div class="wm-target">${gi?`<span class="ssl">${gi.g}${gi.k}</span>`:""}${setLine(e,rd,gi)}</div>
     <div class="d">${esc(e.load)}${formLink(e.name)}</div>
-    ${e.wu&&!done.length?`<div class="note">Warm-up first: ${WU[e.wu]}</div>`:""}
+    ${WM.i===0&&!s.ex.some(x=>(S.sets[x.uid+"|"+WM.date]||[]).length)?warmHTML({session:s,date:WM.date}):e.wu&&!done.length?callout("warm","🔥","Ramp-up first","",WU[e.wu]):""}
     ${e.cue?`<div class="cue">${esc(e.cue)}</div>`:""}
     <div class="wm-dots" aria-label="Sets done">${dots}</div>
     <div class="wm-inputs"><label>${wU()}<input id="wmW" type="number" inputmode="decimal" step="0.5" value="${esc(wv)}"/></label><label>Reps<input id="wmR" type="number" inputmode="numeric" value="${esc(r0)}"/></label></div>
@@ -2044,7 +2127,7 @@ document.addEventListener("click",e=>{
 });
 
 /* ---------- APP VERSION, UPDATE PROMPT, INSTALL PROMPT ---------- */
-const APP_VER="2026.11.06.1",APP_MAJOR="3";
+const APP_VER="2026.11.06.2",APP_MAJOR="3";
 let UPD=false,BIP=null;
 const inFrame=()=>{try{return window.self!==window.top}catch(e){return true}};
 const isStandalone=()=>matchMedia("(display-mode: standalone)").matches||navigator.standalone===true;
@@ -2098,8 +2181,9 @@ function wmFinish(){
   WM.fin=Object.assign({end,mins},st);
   $("wm").innerHTML=`<div class="wm-top"><div class="wm-prog">${esc(s.name)} · finished</div></div>
    <div class="wm-body"><h2 class="wm-name">Session complete 💪</h2>
-    <div class="wm-sum"><div><span>Time</span><b>${mins} min</b></div><div><span>Sets</span><b>${st.sets}</b></div><div><span>Reps</span><b>${st.reps}</b></div><div><span>Volume</span><b>${st.vol?Math.round(dW(st.vol)).toLocaleString()+" "+wU():"Bodyweight"}</b></div><div><span>PRs</span><b>${prs}${prs?" 🏆":""}</b></div></div>
+    <div class="wm-sum"><div><span>Time</span><b>${mins} min</b></div><div><span>Sets</span><b>${st.sets}</b></div><div><span>Reps</span><b>${st.reps}</b></div><div><span>Volume</span><b>${st.vol?Math.round(dW(st.vol)).toLocaleString()+" "+wU():'<span style="font-size:.95rem">Bodyweight</span>'}</b></div><div><span>PRs</span><b>${prs}${prs?" 🏆":""}</b></div></div>
     ${dv!==null?`<div class="d">Volume vs your last ${esc(s.name)} (${dateLabel(pv[0],{month:"short",day:"numeric"})}): <b style="color:${dv>=0?"var(--green)":"var(--amber)"}">${dv>=0?"+":""}${dv}%</b></div>`:""}
+    ${coolHTML({session:s,date:WM.date})}
     <label class="wm-notel">Session note<textarea id="wmNote" maxlength="500" placeholder="How it felt, any pain, what to change next time">${esc(L.note||"")}</textarea></label>
    </div>
    <div class="wm-nav"><button class="btn" data-wm="back">‹ Back</button><button class="btn pri" data-wm="save">Save session ✓</button></div>`;
@@ -2266,7 +2350,7 @@ function applyData(d,mtime){
   lastSnap=snapOf();S.mtime=mtime||Date.now();save();regen();renderAll();
 }
 /* Two devices edited since the last sync: keep entries from both. Same key on both sides: the newer side wins. */
-const MAPK=["log","checks","perf","extra","hist","done","water","swaps","mswaps","sets","steps","wlog"];
+const MAPK=["log","checks","perf","extra","hist","done","water","swaps","mswaps","sets","steps","wlog","cardio"];
 function mergeData(older,newer){
   const o=JSON.parse(JSON.stringify(newer));
   MAPK.forEach(k=>{o[k]=Object.assign({},older[k],newer[k])});
@@ -2520,8 +2604,8 @@ function setLine(e,rd,gi){
   let reps=e.reps;
   if(e.bmReps&&a.rir!==e.rir)reps=String(Math.max(1,parseInt(e.reps)-(a.rir-e.rir)));
   const changed=a.sets!==e.sets||a.rir!==e.rir;
-  const rest=gi?(gi.k<gi.n?`then straight to ${gi.g}${gi.k+1}`:`rest ${e.rest}s, then back to ${gi.g}1`):e.ss?"no rest, straight to the next":"rest "+e.rest+"s";
-  return `<b>${a.sets} × ${reps}</b> · ${a.rir} RIR · ${rest}${changed?` <span class="badge a">readiness</span>`:""}`;
+  const rest=gi?(gi.k<gi.n?`→ ${gi.g}${gi.k+1}, no rest`:`⏱ ${e.rest}s, then ${gi.g}1`):e.ss?"→ next, no rest":"⏱ "+e.rest+"s rest";
+  return `<span class="rx"><span class="rx-main">${a.sets} × ${esc(reps)}</span><span class="rx-c">${a.rir} RIR</span><span class="rx-c">${rest}</span>${changed?`<span class="rx-c rx-a">readiness adjusted</span>`:""}</span>`;
 }
 function renderReady(){
   const d=selDay(),l=S.log[d.date]||{},rd=readiness(d.date);
@@ -2532,7 +2616,7 @@ function renderReady(){
   const so=[[1,"1 · none"],[2,"2 · light"],[3,"3 · moderate"],[4,"4 · high"],[5,"5 · severe"]];
   const msg=!rd?"Fill these in to get a suggestion for this day.":rd.off?"Suggestion off. Training as planned.":rd.level==="green"?"Green: train as planned.":rd.level==="yellow"?"Yellow: 1 fewer set per exercise and 1 more rep in reserve.":"Red: about 40% fewer sets and 2 more reps in reserve. A walk is fine if you feel unwell.";
   $("rdBadge").textContent=rd?rd.level.toUpperCase():"";
-  $("readyBox").innerHTML=`<div class="fgrid"><div class="cg"><label>Sleep last night</label>${sel("s",SLEEP_OPT,sCur)}</div><div class="cg"><label>Energy</label>${sel("e",e5,l.e)}</div><div class="cg"><label>Soreness</label>${sel("sr",so,l.sr)}</div></div><div class="d" style="margin-top:8px">${msg}</div>${rd&&rd.level!=="green"?`<button class="btn" data-rd="toggle" style="margin-top:8px">${rd.off?"Use the suggestion":"Train as planned anyway"}</button>`:""}<div class="d" style="margin-top:6px">A suggestion, not a rule. You can always override it.</div>`;
+  $("readyBox").innerHTML=`<div class="fgrid"><div class="cg"><label>Sleep last night</label>${sel("s",SLEEP_OPT,sCur)}</div><div class="cg"><label>Energy</label>${sel("e",e5,l.e)}</div><div class="cg"><label>Soreness</label>${sel("sr",so,l.sr)}</div></div>${typeof healthChips==="function"?healthChips(d.date):""}${rd?callout(rd.off?"info":rd.level,rd.off?"✋":rd.level==="green"?"🟢":rd.level==="yellow"?"🟡":"🔴",rd.off?"Training as planned":rd.level==="green"?"Green light":rd.level==="yellow"?"Go a bit easier":"Back off today","",msg.replace(/^(Green|Yellow|Red): /,"")):`<div class="d" style="margin-top:8px">${msg}</div>`}${rd&&rd.level!=="green"?`<button class="btn" data-rd="toggle" style="margin-top:8px">${rd.off?"Use the suggestion":"Train as planned anyway"}</button>`:""}<div class="d" style="margin-top:6px">A suggestion, not a rule. You can always override it.</div>`;
 }
 function onReady(t){
   const f=t.dataset.rd;if(f==="toggle")return;
@@ -3230,6 +3314,70 @@ function healthHash(){
 }
 setTimeout(healthHash,0);
 
+/* ===================== V3: CALLOUTS, WARM-UP / COOL-DOWN, CARDIO ===================== */
+function callout(kind,icon,title,meta,body){
+  return `<div class="callout c-${kind}"><div class="c-h"><span class="c-i" aria-hidden="true">${icon}</span><b>${title}</b>${meta?`<span class="c-m">${meta}</span>`:""}</div>${body?`<div class="c-b">${body}</div>`:""}</div>`;
+}
+function ccheck(key,label){const on=!!S.checks[key];return `<label class="ccheck ${on?"on":""}"><input type="checkbox" data-k="${esc(key)}" ${on?"checked":""}/> ${label}</label>`}
+const LOWERM=["quads","hams","glutes","calves"];
+function sessMus(s){const c={};(s.ex||[]).forEach(x=>{c[x.mu]=(c[x.mu]||0)+2;(x.mu2||[]).forEach(y=>c[y]=(c[y]||0)+1)});return c}
+function warmHTML(d){
+  const s=d.session;if(!s||!s.ex||!s.ex.length)return "";
+  const m=Object.keys(sessMus(s)),lower=m.some(x=>LOWERM.includes(x)),upper=m.some(x=>!LOWERM.includes(x)&&x!=="abs"),f=s.ex[0];
+  const it=["<b>3–5 min easy cardio</b> · bike, row, brisk walk or skipping. Warm, not tired."];
+  if(upper)it.push("<b>Upper body</b> · 10 arm circles each way, 15 band pull-aparts, 10 scap push-ups");
+  if(lower)it.push("<b>Lower body</b> · 10 leg swings each way, 10 bodyweight squats, 10 glute bridges");
+  it.push(`<b>Ramp-up sets</b> · ${esc(f.name)}: ${f.wu?WU[f.wu]:"5 reps at 50%, then 3 reps at 75% of your working weight"}`);
+  return callout("warm","🔥","Warm-up","5–8 min",`<ol class="cl">${it.map(x=>`<li>${x}</li>`).join("")}</ol>${ccheck(`${d.date}|wu`,"Warm-up done")}`);
+}
+const STRETCH={chest:"Doorway chest stretch · 30 s each side",back:"Child's pose, arms long · 45 s",shoulders:"Cross-body shoulder stretch · 30 s each side",biceps:"Wall biceps stretch · 30 s each side",triceps:"Overhead triceps stretch · 30 s each side",arms:"Overhead triceps stretch · 30 s each side",quads:"Couch or standing quad stretch · 45 s each side",legs:"Standing hamstring stretch · 45 s each side",hams:"Standing hamstring stretch · 45 s each side",glutes:"Figure-4 glute stretch · 45 s each side",calves:"Wall calf stretch · 30 s each side",abs:"Cobra stretch · 30 s"};
+function coolHTML(d){
+  const s=d.session;if(!s||!s.ex||!s.ex.length)return "";
+  const c=sessMus(s),seen=new Set(),st=Object.keys(c).sort((a,b)=>c[b]-c[a]).map(k=>STRETCH[k]).filter(x=>x&&!seen.has(x)&&seen.add(x)).slice(0,4);
+  const it=["<b>3–5 min easy walk</b> · until breathing settles"].concat(st.map(x=>{const [a,b]=x.split(" · ");return `<b>${a}</b> · ${b}`}),["<b>1 min slow breathing</b> · 4 s in through the nose, 6 s out"]);
+  return callout("cool","❄️","Cool-down","5–8 min",`<ol class="cl">${it.map(x=>`<li>${x}</li>`).join("")}</ol>${ccheck(`${d.date}|cd`,"Cool-down done")}`);
+}
+function healthChips(date){
+  const h=(S.hd||{})[date];if(!h)return "";
+  const base=k=>{const v=[];for(let i=1;i<=14;i++){const x=S.hd[addD(date,-i)];if(x&&+x[k]>0)v.push(+x[k])}return v.length>=3?Math.round(v.reduce((a,b)=>a+b,0)/v.length):0};
+  const ch=[];
+  if(h.sleep>0)ch.push(`😴 ${r1(h.sleep)} h sleep`);
+  if(h.hrv>0){const b=base("hrv");ch.push(`💓 HRV ${Math.round(h.hrv)}${b?` <small>(usual ${b})</small>`:""}`)}
+  if(h.rhr>0){const b=base("rhr");ch.push(`❤️ Resting HR ${Math.round(h.rhr)}${b?` <small>(usual ${b})</small>`:""}`)}
+  return ch.length?`<div class="hchips"><span class="hsrc">⌚ From Health</span>${ch.map(x=>`<span>${x}</span>`).join("")}</div>`:"";
+}
+const CT=["Walk","Run","Bike","Row","Swim","Stairs","Elliptical","HIIT","Hike","Sport","Other"];
+const stepGoal=()=>({cut:10000,bulk:7000})[S.prof.goal]||8000;
+const cardioGoal=()=>({cut:150,recomp:120,bulk:60,peak:90})[S.prof.goal]||120;
+function cardioOn(date){const a=((S.cardio||{})[date]||[]).map(x=>Object.assign({src:"me"},x)),h=(((S.hd||{})[date]||{}).cardio)||[];return a.concat(h.map(x=>Object.assign({src:"health"},x)))}
+function ringBig(p){const r=40,c=2*Math.PI*r;return `<svg width="100" height="100" viewBox="0 0 100 100" aria-hidden="true"><circle cx="50" cy="50" r="${r}" fill="none" stroke="var(--panel2)" stroke-width="9"/><circle cx="50" cy="50" r="${r}" fill="none" stroke="${p>=1?"var(--green)":"var(--accent)"}" stroke-width="9" stroke-linecap="round" stroke-dasharray="${c}" stroke-dashoffset="${c*(1-Math.min(1,p))}" transform="rotate(-90 50 50)"/></svg>`}
+function renderCardio(){
+  const el=$("cardioBox");if(!el||!W)return;
+  const d=selDay(),date=d.date,st=S.steps[date]||0,g=stepGoal(),fromH=(((S.hd||{})[date]||{}).steps||0)>0;
+  const days=[];for(let i=6;i>=0;i--)days.push(addD(date,-i));
+  const v=days.map(x=>S.steps[x]||0),mx=Math.max(g*1.15,...v);
+  const wkMin=W.days.reduce((a,x)=>a+cardioOn(x.date).reduce((b,c)=>b+(+c.min||0),0),0),cg=cardioGoal();
+  const hm=220-(+S.prof.age||30),z2=[Math.round(hm*.6),Math.round(hm*.7)];
+  const list=cardioOn(date);
+  const rx=d.kind==="train"?["warm","⚡","Optional finisher","10 min easy bike or incline walk after lifting. Keep it easy so recovery isn't affected."]:d.kind==="rest"?["good","🫀","Zone 2 day",`30–40 min at <b>${z2[0]}–${z2[1]} bpm</b>. You can still talk in full sentences.`]:["info","🚶","Light movement only","Easy walking. Save your energy."];
+  $("cdBadge").textContent=`${wkMin} / ${cg} min this week`;
+  el.innerHTML=`<div class="stepwrap"><div class="stepring">${ringBig(st/g)}<div class="stepnum"><b>${st?st.toLocaleString():"0"}</b><small>/ ${g.toLocaleString()}</small></div></div>
+   <div class="stepside"><div class="sechl">Steps · last 7 days</div><div class="stepbars" style="--goal:${g/mx*100}%">${v.map((x,i)=>`<i title="${esc(days[i])}: ${x}" style="height:${Math.max(4,x/mx*100)}%" class="${x>=g?"hit":""} ${days[i]===date?"cur":""}"></i>`).join("")}</div>
+   <div class="stepsrc">${fromH?'<span class="badge g">⌚ Synced from Health</span>':`<label>Steps today <input type="number" inputmode="numeric" id="cdSteps" value="${st||""}" placeholder="0"/></label>`}</div></div></div>
+   ${callout(rx[0],rx[1],rx[2],"",rx[3])}
+   <div class="cdweek"><div class="sechl">Cardio this week <b>${wkMin} / ${cg} min</b></div><div class="cdbar"><i style="width:${Math.min(100,wkMin/cg*100)}%"></i></div></div>
+   <div class="sechl" style="margin-top:12px">${esc(dateLabel(date,{weekday:"long"}))}</div>
+   ${list.length?list.map((c,i)=>`<div class="cdrow"><span class="cdt">${esc(c.type)}</span><span class="cdm">${c.min} min${c.km?` · ${metric()?r1(c.km)+" km":r1(c.km/1.60934)+" mi"}`:""}${c.hr?` · ${c.hr} bpm`:""}${c.kcal?` · ${c.kcal} kcal`:""}</span>${c.src==="health"?'<span class="badge">⌚</span>':`<button class="rest" data-cddel="${i}" aria-label="Remove">✕</button>`}</div>`).join(""):'<div class="d">No cardio logged.</div>'}
+   <div class="cdadd"><select id="cdType" aria-label="Type">${CT.map(t=>`<option>${t}</option>`).join("")}</select><input id="cdMin" type="number" inputmode="numeric" placeholder="Min" min="1" max="600" aria-label="Minutes"/><input id="cdHr" type="number" inputmode="numeric" placeholder="HR" aria-label="Average heart rate"/><button class="btn pri" id="cdAdd">Log</button></div>`;
+}
+document.addEventListener("click",e=>{
+  const t=e.target.closest("button");if(!t)return;
+  if(t.id==="cdAdd"){const m=Math.round(+$("cdMin").value||0);if(!(m>0&&m<=600)){$("cdMin").focus();return}const hr=Math.round(+$("cdHr").value||0);S.cardio=S.cardio||{};(S.cardio[S.sel]=S.cardio[S.sel]||[]).push(Object.assign({id:Date.now(),type:$("cdType").value,min:m},hr>=40&&hr<=230?{hr}:{}));save();renderCardio()}
+  else if(t.dataset.cddel!=null){const a=(S.cardio||{})[S.sel]||[];a.splice(+t.dataset.cddel,1);if(!a.length)delete S.cardio[S.sel];save();renderCardio()}
+});
+document.addEventListener("change",e=>{if(e.target.id==="cdSteps"){const n=Math.round(+e.target.value||0);if(n>0)S.steps[S.sel]=n;else delete S.steps[S.sel];save();renderCardio()}});
+PLANX.push(renderCardio);
+
 /* ===================== V3: COACHING + HEALTH AUTO-SYNC ===================== */
 /* Server tables (supabase/v3.sql): coach_links, coach_invites, assignments, messages, checkins, health_daily, health_tokens.
    A coach NEVER writes into a client's progress row. Coach writes go to assignments / messages / checkin replies; the
@@ -3272,7 +3420,7 @@ async function pullV3(){
       sbGet(`/rest/v1/assignments?select=coach_id,date,session,note,updated_at&client_id=eq.${me}&date=gte.${from}`),
       sbGet(`/rest/v1/messages?select=id,coach_id,client_id,author,date,body,created_at&client_id=eq.${me}&order=created_at.desc&limit=60`),
       sbGet(`/rest/v1/checkins?select=week,data,reply,replied_at&client_id=eq.${me}&week=gte.${addD(TODAY,-70)}`),
-      sbGet(`/rest/v1/health_daily?select=date,steps,weight_kg,sleep_h,rhr,hrv,kcal&user_id=eq.${me}&date=gte.${addD(TODAY,-90)}`)
+      sbGet(`/rest/v1/health_daily?select=date,steps,weight_kg,sleep_h,rhr,hrv,kcal,cardio&user_id=eq.${me}&date=gte.${addD(TODAY,-90)}`)
     ]);
     const c=cx(),before=JSON.stringify([c.links,c.asg,c.msgs,c.ci,S.hd]);
     c.links=links||[];
@@ -3282,7 +3430,7 @@ async function pullV3(){
     const C={};(ci||[]).forEach(r=>C[r.week]=r);c.ci=C;
     let dataChanged=false;
     (hd||[]).forEach(r=>{
-      const d=r.date;S.hd[d]={rhr:r.rhr!=null?+r.rhr:0,hrv:r.hrv!=null?+r.hrv:0,kcal:r.kcal||0,sleep:r.sleep_h!=null?+r.sleep_h:0,steps:r.steps||0,w:r.weight_kg!=null?+r.weight_kg:0};
+      const d=r.date;S.hd[d]={rhr:r.rhr!=null?+r.rhr:0,hrv:r.hrv!=null?+r.hrv:0,kcal:r.kcal||0,sleep:r.sleep_h!=null?+r.sleep_h:0,steps:r.steps||0,w:r.weight_kg!=null?+r.weight_kg:0,cardio:Array.isArray(r.cardio)?r.cardio:[]};
       if(r.steps>0&&S.steps[d]!==r.steps){S.steps[d]=r.steps;dataChanged=true}
       const l=S.log[d]=S.log[d]||{};
       if(r.weight_kg>0&&(!l.w||l.wh)&&Math.abs((+l.w||0)-r.weight_kg)>.01){l.w=+r.weight_kg;l.wh=1;dataChanged=true}
@@ -3306,7 +3454,7 @@ function asgSession(a,dow,p,wk){
 function renderCoachToday(){
   const d=selDay(),a=cx().asg[d.date],box=$("coachBox");
   if(a&&$("wList")){
-    $("wList").insertAdjacentHTML("afterbegin",`<div class="note">📋 <b>${a.ex&&a.ex.length?"Assigned by":"Rest day set by"} ${esc(a.coach||"your coach")}.</b>${a.note?" "+esc(a.note):""}</div>`);
+    $("wList").insertAdjacentHTML("afterbegin",callout("coach","📋",(a.ex&&a.ex.length?"Assigned by ":"Rest day set by ")+esc(a.coach||"your coach"),"",a.note?esc(a.note):""));
   }
   const hs=cxHabits();
   if(hs.length&&$("hList"))$("hList").insertAdjacentHTML("beforeend",hs.map((h,i)=>row(`${d.date}|hab|c${i}`,esc(h.t),"From "+esc(h.by||"your coach"))).join(""));
@@ -3389,31 +3537,35 @@ async function stopCoach(coach){
 }
 
 /* ---------- Health auto-sync card ---------- */
+const hookURL=t=>SB_URL+"/functions/v1/health?t="+encodeURIComponent(t||"");
 function renderHealthSync(){
   const b=$("healthBox");if(!b)return;
-  const tok=lsGet(HTK),ep=SB_URL+"/rest/v1/rpc/health_ingest",last=Object.keys(S.hd||{}).sort().pop();
-  const recipe=`<ol class="hsteps">
-    <li>Open <b>Shortcuts</b> → <b>Automation</b> → <b>+</b> → <b>Time of Day</b>: 9:00 PM, Daily, <b>Run Immediately</b> (turn off Notify When Run). Tap Next → New Blank Automation.</li>
-    <li>Add <b>Find Health Samples</b>: Type <b>Steps</b>, Start Date <b>is today</b>. Add <b>Calculate Statistics</b>: Sum. Add <b>Set Variable</b> named <b>steps</b>.</li>
-    <li>Repeat for <b>Active Energy</b> (Sum → <b>kcal</b>), <b>Resting Heart Rate</b> (Average, start date in the last 1 day → <b>rhr</b>), <b>Heart Rate Variability</b> (Average, last 1 day → <b>hrv</b>), <b>Weight</b> (Sort by Start Date, Latest First, Limit 1 → <b>weight</b>).</li>
-    <li>Sleep: <b>Find Health Samples</b> Type <b>Sleep Analysis</b>, Start Date in the last 1 day, Value is <b>Asleep</b> (or Core/Deep/REM). Add <b>Calculate Statistics</b>: Sum of the Duration → <b>sleep</b> (minutes or hours both work).</li>
-    <li>Add <b>Dictionary</b> with keys: <code>token</code> (text, your key below) and <code>payload</code> (Dictionary with <code>date</code> = Current Date formatted <b>yyyy-MM-dd</b>, <code>steps</code>, <code>kcal</code>, <code>rhr</code>, <code>hrv</code>, <code>weight</code>, <code>unit</code> = ${metric()?"kg":"lb"}, <code>sleep</code>).</li>
-    <li>Add <b>Get Contents of URL</b>: URL below, Method <b>POST</b>, Headers <code>apikey</code> = the app key below and <code>Content-Type</code> = <code>application/json</code>, Request Body <b>File</b> = the Dictionary.</li>
-    <li>Run it once with ▶. The app shows the new day the next time it syncs.</li></ol>`;
-  b.insertAdjacentHTML("afterbegin",`<h3 style="margin-top:0">Automatic daily sync</h3>
-   ${!SY.sess?'<div class="d">Sign in (Profile → Sync) to turn on automatic Health sync.</div>':
-   `<div class="d">Set up once. Your phone then sends steps, weight, sleep, resting heart rate, HRV and active calories every day, even when the app is closed. Sleep, HRV and resting heart rate feed the readiness check.${last?` Last Health data: <b>${esc(dateLabel(last))}</b>.`:""}</div>
-   ${tok?`<div class="fgrid" style="margin-top:8px"><div class="cg"><label>Your sync key (private, like a password)</label><input readonly value="${esc(tok)}" id="htTok" onclick="this.select()"/></div><div class="cg"><label>URL</label><input readonly value="${esc(ep)}" onclick="this.select()"/></div><div class="cg"><label>App key (apikey header)</label><input readonly value="${esc(SB_KEY)}" onclick="this.select()"/></div></div>
-     <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:8px"><button class="btn" id="htCopy">Copy key</button><button class="btn" id="htNew">New key</button><button class="btn danger" id="htOff">Turn off</button><button class="btn" id="htTest">Send a test</button></div>`
-   :`<div style="margin-top:8px"><button class="btn pri" id="htNew">Create my sync key</button></div>`}
-   <details class="rec"><summary>📱 iPhone: set up the daily Shortcut (5 minutes, once)</summary>${recipe}</details>
-   <details class="rec"><summary>🤖 Android</summary><div class="d" style="margin-top:6px">Android does not let web apps read Health Connect. Use any automation app that can read your health data and send a web request (for example a Tasker profile or a Health Connect export app) to POST the same JSON to the URL above with the <code>apikey</code> header. Otherwise use the CSV import below. A native Android app is on the roadmap.</div></details>
+  const tok=lsGet(HTK),last=Object.keys(S.hd||{}).sort().pop(),age=last?diffD(last,TODAY):null;
+  const status=!tok?"":age===null?callout("warn","⏳","Waiting for the first sync","","Finish one of the setups below, then run it once."):age<=1?callout("good","✅","Health sync is working",`Last data ${esc(dateLabel(last,{month:"short",day:"numeric"}))}`,"Steps, weight, sleep, HRV, resting heart rate and workouts fill in by themselves."):callout("warn","⚠️","Health sync has stopped",`Last data ${esc(dateLabel(last,{month:"short",day:"numeric"}))}`,"Open the exporter app or Shortcut and run it once. iPhone only sends Health data while the phone is unlocked.");
+  b.insertAdjacentHTML("afterbegin",`<div class="sechl">Automatic daily sync</div>
+   ${!SY.sess?callout("info","🔐","Sign in first","","Create an account in Profile → Sync, then come back here to connect Apple Health."):
+   `${status}
+   ${tok?`<div class="hurl"><label>Your personal sync link · treat it like a password</label><div class="hurlrow"><input readonly id="htUrl" value="${esc(hookURL(tok))}" onclick="this.select()"/><button class="btn pri" id="htCopy">Copy</button></div>
+     <div class="hurlbtns"><button class="btn" id="htTest">Send a test</button><button class="btn" id="htNew">New link</button><button class="btn danger" id="htOff">Turn off</button></div></div>
+   <details class="rec" open><summary>⭐ Easiest: Health Auto Export app (iPhone, set up once, fully automatic)</summary><ol class="hsteps">
+    <li>Install <b>Health Auto Export – JSON+CSV</b> from the App Store. Background automations need its paid tier.</li>
+    <li>Automations → <b>+</b> → <b>REST API</b>. Paste your link above into <b>URL</b>. Format <b>JSON</b>.</li>
+    <li>Data type <b>Health Metrics</b>. Pick Step Count, Weight &amp; Body Mass, Sleep Analysis, Resting Heart Rate, Heart Rate Variability and Active Energy. Aggregate by <b>Day</b>.</li>
+    <li>Add a second automation the same way with data type <b>Workouts</b>. Your walks, runs and rides then show up in Cardio.</li>
+    <li>Set the sync to <b>hourly</b> or <b>daily</b>. To backfill, run a manual export of the last 30 days once.</li></ol></details>
+   <details class="rec"><summary>Free option: Apple Shortcuts</summary><ol class="hsteps">
+    <li>Shortcuts → <b>Automation</b> → <b>+</b> → <b>Time of Day</b>: 9:00 PM, Daily, <b>Run Immediately</b>.</li>
+    <li>For each value add <b>Find Health Samples</b> (today), then <b>Calculate Statistics</b>: Steps (Sum), Active Energy (Sum), Resting Heart Rate (Average), Heart Rate Variability (Average), Weight (latest), Sleep Analysis "Asleep" (Sum of duration).</li>
+    <li>Add <b>Get Contents of URL</b>: paste your link, Method <b>POST</b>, Request Body <b>JSON</b> with fields <code>date</code> (Current Date as yyyy-MM-dd), <code>steps</code>, <code>kcal</code>, <code>rhr</code>, <code>hrv</code>, <code>weight</code>, <code>unit</code> = ${metric()?"kg":"lb"}, <code>sleep</code>.</li>
+    <li>Run it once with ▶ to check.</li></ol></details>
+   <details class="rec"><summary>🤖 Android</summary><div class="d" style="margin-top:6px">Android doesn't let web apps read Health Connect. Any automation app that can send a web request (Tasker, or a Health Connect export app) can POST the same JSON to your link. Otherwise use the import below.</div></details>`
+   :`<div class="d">Connect once and your phone sends steps, weight, sleep, HRV, resting heart rate and workouts every day, even with the app closed. Sleep and HRV feed your readiness check, steps fill the step counter, and workouts land in Cardio.</div><button class="btn pri" id="htNew" style="margin-top:10px">Connect Apple Health</button>`}
    <div class="d" id="htMsg" style="margin-top:6px"></div>`}
-   <h3>Manual entry and import</h3>`);
+   <div class="sechl" style="margin-top:16px">Manual entry and import</div>`);
 }
 async function healthKey(on){
   try{
-    if(on){if(lsGet(HTK)&&!confirm("Make a new key? The old one stops working, so update your Shortcut."))return;const t=await sbRpc("health_token_new");lsSet(HTK,t)}
+    if(on){if(lsGet(HTK)&&!confirm("Make a new link? The old one stops working, so paste the new one into your exporter app or Shortcut."))return;const t=await sbRpc("health_token_new");lsSet(HTK,t)}
     else{if(!confirm("Turn off automatic Health sync? Your Shortcut will stop working. Data already synced stays."))return;await sbRpc("health_token_revoke");try{localStorage.removeItem(HTK)}catch(e){}}
     renderProgress();
   }catch(e){const m=$("htMsg");if(m)m.textContent=v3Err(e)}
@@ -3421,8 +3573,8 @@ async function healthKey(on){
 async function healthTest(){
   const m=$("htMsg");m.textContent="Sending a test with today's steps…";
   try{
-    const r=await sbFetch("/rest/v1/rpc/health_ingest",{method:"POST",body:JSON.stringify({token:lsGet(HTK),payload:{date:TODAY,steps:S.steps[TODAY]||0}})});
-    m.textContent=r&&r.ok?"Server accepted it ✓ Your key works.":"Unexpected reply";
+    const r=await fetch(hookURL(lsGet(HTK)),{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({date:TODAY,steps:S.steps[TODAY]||0})}),j=await r.json().catch(()=>null);
+    m.textContent=r.ok&&j&&j.ok?"✅ Your link works. The server accepted the test.":"Test failed: "+((j&&j.error)||"HTTP "+r.status);
   }catch(e){m.textContent="Test failed: "+v3Err(e)}
 }
 
@@ -3445,13 +3597,13 @@ async function loadClients(){
       const inn=`in.(${ids.join(",")})`,from=addD(TODAY,-35);
       const [pr,hd,ci,asg,ms]=await Promise.all([
         sbGet(`/rest/v1/progress?select=user_id,data,mtime&user_id=${inn}`),
-        sbGet(`/rest/v1/health_daily?select=user_id,date,steps,weight_kg,sleep_h,rhr,hrv&user_id=${inn}&date=gte.${from}`),
+        sbGet(`/rest/v1/health_daily?select=user_id,date,steps,weight_kg,sleep_h,rhr,hrv,cardio&user_id=${inn}&date=gte.${from}`),
         sbGet(`/rest/v1/checkins?select=client_id,week,data,reply,replied_at,updated_at&client_id=${inn}&week=gte.${addD(TODAY,-63)}&order=week.desc`),
         sbGet(`/rest/v1/assignments?select=client_id,date,session,note,updated_at&coach_id=eq.${uidMe()}&date=gte.${addD(TODAY,-28)}`),
         sbGet(`/rest/v1/messages?select=id,client_id,author,date,body,created_at&coach_id=eq.${uidMe()}&order=created_at.desc&limit=300`)
       ]);
       CO.rows={};(pr||[]).forEach(r=>CO.rows[r.user_id]=r.data||{});
-      CO.hd={};(hd||[]).forEach(r=>{(CO.hd[r.user_id]=CO.hd[r.user_id]||{})[r.date]={steps:r.steps||0,w:+r.weight_kg||0,sleep:+r.sleep_h||0,rhr:+r.rhr||0,hrv:+r.hrv||0}});
+      CO.hd={};(hd||[]).forEach(r=>{(CO.hd[r.user_id]=CO.hd[r.user_id]||{})[r.date]={steps:r.steps||0,w:+r.weight_kg||0,sleep:+r.sleep_h||0,rhr:+r.rhr||0,hrv:+r.hrv||0,cardio:Array.isArray(r.cardio)?r.cardio:[]}});
       CO.ci={};(ci||[]).forEach(r=>(CO.ci[r.client_id]=CO.ci[r.client_id]||[]).push(r));
       CO.asg={};(asg||[]).forEach(r=>{(CO.asg[r.client_id]=CO.asg[r.client_id]||{})[r.date]=Object.assign({},r.session,{note:r.note,mt:r.updated_at})});
       CO.msgs={};(ms||[]).forEach(m=>(CO.msgs[m.client_id]=CO.msgs[m.client_id]||[]).push(m));
@@ -3480,6 +3632,7 @@ function clientStats(id){
   const wNow=wv.filter(x=>x>0),avg=a=>a.length?a.reduce((x,y)=>x+y,0)/a.length:0;
   const wA=avg(wv.slice(0,7).filter(x=>x>0)),wB=avg(wv.slice(21).filter(x=>x>0)),wDelta=wA&&wB?(wB-wA)/3:0;
   const steps=Math.round(avg(d7.map(d=>(st.steps||{})[d]||(hd[d]&&hd[d].steps)||0).filter(x=>x>0)));
+  const cardio7=d7.reduce((t,d)=>t+((st.cardio||{})[d]||[]).concat((hd[d]&&hd[d].cardio)||[]).reduce((u,c)=>u+(+c.min||0),0),0);
   const nh=3+((CO_link(id)||{}).habits||[]).length;
   let hk=0;d7.forEach(d=>Object.keys(st.checks||{}).forEach(k=>{if(k.startsWith(d+"|hab|")&&st.checks[k])hk++}));
   const habAdh=Math.min(1,hk/(7*nh));
@@ -3495,7 +3648,7 @@ function clientStats(id){
   if(lr&&lr.lv==="red")flags.push(["r","Readiness red"]);
   const lm=(CO.msgs[id]||[])[0];
   if(lm&&lm.author===id)flags.push(["b","Message waiting"]);
-  return {st,last,n7,n28,perWk,adh,habAdh,wNow:wNow[wNow.length-1]||0,wDelta,wv:wv.filter(x=>x>0),steps,ci,ciThis,prs,lr,score,flags};
+  return {st,last,n7,n28,perWk,adh,habAdh,cardio7,wNow:wNow[wNow.length-1]||0,wDelta,wv:wv.filter(x=>x>0),steps,ci,ciThis,prs,lr,score,flags};
 }
 const CO_link=id=>cx().links.find(l=>l.coach_id===uidMe()&&l.client_id===id);
 const flagW=s=>s.flags.reduce((t,f)=>t+(f[0]==="r"?3:f[0]==="a"?2:1),0);
@@ -3516,6 +3669,7 @@ function renderCoach(){
      <div class="cokv"><span>Last workout</span><b>${s.last?esc(dateLabel(s.last,{month:"short",day:"numeric"})):"–"}</b></div>
      <div class="cokv"><span>Weight</span><b>${s.wNow?dW(s.wNow)+" "+wU():"–"}${s.wDelta?` <small style="color:var(--muted)">${s.wDelta>0?"+":""}${dW(s.wDelta)}/wk</small>`:""}</b></div>
      <div class="cokv"><span>Steps 7 d</span><b>${s.steps?s.steps.toLocaleString():"–"}</b></div>
+     <div class="cokv"><span>Cardio 7 d</span><b>${s.cardio7?s.cardio7+" min":"–"}</b></div>
      <div class="cokv"><span>Readiness</span><b>${s.lr?`<span class="dot ${s.lr.lv}"></span>${s.lr.lv}`:"–"}</b></div>
      ${s.wv.length>1?sparkline(s.wv,220,30):""}
      <div class="coflags">${s.flags.map(flagHTML).join("")}${s.prs.length?`<span class="badge g">🏆 ${s.prs.length} PR${s.prs.length>1?"s":""} in 14 d</span>`:""}</div>
@@ -3649,7 +3803,7 @@ function coClick(t){
     case "htNew":healthKey(true);return true;
     case "htOff":healthKey(false);return true;
     case "htTest":healthTest();return true;
-    case "htCopy":{const v=lsGet(HTK);if(navigator.clipboard)navigator.clipboard.writeText(v).then(()=>alert("Key copied"));else prompt("Copy",v);return true}
+    case "htCopy":{const v=hookURL(lsGet(HTK));if(navigator.clipboard)navigator.clipboard.writeText(v).then(()=>alert("Key copied"));else prompt("Copy",v);return true}
   }
   return false;
 }

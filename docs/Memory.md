@@ -2,6 +2,16 @@
 
 State of the app and the decisions behind it. Newest first.
 
+## v3 polish — build 2026.11.06.2 (2026-11-06)
+
+- **Callout system.** `callout(kind, icon, title, meta, body)` with kinds warm, cool, good/green, warn/yellow, red, info, coach. Used for warm-up, cool-down, readiness verdict, coach notes, rest-day recovery, cardio prescription and Health sync status. `.note` restyled to match.
+- **Workout structure.** Today reads Warm-up → Main work → Cool-down. Warm-up and cool-down are built from the session's muscles, have "done" checks and count toward the day. Workout mode shows the full warm-up before the first set and the cool-down on the finish screen. Sets × reps, RIR and rest are chips.
+- **Cardio & steps card.** Step ring vs a goal-based target (cut 10k, recomp 8k, gain 7k), 7-day bars with a goal line, a daily cardio prescription (Zone 2 range from 220 − age), weekly minutes vs target (cut 150, recomp 120, gain 60), manual logging. `S.cardio` is synced and merged. Health workouts are shown alongside, read-only.
+- **Health set once.** Edge function `health` (verify_jwt off; the hashed sync key is the only credential) takes a personal URL `…/functions/v1/health?t=<key>`. It accepts Health Auto Export JSON (metrics + workouts), a flat Shortcut body or a list of days. Parser `supabase/functions/health/parse.mjs` is pure and unit-tested. `health_daily.cardio` stores Health workouts. The status callout shows working, waiting or stopped.
+- **Visuals.** Premium CSS block at the end of `<style>`: 18 px radius, soft shadows, quieter headers, uppercase micro-labels, Progress tab split into Body / Training / Health / Privacy sections.
+- Tests: 71 passed (14 new).
+- Not verified live: the edge function has not been called end to end (the sandbox can't reach supabase.co). The in-app "Send a test" button calls it.
+
 ## v3 — build 2026.11.06.1 (2026-11-06)
 
 **Shipped on branch `claude/bold-bell-1sakoo`. Not on `main` until the owner approves the deploy.**

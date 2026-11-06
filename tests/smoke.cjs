@@ -195,6 +195,42 @@ async function page(browser, vp) {
     await p3.close();
   }
 
+  console.log("v3: warm-up, cool-down, cardio, Health");
+  {
+    const p4 = await page(browser, { width: 390, height: 900 });
+    const r = await p4.evaluate(() => {
+      const d = W.days.find(x => x.session); S.sel = d.date; showTab("plan"); setPlanSeg("w"); renderPlan();
+      const keys = dayKeys(d);
+      return { warm: !!document.querySelector("#wList .callout.c-warm"), cool: !!document.querySelector("#wList .callout.c-cool"), sec: !!document.querySelector("#wList .sech"), chips: document.querySelectorAll("#wList .rx-main").length === d.session.ex.length, keys: keys.includes(d.date + "|wu") && keys.includes(d.date + "|cd") };
+    });
+    ok(r.warm && r.cool && r.sec, "Today shows warm-up, main work and cool-down sections");
+    ok(r.chips, "every exercise shows its sets × reps as a chip");
+    ok(r.keys, "warm-up and cool-down count toward the day's progress");
+    await p4.check('#wList .c-warm input[type=checkbox]');
+    ok(await p4.evaluate(() => !!S.checks[S.sel + "|wu"]), "ticking warm-up done is saved");
+    await p4.selectOption("#cdType", "Run"); await p4.fill("#cdMin", "25"); await p4.fill("#cdHr", "150"); await p4.click("#cdAdd");
+    const c = await p4.evaluate(() => ({ log: (S.cardio[S.sel] || [])[0], rows: document.querySelectorAll("#cardioBox .cdrow").length, badge: $("cdBadge").textContent }));
+    ok(c.log && c.log.type === "Run" && c.log.min === 25 && c.log.hr === 150 && c.rows === 1, "cardio session logs type, minutes and heart rate");
+    ok(/^25 \//.test(c.badge), `weekly cardio minutes update (${c.badge})`);
+    ok(await p4.evaluate(() => SYNCKEYS.includes("cardio") && MAPK.includes("cardio")), "cardio syncs and merges across devices");
+    await p4.fill("#cdSteps", "7345"); await p4.dispatchEvent("#cdSteps", "change");
+    ok(await p4.evaluate(() => S.steps[S.sel] === 7345 && /7,345/.test($("cardioBox").textContent)), "manual steps update the step counter");
+    const h = await p4.evaluate(() => { S.hd = { [S.sel]: { steps: 9000, sleep: 7.5, hrv: 50, rhr: 56, cardio: [{ type: "Outdoor Walk", min: 30 }] } }; renderPlan(); return { chips: !!document.querySelector("#readyBox .hchips"), synced: /Synced from Health/.test($("cardioBox").textContent), walk: /Outdoor Walk/.test($("cardioBox").textContent) } });
+    ok(h.chips && h.synced && h.walk, "Health data shows in readiness, the step counter and cardio");
+    const over = await p4.evaluate(() => document.documentElement.scrollWidth > document.documentElement.clientWidth);
+    ok(!over, "390px Today with cardio: no horizontal scroll");
+    ok(p4.errors.length === 0, "no JS errors " + p4.errors.join(" | "));
+    await p4.close();
+  }
+  {
+    const { toRows } = await import(require("url").pathToFileURL(path.join(__dirname, "..", "supabase", "functions", "health", "parse.mjs")).href);
+    const rows = toRows({ data: { metrics: [{ name: "step_count", units: "count", data: [{ date: "2026-11-05 00:00:00 -0500", qty: 4000 }, { date: "2026-11-05 12:00:00 -0500", qty: 4421 }] }, { name: "weight_body_mass", units: "lb", data: [{ date: "2026-11-05 07:00:00 -0500", qty: 165.4 }] }, { name: "sleep_analysis", units: "hr", data: [{ date: "2026-11-05 00:00:00 -0500", totalSleep: 7.25 }] }, { name: "active_energy", units: "kJ", data: [{ date: "2026-11-05", qty: 2092 }] }], workouts: [{ name: "Outdoor Walk", start: "2026-11-05 18:00:00 -0500", duration: 2520, distance: { qty: 2.1, units: "mi" } }] } });
+    const r0 = rows[0] || {};
+    ok(rows.length === 1 && r0.steps === 8421 && r0.weight === 165.4 && r0.unit === "lb" && r0.sleep === 7.25 && r0.kcal === 500, "Health Auto Export metrics become one day row (steps summed, kJ to kcal)");
+    ok(r0.cardio && r0.cardio[0].min === 42 && Math.abs(r0.cardio[0].km - 3.38) < .01, "Health workouts become cardio entries");
+    ok(toRows({ date: "2026-11-05", steps: 10 })[0].steps === 10 && toRows([{ date: "x" }]).length === 1, "Shortcut and list bodies pass straight through");
+  }
+
   const vf = path.join(path.dirname(file), "version.json");
   if (fs.existsSync(vf)) {
     const v = JSON.parse(fs.readFileSync(vf, "utf8")).v, av = await pg.evaluate(() => APP_VER);
