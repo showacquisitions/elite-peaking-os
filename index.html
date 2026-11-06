@@ -516,6 +516,67 @@
   .cdadd{display:grid;grid-template-columns:1.3fr .8fr .9fr auto;gap:8px;margin-top:10px}
   .cdadd input,.cdadd select{min-width:0}
   @media(max-width:400px){.stepwrap{gap:12px}.stepring{width:88px;height:88px}.stepring svg{width:88px;height:88px}}
+  /* ===== v3.4: interactive charts ===== */
+  .ichart{margin-top:4px}
+  .icbar{display:flex;gap:8px;flex-wrap:wrap;justify-content:space-between;margin:2px 0 8px}
+  .icgrp{display:inline-flex;gap:2px;padding:3px;border-radius:10px;background:var(--panel2);border:1px solid var(--ring)}
+  .icb{border:0;background:transparent;color:var(--muted);font-weight:700;font-size:.74rem;padding:5px 11px;border-radius:7px;cursor:pointer;min-height:30px}
+  .icb[aria-pressed=true]{background:var(--accent);color:#fff}
+  .icb:not([aria-pressed=true]):hover{color:var(--text)}
+  .icleg{display:flex;gap:6px;flex-wrap:wrap;margin:0 0 6px}
+  .icl{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--ring);background:transparent;color:var(--muted);border-radius:99px;padding:3px 10px;font-size:.72rem;font-weight:700;cursor:pointer}
+  .icl i{width:9px;height:9px;border-radius:50%;display:inline-block}
+  .icl[aria-pressed=false]{opacity:.45;text-decoration:line-through}
+  .icst{display:grid;grid-template-columns:repeat(auto-fit,minmax(78px,1fr));gap:6px;margin:4px 0 8px}
+  .icst>div{background:var(--panel2);border-radius:10px;padding:6px 9px;border:1px solid var(--ring)}
+  .icst small{display:block;color:var(--muted);font-size:.64rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em}
+  .icst b{font-size:.9rem}
+  .icsvg{touch-action:pan-y;cursor:crosshair;user-select:none;-webkit-user-select:none;-webkit-tap-highlight-color:transparent;outline-offset:2px}
+  .icsvg .icg{stroke:var(--ring);stroke-width:1}
+  .icsvg .ict{fill:var(--muted);font-size:11px;font-weight:600}
+  .icsvg .icgoal{stroke:var(--muted);stroke-width:1.2;stroke-dasharray:5 4;opacity:.8}
+  .icsvg .icgl{opacity:.9}
+  .icsvg .icx{stroke:var(--text);stroke-width:1;opacity:.5}
+  .icsvg .icpr{fill:var(--amber);font-size:12px;text-anchor:middle}
+  .icro{margin-top:8px;background:var(--panel2);border:1px solid var(--ring);border-radius:12px;padding:9px 12px;min-height:54px}
+  .icrd{font-weight:800;font-size:.82rem;margin-bottom:3px}
+  .icr{display:flex;flex-wrap:wrap;align-items:center;gap:4px 8px;font-size:.84rem;padding:2px 0}
+  .icr i{width:9px;height:9px;border-radius:50%;display:inline-block;flex:none}
+  .icr span{color:var(--muted)}
+  .icr small{font-size:.72rem;color:var(--muted)}.icr small.up{color:var(--green)}.icr small.dn{color:var(--amber)}.icr small.pr{color:var(--amber);font-weight:700}
+  .icsub{flex:1 1 100%;font-size:.76rem;color:var(--muted);margin-top:2px}
+  .icnote,.icempty{font-size:.8rem;color:var(--muted);margin-top:8px}
+  /* ===== v3.4: scanner and food score ===== */
+  .scanov{position:fixed;inset:0;z-index:300;background:#000;display:flex;align-items:center;justify-content:center}
+  .scanov video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+  .scanframe{position:relative;width:min(86vw,520px);height:min(34vh,230px);border:2px solid rgba(255,255,255,.9);border-radius:16px;box-shadow:0 0 0 100vmax rgba(0,0,0,.5)}
+  .scanframe i{position:absolute;left:8%;right:8%;top:50%;height:2px;background:var(--red);box-shadow:0 0 8px var(--red);animation:scanln 1.6s ease-in-out infinite alternate}
+  @keyframes scanln{from{top:18%}to{top:82%}}
+  @media(prefers-reduced-motion:reduce){.scanframe i{animation:none}}
+  .scanhint{position:absolute;left:16px;right:16px;top:max(18px,env(safe-area-inset-top));text-align:center;color:#fff;font-weight:700;font-size:.9rem;text-shadow:0 1px 4px #000}
+  .scanbtns{position:absolute;left:0;right:0;bottom:max(24px,env(safe-area-inset-bottom));display:flex;gap:12px;justify-content:center}
+  .scanbtns .btn{background:rgba(0,0,0,.55);color:#fff;border-color:rgba(255,255,255,.5);padding:11px 20px;font-size:.9rem}
+  .scanbtns .btn.pri{background:var(--accent);border-color:var(--accent)}
+  .fsact{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}.fsact .btn{padding:10px 16px;font-size:.88rem;cursor:pointer;display:inline-flex;align-items:center}
+  .sp{display:inline-flex;align-items:center;justify-content:center;min-width:28px;height:22px;padding:0 6px;border-radius:99px;color:#101418;font-weight:800;font-size:.74rem;flex:none}
+  .pc{border:1px solid color-mix(in srgb,var(--pc) 45%,transparent);background:color-mix(in srgb,var(--pc) 7%,var(--panel));border-radius:16px;padding:12px;margin-top:10px}
+  .pc-h{display:flex;gap:10px;align-items:center}
+  .pc-h img{width:56px;height:56px;object-fit:contain;border-radius:10px;background:#fff;flex:none}
+  .pc-t{flex:1;min-width:0}.pc-t b{display:block;font-size:.95rem;line-height:1.25}.pc-t small{color:var(--muted);font-size:.7rem}
+  .pc-s{text-align:center;flex:none}.pc-s small{display:block;font-size:.66rem;font-weight:800;text-transform:uppercase;letter-spacing:.05em;color:var(--muted)}
+  .pc-s .sc{width:54px;height:54px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1.35rem;font-weight:900;color:#101418}
+  .pc-chips{display:flex;gap:6px;flex-wrap:wrap;margin:8px 0}
+  .chipx,.nsb{font-size:.7rem;font-weight:700;padding:3px 9px;border-radius:99px;border:1px solid var(--ring);background:var(--panel2);color:var(--text)}
+  .chipx.g{border-color:var(--green);color:var(--green)}.chipx.w{border-color:var(--amber);color:var(--amber)}
+  .nsb{color:#fff;border-color:transparent}
+  .pc-flag{font-size:.8rem;font-weight:700;padding:6px 10px;border-radius:10px;margin-top:8px}
+  .pc-flag.red{background:color-mix(in srgb,var(--red) 16%,transparent);color:var(--red)}.pc-flag.warn{background:color-mix(in srgb,var(--amber) 16%,transparent);color:var(--amber)}
+  .adrow{display:flex;gap:8px;align-items:baseline;font-size:.8rem;padding:3px 0}.adrow i{width:9px;height:9px;border-radius:50%;flex:none;background:var(--muted)}
+  .adrow i.r1{background:#84cc16}.adrow i.r2{background:var(--amber)}.adrow i.r3{background:var(--red)}.adrow span{color:var(--muted)}
+  .pc-alt{margin-top:10px;padding-top:8px;border-top:1px dashed var(--ring)}
+  .arow{display:flex;gap:10px;align-items:center;padding:8px 0;border-bottom:1px solid var(--border)}.arow .body{flex:1;min-width:0}.arow .t{font-weight:700;font-size:.86rem}
+  .algs{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}.algs button{border:1px solid var(--ring);background:transparent;color:var(--muted);border-radius:99px;padding:5px 12px;font-size:.76rem;font-weight:700;cursor:pointer;min-height:32px}
+  .algs button[aria-pressed=true]{background:var(--red);border-color:var(--red);color:#fff}
 </style>
 </head>
 <body>
@@ -599,14 +660,16 @@
       </div>
       <h3>Notes</h3><textarea id="ln" placeholder="Pump, strength, hunger, mood, mirror check…"></textarea></div>
     <div class="card"><h2><span>Weekly check-in</span></h2><div id="checkin"></div></div>
-    <div class="card"><h2><span>Trend & auto-adjust</span></h2><div id="trend"></div><h3>Weight, last 28 days</h3><div id="logWt"></div></div>
+    <div class="card"><h2><span>Trend & auto-adjust</span></h2><div id="trend"></div><h3>Weight</h3><div id="logWt"></div></div>
   </div>
   <div id="measBox"></div>
   <div class="pgsec"><span>🏋️</span> Training</div>
   <div id="wlogBox"></div>
   <div id="chartBox"></div>
+  <div id="volBox"></div>
   <div id="progExtra"></div>
   <div class="pgsec"><span>⌚</span> Health &amp; photos</div>
+  <div id="hchartBox"></div>
   <div class="card"><h2><span>Steps and health import</span></h2><div id="healthBox"></div></div>
   <div class="card"><h2><span>Progress photos</span></h2><div id="photoBox"></div></div>
   <div class="pgsec"><span>🔒</span> Privacy</div>
@@ -615,7 +678,7 @@
       <ol>
         <li><b>On this device:</b> your profile, plan, logs, recipes and food entries are saved in this browser. Progress photos are saved here too and stay here unless you choose to share them with your coach.</li>
         <li><b>If you create an account:</b> your email and your progress data are stored online with Supabase so they sync between your devices. If you connect Apple Health, the daily health numbers you send are stored there too. If you turn on notifications, your device's push address is stored so reminders can reach you. If you share photos with a coach, a copy is kept in private storage that only you and that coach can open, and turning sharing off deletes it. The data is private to your account from other users, but it is not end-to-end encrypted, so the person who runs this app's database can technically read it.</li>
-        <li><b>Food search:</b> the words or barcode you search are sent to Open Food Facts, which can see your network address. Nothing else is sent to them.</li>
+        <li><b>Food search and scanning:</b> the words or barcode you search are sent to Open Food Facts, which can see your network address. Nothing else is sent to them. Camera frames are read on your phone and are never uploaded or saved. Recent scans and saved products stay on this device only.</li>
         <li><b>Hosting:</b> the page is served by GitHub Pages, which logs ordinary page requests.</li>
         <li><b>No ads, no analytics, no tracking scripts, and your data is never sold.</b></li>
         <li><b>Your control:</b> "Export backup" downloads your data. "Delete my account and cloud data" in the sync card removes the online copy. Clearing this site's data in your browser removes the device copy and photos.</li>
@@ -1361,7 +1424,7 @@ function advice(p,tr){
 /* ===================== UI ===================== */
 const KEY="elitePeakingState_v3";
 const TODAY=iso(new Date());
-const DEFP={sex:"m",age:30,cm:175,kg:75,bf:0,units:"imperial",goal:"recomp",rate:"cons",act:"mod",exp:"int",days:4,len:60,style:"cal",pullMax:5,pushMax:15,bagKg:0,eq:["pullbar","bands"],pri:[],diet:"omni",excl:[],meals:4,event:"",kcalAdj:0,inj:[],budget:"std",priceF:1,wtime:"17:30",mealRem:"no",autoSS:"off"};
+const DEFP={sex:"m",age:30,cm:175,kg:75,bf:0,units:"imperial",goal:"recomp",rate:"cons",act:"mod",exp:"int",days:4,len:60,style:"cal",pullMax:5,pushMax:15,bagKg:0,eq:["pullbar","bands"],pri:[],diet:"omni",excl:[],meals:4,event:"",kcalAdj:0,inj:[],budget:"std",priceF:1,wtime:"17:30",mealRem:"no",autoSS:"off",avoid:[]};
 function freshState(){return {prof:JSON.parse(JSON.stringify(DEFP)),log:{},checks:{},perf:{},extra:{},hist:{},done:{},prefs:{foods:{},meals:{}},recipes:[],groc:[],water:{},swaps:{},mswaps:{},blockStart:mondayOf(TODAY),blockOffset:0,weekOffset:0,sel:TODAY,confirmed:false,flog:{},sets:{},steps:{},wlog:{},cardio:{},cplan:{mode:"auto",deload:true,active:"p1",mt:0,plans:{p1:{name:"My plan",mt:0,days:{}}}}}}
 function loadState(){
   try{const v=JSON.parse(localStorage.getItem(KEY)||"null");if(v&&v.prof){const f=freshState();return Object.assign(f,v,{prof:Object.assign(f.prof,v.prof)})}}catch(e){console.warn("state load failed",e)}
@@ -1693,14 +1756,7 @@ function renderTrend(){
    :callout("info","⚖️","Unlock your weight trend","",`Log at least 4 morning weigh-ins across 7+ days. The app then shows your real rate of change and suggests calorie adjustments.`);
   $("logWt").innerHTML=weightChart();
 }
-function weightChart(){
-  const days=[];for(let i=27;i>=0;i--)days.push(addD(TODAY,-i));
-  const pts=days.map((d,i)=>S.log[d]&&S.log[d].w?{x:i,y:S.log[d].w}:null).filter(Boolean);
-  if(pts.length<2)return `<svg viewBox="0 0 360 120" width="100%"><text x="180" y="60" text-anchor="middle" fill="#8793a3" font-size="11">Log weight to see the chart</text></svg>`;
-  const ys=pts.map(p=>dW(p.y)),lo=Math.min(...ys)-.5,hi=Math.max(...ys)+.5;
-  const X=i=>25+i*(320/27),Y=v=>100-((v-lo)/(hi-lo))*80;
-  return `<svg viewBox="0 0 360 120" width="100%"><polyline fill="none" stroke="#3b82f6" stroke-width="2" points="${pts.map(p=>X(p.x)+","+Y(dW(p.y))).join(" ")}"/>${pts.map(p=>`<circle cx="${X(p.x)}" cy="${Y(dW(p.y))}" r="3" fill="#3b82f6"/>`).join("")}<text x="2" y="${Y(hi)+4}" fill="#8793a3" font-size="9">${r1(hi)}</text><text x="2" y="${Y(lo)}" fill="#8793a3" font-size="9">${r1(lo)}</text><text x="25" y="116" fill="#8793a3" font-size="9">28 days ago</text><text x="345" y="116" text-anchor="end" fill="#8793a3" font-size="9">today</text></svg>`;
-}
+function weightChart(){return icBox("weight")}
 
 /* ---------- OVERALL ---------- */
 function renderOverall(){
@@ -2153,7 +2209,7 @@ document.addEventListener("click",e=>{
 });
 
 /* ---------- APP VERSION, UPDATE PROMPT, INSTALL PROMPT ---------- */
-const APP_VER="2026.11.06.5",APP_MAJOR="3.2";
+const APP_VER="2026.11.06.6",APP_MAJOR="3.4";
 let UPD=false,BIP=null;
 const inFrame=()=>{try{return window.self!==window.top}catch(e){return true}};
 const isStandalone=()=>matchMedia("(display-mode: standalone)").matches||navigator.standalone===true;
@@ -2240,26 +2296,7 @@ function renderChart(){
   const list=histList();
   if(!list.length){el.innerHTML="";return}
   if(!list.some(x=>x.last.u===CH.uid))CH.uid=list[0].last.u;
-  const cur=list.find(x=>x.last.u===CH.uid),pts=chartSeries(CH.uid),wt=pts.some(p=>p.w);
-  const vs=pts.map(p=>wt?r1(dW(p.v)):p.v),unit=wt?wU()+" est. 1-rep max":"reps";
-  let body='<div class="d">Log this exercise on 2 or more days to see a trend line.</div>';
-  if(pts.length>=2){
-    const Wd=600,H=200,PL0=44,PR=16,PT=18,PB=30,mn=Math.min(...vs),mx=Math.max(...vs),rg=mx-mn||1;
-    const t0=parseISO(pts[0].d).getTime(),tr=(parseISO(pts[pts.length-1].d).getTime()-t0)||1;
-    const X=p=>PL0+(parseISO(p.d).getTime()-t0)/tr*(Wd-PL0-PR),Y=v=>PT+(1-(v-mn)/rg)*(H-PT-PB);
-    const poly=pts.map((p,i)=>`${X(p).toFixed(1)},${Y(vs[i]).toFixed(1)}`).join(" ");
-    const area=`${X(pts[0]).toFixed(1)},${H-PB} ${poly} ${X(pts[pts.length-1]).toFixed(1)},${H-PB}`;
-    const ch=vs[0]?Math.round((vs[vs.length-1]/vs[0]-1)*100):0;
-    body=`<div class="d" style="margin-bottom:6px">${vs[0]} → <b>${vs[vs.length-1]}</b> ${esc(unit)} over ${diffD(pts[0].d,pts[pts.length-1].d)} days · <b style="color:${ch>=0?"var(--green)":"var(--amber)"}">${ch>=0?"+":""}${ch}%</b></div>
-     <svg class="chart" viewBox="0 0 ${Wd} ${H}" role="img" aria-label="${esc(cur.n)}: ${vs[0]} to ${vs[vs.length-1]} ${esc(unit)}">
-      <line x1="${PL0}" y1="${PT}" x2="${Wd-PR}" y2="${PT}" class="cg1"/><line x1="${PL0}" y1="${H-PB}" x2="${Wd-PR}" y2="${H-PB}" class="cg1"/>
-      <text x="${PL0-8}" y="${PT+4}" class="ct" text-anchor="end">${mx}</text><text x="${PL0-8}" y="${H-PB+4}" class="ct" text-anchor="end">${mn}</text>
-      <text x="${PL0}" y="${H-8}" class="ct">${esc(dateLabel(pts[0].d,{month:"short",day:"numeric"}))}</text><text x="${Wd-PR}" y="${H-8}" class="ct" text-anchor="end">${esc(dateLabel(pts[pts.length-1].d,{month:"short",day:"numeric"}))}</text>
-      <polygon points="${area}" class="carea"/><polyline points="${poly}" class="cline"/>
-      ${pts.map((p,i)=>`<circle cx="${X(p).toFixed(1)}" cy="${Y(vs[i]).toFixed(1)}" r="${i===pts.length-1?5:3.5}" class="cdot"><title>${esc(dateLabel(p.d))}: ${vs[i]} ${esc(unit)}</title></circle>`).join("")}
-     </svg>`;
-  }
-  el.innerHTML=`<div class="card"><h2><span>Strength chart</span><select id="chSel" aria-label="Exercise">${list.map(x=>`<option value="${esc(x.last.u)}" ${x.last.u===CH.uid?"selected":""}>${esc(x.n)}</option>`).join("")}</select></h2>${body}</div>`;
+  el.innerHTML=`<div class="card"><h2><span>Strength chart</span><select id="chSel" aria-label="Exercise">${list.map(x=>`<option value="${esc(x.last.u)}" ${x.last.u===CH.uid?"selected":""}>${esc(x.n)}</option>`).join("")}</select></h2>${icBox("strength")}</div>`;
 }
 
 /* ---------- MULTI-WEEK CALENDAR REMINDERS ---------- */
@@ -3081,28 +3118,408 @@ var PLANX=[],PROGX=[];
   renderProgress=function(){rg.apply(this,arguments);PROGX.forEach(f=>f())};
 })();
 
-/* ===== FOOD SEARCH, BARCODE, MICRONUTRIENTS (Open Food Facts) ===== */
-const FSF="code,product_name,brands,nutriments,serving_quantity";
-let FS={q:"",bc:"",cc:"united-states",res:[],msg:""};
-const nz=v=>{v=parseFloat(v);return isFinite(v)?v:0};
+/* ===================== V3.4: INTERACTIVE CHARTS ===================== */
+/* One engine, many charts. A chart is a function returning {series:[{k,label,color,type,pts:[{d,v,...}]}], ...}; the engine draws it,
+   adds range chips, series toggles, a scrub-able crosshair (mouse, touch, arrow keys) and a readout that stays on the selected day. */
+const IC={},ICD={},ICL={};
+const icS=(id,c)=>IC[id]=IC[id]||{rng:c.rng,mode:c.mode,hide:{},sel:null};
+const icShort=v=>Math.abs(v)>=10000?(v/1000).toFixed(v%1000?1:0)+"k":String(Math.round(v*100)/100);
+function icNice(lo,hi,n){
+  const span=hi-lo||1,raw=span/n,p=Math.pow(10,Math.floor(Math.log10(raw))),f=raw/p,step=(f<1.5?1:f<3?2:f<7?5:10)*p;
+  const a=Math.floor(lo/step+1e-9)*step,t=[];
+  for(let v=a;v<hi+step*.999;v+=step)t.push(+v.toFixed(10));
+  return {t,lo:t[0],hi:t[t.length-1]};
+}
+function icModel(id){
+  const c=ICD[id]();if(!c)return null;
+  const st=icS(id,c),step=c.step||1;
+  if(c.modes&&!c.modes.some(m=>m.k===st.mode))st.mode=c.modes[0].k;
+  const d1=step===7?mondayOf(TODAY):TODAY;
+  let lo;
+  if(st.rng>0)lo=step===7?mondayOf(addD(TODAY,-st.rng+1)):addD(TODAY,-st.rng+1);
+  else{const all=c.series.flatMap(s=>s.pts.map(p=>p.d));lo=all.length?all.reduce((a,b)=>a<b?a:b):d1}
+  const ser=c.series.map(s=>Object.assign({},s,{pts:s.pts.filter(p=>p.d>=lo&&p.d<=d1&&isFinite(p.v))}));
+  const vis=ser.filter(s=>!st.hide[s.k]&&s.pts.length);
+  const slots=Math.max(2,Math.floor(diffD(lo,d1)/step)+1);
+  return {c,st,step,lo,d1,slots,ser,vis,prim:vis[0]||null};
+}
+function icLayout(m){
+  const W=600,H=250,PL=42,PR=12,PT=14,PB=26,pw=W-PL-PR,ph=H-PT-PB,bars=m.vis.some(s=>s.type==="bar");
+  let vs=[];m.vis.forEach(s=>s.pts.forEach(p=>vs.push(p.v)));
+  if(m.c.goal)vs.push(m.c.goal.v);
+  if(bars)vs.push(0);
+  let lo=Math.min(...vs),hi=Math.max(...vs);
+  if(lo===hi){lo-=1;hi+=1}
+  const pad=(hi-lo)*.08;
+  if(!bars||lo>0)lo-=pad;hi+=pad;
+  if(bars)lo=Math.min(lo,0);
+  const nt=icNice(lo,hi,4),slotW=pw/m.slots;
+  const X=d=>PL+(Math.round(diffD(m.lo,d)/m.step)+.5)*slotW,Y=v=>PT+ph*(1-(v-nt.lo)/(nt.hi-nt.lo));
+  return {W,H,PL,PR,PT,PB,pw,ph,nt,slotW,X,Y,bars};
+}
+function icBody(id,m){
+  const L=icLayout(m),{W,H,PL,PT,PB,pw,ph,nt,slotW,X,Y}=L,c=m.c;
+  const fmt=c.fmt||(v=>r1(v));
+  let g="";
+  nt.t.forEach(v=>{g+=`<line x1="${PL}" x2="${W-L.PR}" y1="${Y(v).toFixed(1)}" y2="${Y(v).toFixed(1)}" class="icg"/><text x="${PL-6}" y="${(Y(v)+4).toFixed(1)}" text-anchor="end" class="ict">${icShort(v)}</text>`});
+  const n=Math.min(5,m.slots),lab=m.slots>200?{month:"short",year:"2-digit"}:{month:"short",day:"numeric"};
+  for(let k=0;k<n;k++){const i=n===1?0:Math.round(k*(m.slots-1)/(n-1)),d=addD(m.lo,i*m.step),x=PL+(i+.5)*slotW;g+=`<text x="${x.toFixed(1)}" y="${H-7}" text-anchor="${k===0?"start":k===n-1?"end":"middle"}" class="ict">${esc(dateLabel(d,lab))}</text>`}
+  if(c.goal){const y=Y(c.goal.v).toFixed(1);g+=`<line x1="${PL}" x2="${W-L.PR}" y1="${y}" y2="${y}" class="icgoal"/><text x="${W-L.PR-2}" y="${(+y-4).toFixed(1)}" text-anchor="end" class="ict icgl">${esc(c.goal.label||"Goal")}</text>`}
+  m.vis.slice().sort((a,b)=>(a.type==="bar"?0:1)-(b.type==="bar"?0:1)).forEach(s=>{
+    const col=s.color;
+    if(s.type==="bar"){
+      const bw=Math.max(1.5,Math.min(34,slotW*.68)),y0=Y(Math.max(0,nt.lo));
+      s.pts.forEach(p=>{const y=Y(p.v);g+=`<rect x="${(X(p.d)-bw/2).toFixed(1)}" y="${Math.min(y,y0).toFixed(1)}" width="${bw.toFixed(1)}" height="${Math.max(1,Math.abs(y0-y)).toFixed(1)}" rx="${Math.min(3,bw/3).toFixed(1)}" fill="${p.c||col}" opacity=".9"/>`});
+    }else{
+      const pts=s.pts.map(p=>`${X(p.d).toFixed(1)},${Y(p.v).toFixed(1)}`);
+      if(s.area&&pts.length>1)g+=`<polygon points="${X(s.pts[0].d).toFixed(1)},${Y(nt.lo).toFixed(1)} ${pts.join(" ")} ${X(s.pts[s.pts.length-1].d).toFixed(1)},${Y(nt.lo).toFixed(1)}" fill="${col}" opacity=".12"/>`;
+      if(pts.length>1)g+=`<polyline points="${pts.join(" ")}" fill="none" stroke="${col}" stroke-width="${s.w||2.5}" stroke-linejoin="round" stroke-linecap="round"${s.dash?` stroke-dasharray="${s.dash}"`:""}${s.faint?' opacity=".45"':""}/>`;
+      if(!s.nodots&&s.pts.length<=90)s.pts.forEach(p=>{g+=`<circle cx="${X(p.d).toFixed(1)}" cy="${Y(p.v).toFixed(1)}" r="${s.pts.length>45?2:3.2}" fill="${col}" stroke="var(--panel)" stroke-width="1.5"/>`});
+      s.pts.forEach(p=>{if(p.m)g+=`<text x="${X(p.d).toFixed(1)}" y="${(Y(p.v)-8).toFixed(1)}" text-anchor="middle" class="icpr">★</text>`});
+    }
+  });
+  const sel=icSel(m);
+  return {g,L,sel};
+}
+function icSel(m){
+  const st=m.st;if(!m.prim)return null;
+  const ds=[...new Set(m.vis.flatMap(s=>s.pts.map(p=>p.d)))].sort();
+  if(!ds.length)return null;
+  if(!st.sel||!ds.includes(st.sel))st.sel=ds[ds.length-1];
+  return {ds,d:st.sel};
+}
+function icCross(m,L,sel){
+  if(!sel)return "";
+  const x=L.X(sel.d).toFixed(1);
+  let h=`<line x1="${x}" x2="${x}" y1="${L.PT}" y2="${L.PT+L.ph}" class="icx"/>`;
+  m.vis.forEach(s=>{const p=s.pts.find(q=>q.d===sel.d);if(p)h+=`<circle cx="${x}" cy="${L.Y(p.v).toFixed(1)}" r="5.5" fill="${s.color}" stroke="var(--bg)" stroke-width="2.5"/>`});
+  return h;
+}
+function icRead(m,sel){
+  if(!sel)return "";
+  const c=m.c,fmt=c.fmt||(v=>r1(v));
+  const rows=m.vis.map(s=>{
+    const i=s.pts.findIndex(q=>q.d===sel.d),p=s.pts[i];
+    if(!p)return `<div class="icr"><i style="background:${s.color}"></i><span>${esc(s.label)}</span><b>–</b></div>`;
+    const prev=i>0?s.pts[i-1]:null,dl=prev&&!s.nodelta?p.v-prev.v:null,dfm=dl!==null?(s.dfmt||fmt)(dl):"";
+    const dtxt=dl!==null&&/[1-9]/.test(dfm)?`<small class="${(c.good==="down"?dl<0:dl>0)?"up":"dn"}">${dl>0?"+":""}${dfm} vs ${esc(dateLabel(prev.d,{month:"short",day:"numeric"}))}</small>`:"";
+    return `<div class="icr"><i style="background:${s.color}"></i><span>${esc(s.label)}</span><b>${(s.fmt||fmt)(p.v,p)}</b>${dtxt}${p.m?'<small class="pr">★ personal best</small>':""}${p.sub?`<div class="icsub">${p.sub}</div>`:""}</div>`;
+  }).join("");
+  const ex=c.extra?c.extra(sel.d):"";
+  return `<div class="icrd">${esc(dateLabel(sel.d,{weekday:"short",month:"short",day:"numeric",year:sel.d.slice(0,4)===TODAY.slice(0,4)?undefined:"numeric"}))}${m.step===7?" · week":""}</div>${rows}${ex?`<div class="icsub">${ex}</div>`:""}`;
+}
+function icStats(m){
+  const p=m.prim;if(!p||!p.pts.length)return "";
+  const c=m.c,fmt=c.fmt||(v=>r1(v)),v=p.pts.map(q=>q.v),sum=v.reduce((a,b)=>a+b,0);
+  let items=c.stats?c.stats(p,m):[["Latest",fmt(v[v.length-1])],["Average",fmt(sum/v.length)],["Low",fmt(Math.min(...v))],["High",fmt(Math.max(...v))],v.length>1?["Change",(v[v.length-1]-v[0]>=0?"+":"")+fmt(v[v.length-1]-v[0])]:null];
+  return `<div class="icst">${items.filter(Boolean).map(([l,x])=>`<div><small>${esc(l)}</small><b>${x}</b></div>`).join("")}</div>`;
+}
+function icInner(id){
+  const m=icModel(id);if(!m)return "";
+  const c=m.c,st=m.st;
+  const chips=`<div class="icbar">${(c.ranges||[]).length?`<div class="icgrp" role="group" aria-label="Range">${c.ranges.map(r=>`<button class="icb" aria-pressed="${st.rng===r[0]}" data-icr="${r[0]}">${r[1]}</button>`).join("")}</div>`:""}${c.modes?`<div class="icgrp" role="group" aria-label="Metric">${c.modes.map(r=>`<button class="icb" aria-pressed="${st.mode===r.k}" data-icm="${esc(r.k)}">${esc(r.label)}</button>`).join("")}</div>`:""}</div>`;
+  const leg=c.series.length>1?`<div class="icleg">${c.series.filter(s=>s.pts.length).map(s=>`<button class="icl" aria-pressed="${!st.hide[s.k]}" data-icl="${esc(s.k)}"><i style="background:${s.color}"></i>${esc(s.label)}</button>`).join("")}</div>`:"";
+  if(!m.prim||(m.prim.pts.length<(c.min||2)&&m.prim.type!=="bar")||(m.prim.type==="bar"&&!m.prim.pts.length)){
+    return chips+leg+`<div class="d icempty">${c.empty||"Not enough data in this range yet."}</div>`;
+  }
+  const b=icBody(id,m);ICL[id]={m,L:b.L,sel:b.sel};
+  const aria=`${c.title||id}: ${m.prim.pts.length} points, latest ${(c.fmt||(v=>r1(v)))(m.prim.pts[m.prim.pts.length-1].v)}`;
+  return chips+leg+icStats(m)+`<svg class="chart icsvg" viewBox="0 0 ${b.L.W} ${b.L.H}" role="img" tabindex="0" aria-label="${esc(aria)}. Use left and right arrow keys to move through the points.">${b.g}<g class="icxg">${icCross(m,b.L,b.sel)}</g></svg><div class="icro" aria-live="polite">${icRead(m,b.sel)}</div>${c.note?`<div class="icnote">${c.note(m)}</div>`:""}`;
+}
+const icBox=id=>`<div class="ichart" data-ic="${id}">${icInner(id)}</div>`;
+function icRefresh(id){const el=document.querySelector(`.ichart[data-ic="${id}"]`);if(el)el.innerHTML=icInner(id)}
+function icPick(id,sx){ // sx: x in viewBox units
+  const o=ICL[id];if(!o||!o.sel)return;
+  const i=Math.floor((sx-o.L.PL)/o.L.slotW),want=o.m.lo&&addD(o.m.lo,i*o.m.step);
+  let best=o.sel.ds[0],bd=1e9;
+  o.sel.ds.forEach(d=>{const k=Math.abs(diffD(want,d));if(k<bd){bd=k;best=d}});
+  icSetSel(id,best);
+}
+function icSetSel(id,d){
+  const o=ICL[id];if(!o||o.sel.d===d)return;
+  o.sel.d=d;o.m.st.sel=d;
+  const el=document.querySelector(`.ichart[data-ic="${id}"]`);if(!el)return;
+  el.querySelector(".icxg").innerHTML=icCross(o.m,o.L,o.sel);
+  el.querySelector(".icro").innerHTML=icRead(o.m,o.sel);
+}
+let ICDRAG=null;
+function icPtr(e){const s=e.target.closest&&e.target.closest("svg.icsvg");if(!s)return null;const r=s.getBoundingClientRect(),w=s.viewBox.baseVal.width;return {id:s.closest(".ichart").dataset.ic,x:(e.clientX-r.left)/r.width*w,s}}
+document.addEventListener("pointerdown",e=>{const p=icPtr(e);if(!p)return;ICDRAG=p.id;try{p.s.setPointerCapture(e.pointerId)}catch(x){}icPick(p.id,p.x)});
+document.addEventListener("pointermove",e=>{const p=icPtr(e);if(!p)return;if(e.pointerType==="mouse"||ICDRAG===p.id)icPick(p.id,p.x)});
+["pointerup","pointercancel"].forEach(t=>document.addEventListener(t,()=>{ICDRAG=null}));
+document.addEventListener("keydown",e=>{
+  const s=e.target.closest&&e.target.closest("svg.icsvg");if(!s||(e.key!=="ArrowLeft"&&e.key!=="ArrowRight"&&e.key!=="Home"&&e.key!=="End"))return;
+  const id=s.closest(".ichart").dataset.ic,o=ICL[id];if(!o)return;
+  const ds=o.sel.ds,i=ds.indexOf(o.sel.d),j=e.key==="Home"?0:e.key==="End"?ds.length-1:Math.max(0,Math.min(ds.length-1,i+(e.key==="ArrowLeft"?-1:1)));
+  e.preventDefault();icSetSel(id,ds[j]);
+});
+document.addEventListener("click",e=>{
+  const b=e.target.closest&&e.target.closest("button.icb,button.icl");if(!b)return;
+  const id=b.closest(".ichart").dataset.ic,st=IC[id];if(!st)return;
+  if(b.dataset.icr!==undefined)st.rng=+b.dataset.icr;
+  else if(b.dataset.icm!==undefined){st.mode=b.dataset.icm;st.sel=null}
+  else if(b.dataset.icl!==undefined)st.hide[b.dataset.icl]=!st.hide[b.dataset.icl];
+  icRefresh(id);
+});
+
+/* ---------- chart definitions ---------- */
+const IC_BLUE="var(--accent2)",IC_GREEN="var(--green)",IC_AMBER="var(--amber)",IC_RED="var(--red)",IC_PURPLE="#a78bfa";
+const RANGES=[[28,"4W"],[90,"3M"],[365,"1Y"],[0,"All"]],RANGES_S=[[7,"7D"],[28,"4W"],[90,"3M"],[0,"All"]];
+ICD.weight=()=>{
+  const raw=Object.keys(S.log).filter(d=>S.log[d]&&S.log[d].w>0).sort().map(d=>({d,v:dW(S.log[d].w)}));
+  const tr=[];raw.forEach((p,i)=>{if(!i){tr.push({d:p.d,v:p.v});return}const gap=Math.max(1,diffD(raw[i-1].d,p.d)),a=1-Math.pow(.9,gap);tr.push({d:p.d,v:tr[i-1].v+a*(p.v-tr[i-1].v)})});
+  const mk=(d,n)=>r1(n);
+  return {title:"Weight",rng:28,ranges:RANGES,step:1,fmt:v=>r1(v)+" "+wU(),dfmt:v=>r1(v),good:S.prof.goal==="cut"?"down":"up",min:2,
+    empty:"Log your weight on 2 or more days to see the chart. The smoothed trend line filters out water and salt noise.",
+    series:[{k:"w",label:"Weigh-ins",color:IC_BLUE,type:"line",pts:raw,w:1.6,faint:true},{k:"t",label:"Trend",color:IC_AMBER,type:"line",pts:tr,w:3,nodots:true,nodelta:false}],
+    stats:(p,m)=>{const v=p.pts.map(q=>q.v),t=(m.ser.find(s=>s.k==="t")||{pts:[]}).pts;return [["Latest",r1(v[v.length-1])+" "+wU()],["Trend",t.length?r1(t[t.length-1].v)+" "+wU():"–"],["Low",r1(Math.min(...v))],["High",r1(Math.max(...v))],["Change",(v[v.length-1]-v[0]>=0?"+":"")+r1(v[v.length-1]-v[0])]]},
+    note:m=>{const t=(m.ser.find(s=>s.k==="t")||{pts:[]}).pts,e=t[t.length-1];if(!e)return "";const b=t.find(q=>diffD(q.d,e.d)<=14&&diffD(q.d,e.d)>=7);return b?`Smoothed trend: <b>${(e.v-b.v)/diffD(b.d,e.d)*7>=0?"+":""}${r1((e.v-b.v)/diffD(b.d,e.d)*7)} ${wU()}/week</b> over the last ${diffD(b.d,e.d)} days.`:"Keep weighing in. A weekly rate appears once there are 7+ days of data."},
+    extra:d=>{const f=((S.flog||{})[d]||[]).reduce((a,x)=>a+(x.kcal||0),0),s=S.steps[d]||((S.hd||{})[d]||{}).steps||0,bits=[];if(f)bits.push(Math.round(f).toLocaleString()+" kcal logged");if(s)bits.push(s.toLocaleString()+" steps");return bits.join(" · ")}};
+};
+function icStrengthPts(uid,mode){
+  const days=new Set();
+  Object.values(S.hist).forEach(h=>{if(h.u===uid)days.add(h.d)});
+  Object.keys(S.sets||{}).forEach(k=>{const i=k.lastIndexOf("|");if(k.slice(0,i)===uid)days.add(k.slice(i+1))});
+  const out=[];let best=-1;
+  [...days].sort().forEach(d=>{
+    let sets=(S.sets||{})[uid+"|"+d];
+    if(!sets||!sets.length){const h=S.hist[uid+"|"+d];sets=h?[{w:h.w,r:h.r}]:[]}
+    if(!sets.length)return;
+    const wt=sets.some(s=>s.w>0);
+    const v=mode==="e1"?Math.max(...sets.map(s=>s.w>0?e1(s.w,s.r):s.r)):mode==="top"?Math.max(...sets.map(s=>s.w||0)):mode==="vol"?sets.reduce((a,s)=>a+(s.w>0?s.w:1)*s.r,0):sets.reduce((a,s)=>a+s.r,0);
+    const dv=(mode==="e1"||mode==="top"||mode==="vol")&&wt?dW(v):v;
+    const p={d,v:r1(dv),sub:sets.map(s=>(s.w>0?dW(s.w)+" × ":"")+s.r+(s.rir!=null?` <small>@${s.rir} RIR</small>`:"")).join(" · ")};
+    if((mode==="e1"||mode==="top"||mode==="reps")&&out.length&&p.v>best)p.m=true;
+    best=Math.max(best,p.v);out.push(p);
+  });
+  return out;
+}
+ICD.strength=()=>{
+  const uid=CH.uid,hist=Object.values(S.hist).filter(h=>h.u===uid),wt=hist.some(h=>h.w>0)||Object.keys(S.sets||{}).some(k=>k.startsWith(uid+"|")&&S.sets[k].some(s=>s.w>0));
+  const st=icS("strength",{rng:0,mode:wt?"e1":"reps"});
+  const modes=wt?[{k:"e1",label:"Est. 1RM"},{k:"top",label:"Top weight"},{k:"vol",label:"Volume"},{k:"reps",label:"Reps"}]:[{k:"reps",label:"Best reps"},{k:"vol",label:"Total reps"}];
+  if(!modes.some(m=>m.k===st.mode))st.mode=modes[0].k;
+  const mode=st.mode,u=wt&&mode!=="reps"?wU():"reps";
+  return {title:"Strength",rng:0,mode:modes[0].k,modes,ranges:[[28,"4W"],[90,"3M"],[365,"1Y"],[0,"All"]],fmt:v=>r1(v)+" "+u,dfmt:v=>r1(v),good:"up",min:2,
+    empty:"Log this exercise on 2 or more days to see a trend line.",
+    series:[{k:"m",label:modes.find(m=>m.k===mode).label,color:IC_BLUE,type:mode==="vol"?"bar":"line",area:mode!=="vol",pts:icStrengthPts(uid,mode)}],
+    stats:p=>{const v=p.pts.map(q=>q.v),pr=p.pts.filter(q=>q.m).length;return [["Latest",r1(v[v.length-1])+" "+u],["Best",r1(Math.max(...v))],["First",r1(v[0])],["Change",v[0]?(v[v.length-1]/v[0]-1>=0?"+":"")+Math.round((v[v.length-1]/v[0]-1)*100)+"%":"–"],pr?["PRs","★ "+pr]:null]}};
+};
+ICD.volume=()=>{
+  const wk={};
+  Object.entries(S.wlog||{}).forEach(([d,l])=>{if(!l||!l.end)return;const k=mondayOf(d),o=wk[k]=wk[k]||{vol:0,sets:0,mins:0,n:0,names:[]};o.vol+=l.vol||0;o.sets+=l.sets||0;o.mins+=l.mins||0;o.n++;o.names.push(`${esc(l.name)} <small>${esc(dateLabel(d,{weekday:"short"}))}</small>`)});
+  const st=icS("volume",{rng:182,mode:"vol"}),mode=st.mode;
+  const key={vol:"vol",sets:"sets",mins:"mins"}[mode]||"vol",u=mode==="vol"?wU():mode==="sets"?"sets":"min";
+  const pts=Object.keys(wk).sort().map(d=>({d,v:key==="vol"?Math.round(dW(wk[d].vol)):wk[d][key],sub:wk[d].names.join(" · ")}));
+  return {title:"Weekly training",rng:182,mode:"vol",step:7,ranges:[[56,"8W"],[182,"6M"],[365,"1Y"],[0,"All"]],modes:[{k:"vol",label:"Volume"},{k:"sets",label:"Sets"},{k:"mins",label:"Minutes"}],
+    fmt:v=>Math.round(v).toLocaleString()+" "+u,good:"up",min:1,empty:"Finish sessions in workout mode and your weekly totals build here.",
+    series:[{k:"v",label:{vol:"Volume",sets:"Sets",mins:"Minutes"}[mode],color:IC_PURPLE,type:"bar",pts}],
+    stats:p=>{const v=p.pts.map(q=>q.v),a=v.reduce((x,y)=>x+y,0)/v.length;return [["Last week",Math.round(v[v.length-1]).toLocaleString()],["Average",Math.round(a).toLocaleString()],["Best",Math.round(Math.max(...v)).toLocaleString()],["Weeks",v.length]]}};
+};
+const icDays=(get,from)=>{const o=[];for(let i=from;i>=0;i--){const d=addD(TODAY,-i),v=get(d);if(v>0)o.push({d,v})}return o};
+const icAvg7=pts=>pts.map((p,i)=>{const w=pts.filter(q=>diffD(q.d,p.d)>=0&&diffD(q.d,p.d)<7);return {d:p.d,v:w.reduce((a,q)=>a+q.v,0)/w.length}});
+ICD.steps=()=>{
+  const g=stepGoal(),pts=icDays(d=>S.steps[d]||((S.hd||{})[d]||{}).steps||0,400).map(p=>Object.assign(p,{c:p.v>=g?"var(--green)":"var(--accent2)"}));
+  return {title:"Steps",rng:28,ranges:RANGES_S,fmt:v=>Math.round(v).toLocaleString(),good:"up",min:1,goal:{v:g,label:"Goal "+g.toLocaleString()},empty:"Steps appear here once you log them or connect Health.",
+    series:[{k:"s",label:"Steps",color:IC_BLUE,type:"bar",pts},{k:"a",label:"7-day average",color:IC_AMBER,type:"line",pts:icAvg7(pts),nodots:true,w:2.5,nodelta:true}],
+    stats:p=>{const v=p.pts.map(q=>q.v);return [["Average",Math.round(v.reduce((a,b)=>a+b,0)/v.length).toLocaleString()],["Best",Math.max(...v).toLocaleString()],["Days at goal",`${v.filter(x=>x>=g).length} of ${v.length}`],["Total",(v.reduce((a,b)=>a+b,0)/1000).toFixed(0)+"k"]]}};
+};
+ICD.sleep=()=>{
+  const pts=icDays(d=>{const h=((S.hd||{})[d]||{}).sleep;return h>0?h:(S.log[d]&&+S.log[d].s)||0},400).map(p=>Object.assign(p,{v:r1(p.v),c:p.v>=7?"var(--green)":p.v>=6?"var(--amber)":"var(--red)"}));
+  return {title:"Sleep",rng:28,ranges:RANGES_S,fmt:v=>r1(v)+" h",dfmt:v=>r1(v)+" h",good:"up",min:1,goal:{v:8,label:"8 h"},empty:"Sleep shows here from Health sync or your readiness check-ins.",
+    series:[{k:"s",label:"Sleep",color:IC_GREEN,type:"bar",pts},{k:"a",label:"7-day average",color:IC_AMBER,type:"line",pts:icAvg7(pts),nodots:true,nodelta:true}],
+    stats:p=>{const v=p.pts.map(q=>q.v);return [["Average",r1(v.reduce((a,b)=>a+b,0)/v.length)+" h"],["Best",r1(Math.max(...v))+" h"],["Worst",r1(Math.min(...v))+" h"],["7 h or more",`${v.filter(x=>x>=7).length} of ${v.length}`]]}};
+};
+ICD.recovery=()=>{
+  const st=icS("recovery",{rng:28,mode:"hrv"}),k=st.mode==="rhr"?"rhr":"hrv";
+  const pts=icDays(d=>+((S.hd||{})[d]||{})[k]||0,400).map(p=>({d:p.d,v:r1(p.v)}));
+  const base=pts.map(p=>{const w=pts.filter(q=>diffD(q.d,p.d)>=0&&diffD(q.d,p.d)<14);return {d:p.d,v:r1(w.reduce((a,q)=>a+q.v,0)/w.length)}});
+  return {title:"Recovery",rng:28,mode:"hrv",ranges:RANGES_S,modes:[{k:"hrv",label:"HRV"},{k:"rhr",label:"Resting HR"}],fmt:v=>r1(v)+(k==="hrv"?" ms":" bpm"),good:k==="hrv"?"up":"down",min:2,
+    empty:"Connect Apple Health to chart HRV and resting heart rate.",
+    series:[{k:"v",label:k==="hrv"?"HRV":"Resting HR",color:k==="hrv"?IC_GREEN:IC_RED,type:"line",pts,w:2.2},{k:"b",label:"14-day baseline",color:IC_AMBER,type:"line",pts:base,dash:"5 4",nodots:true,w:2,nodelta:true}],
+    note:()=>k==="hrv"?"HRV above your baseline usually means you are well recovered; several days below it suggests extra fatigue.":"Resting heart rate a few beats above baseline can signal fatigue, stress or illness."};
+};
+function renderHealthCharts(){
+  const el=$("hchartBox");if(!el)return;
+  const have=ICD.steps().series[0].pts.length||ICD.sleep().series[0].pts.length||ICD.recovery().series[0].pts.length;
+  el.innerHTML=have?[["steps","👟 Steps"],["sleep","😴 Sleep"],["recovery","💓 Recovery"]].map(([id,t])=>`<div class="card"><h2><span>${t}</span></h2>${icBox(id)}</div>`).join(""):"";
+}
+function renderVolumeChart(){const el=$("volBox");if(!el)return;el.innerHTML=Object.values(S.wlog||{}).some(l=>l&&l.end)?`<div class="card"><h2><span>Training volume</span></h2>${icBox("volume")}</div>`:""}
+PROGX.push(renderHealthCharts,renderVolumeChart);
+
+/* ===== FOOD SEARCH, BARCODE SCANNER, FOOD SCORE (Open Food Facts) ===== */
+const BC_L=["0001101","0011001","0010011","0111101","0100011","0110001","0101111","0111011","0110111","0001011"];
+const BC_G=["0100111","0110011","0011011","0100001","0011101","0111001","0000101","0010001","0001001","0010111"];
+const BC_R=["1110010","1100110","1101100","1000010","1011100","1001110","1010000","1000100","1001000","1110100"];
+const BC_PAR=["LLLLLL","LLGLGG","LLGGLG","LLGGGL","LGLLGG","LGGLLG","LGGGLL","LGLGLG","LGLGGL","LGGLGL"];
+const bcRuns=b=>{const r=[];let c=b[0],n=1;for(let i=1;i<b.length;i++){if(b[i]===c)n++;else{r.push(n);c=b[i];n=1}}r.push(n);return r};
+const BC_PAT={L:BC_L.map(bcRuns),G:BC_G.map(bcRuns),R:BC_R.map(bcRuns)};
+function bcDigit(w,sets){ // w: 4 run widths. Returns {d,s,e} best match or null
+  const t=w[0]+w[1]+w[2]+w[3];if(!(t>0))return null;
+  let best=null;
+  for(const s of sets)for(let d=0;d<10;d++){
+    const p=BC_PAT[s][d];let e=0;
+    for(let i=0;i<4;i++)e+=Math.abs(w[i]*7/t-p[i]);
+    if(!best||e<best.e)best={d,s,e};
+  }
+  return best&&best.e<2.1?best:null;
+}
+function bcCheck(code){ // EAN-13 / EAN-8 check digit
+  const n=code.length,d=code.split("").map(Number);let s=0;
+  for(let i=0;i<n-1;i++)s+=d[i]*(((n-1-i)%2===1)?3:1);
+  return (10-s%10)%10===d[n-1];
+}
+function bcTryRuns(r,at){ // r: run lengths, at: index of first start-guard run (a bar). Returns code or null
+  const g=(i,n)=>r.slice(i,i+n);
+  const m0=(r[at]+r[at+1]+r[at+2])/3;
+  if(!(m0>0)||[0,1,2].some(i=>r[at+i]<m0*.5||r[at+i]>m0*1.8))return null;
+  for(const n of [6,4]){ // EAN-13/UPC-A first, then EAN-8
+    const need=3+n*4+5+n*4+3;if(at+need>r.length)continue;
+    let i=at+3,par="",dg="",ok=true,err=0;
+    for(let k=0;k<n&&ok;k++){const x=bcDigit(g(i,4),n===6&&k>=0?["L","G"]:["L"]);if(!x){ok=false;break}dg+=x.d;par+=x.s;err+=x.e;i+=4}
+    if(!ok)continue;
+    const c=g(i,5);if(c.some(v=>v<m0*.4||v>m0*1.9))continue;i+=5;
+    let right="";
+    for(let k=0;k<n;k++){const x=bcDigit(g(i,4),["R"]);if(!x){ok=false;break}right+=x.d;err+=x.e;i+=4}
+    if(!ok)continue;
+    const e=g(i,3);if(e.length<3||e.some(v=>v<m0*.4||v>m0*1.9)||err/(n*2)>1.0)continue;
+    if(n===6){
+      const f=BC_PAR.indexOf(par);if(f<0)continue;
+      const code=f+dg+right;if(bcCheck(code))return code;
+    }else{
+      if(par!=="LLLL")continue;
+      const code=dg+right;if(bcCheck(code))return code;
+    }
+  }
+  return null;
+}
+function bcDecodeRow(g){ // g: array-like of gray values 0-255 for one scanline
+  const n=g.length;if(n<40)return null;
+  for(const rev of [false,true]){
+    const a=rev?Array.prototype.slice.call(g).reverse():g;
+    // light smoothing, then hysteresis threshold around a local mean (stops edge pixels chattering under noise)
+    const sm=new Float64Array(n);for(let i=0;i<n;i++){const l=a[Math.max(0,i-1)],c=a[i],rr=a[Math.min(n-1,i+1)];sm[i]=c}
+    const srt=Array.prototype.slice.call(sm).sort((x,y)=>x-y),lo=srt[(n*.05)|0],hi=srt[(n*.95)|0];
+    if(hi-lo<40)continue;
+    const w=Math.max(15,(n>>3)|1),pre=new Float64Array(n+1);
+    for(let i=0;i<n;i++)pre[i+1]=pre[i]+sm[i];
+    const bits=new Uint8Array(n),dl=(hi-lo)*.1;let st=sm[0]<(lo+hi)/2?1:0;
+    for(let i=0;i<n;i++){const l0=Math.max(0,i-(w>>1)),h0=Math.min(n,i+(w>>1)+1),mid=(lo+hi)/2;
+      if(st===0&&sm[i]<mid-dl)st=1;else if(st===1&&sm[i]>mid+dl)st=0;bits[i]=st}
+    // runs, with positions of black runs
+    const r=[],col=[];let c=bits[0],len=1;
+    for(let i=1;i<n;i++){if(bits[i]===c)len++;else{r.push(len);col.push(c);c=bits[i];len=1}}
+    r.push(len);col.push(c);
+    for(let i=0;i<r.length-40;i++){
+      if(col[i]!==1)continue;
+      if(i>0&&r[i-1]<(r[i]+r[i+1]+r[i+2])/3*3)continue; // quiet zone before the start guard
+      const code=bcTryRuns(r,i);if(code)return code;
+    }
+  }
+  return null;
+}
+// img: {data: Uint8ClampedArray RGBA or gray, w, h, gray?:bool}. Tries many scanlines, horizontal then vertical.
+function bcScanImage(img){
+  const {w,h}=img,px=img.data;
+  const gray=new Uint8Array(w*h);
+  if(img.gray)gray.set(px);else for(let i=0,j=0;j<w*h;i+=4,j++)gray[j]=(px[i]*77+px[i+1]*150+px[i+2]*29)>>8;
+  const row=y=>{const o=new Float64Array(w);for(let d=-1;d<=1;d++){const yy=Math.min(h-1,Math.max(0,y+d));for(let x=0;x<w;x++)o[x]+=gray[yy*w+x]/3}return o};
+  const col=x=>{const o=new Float64Array(h);for(let d=-1;d<=1;d++){const xx=Math.min(w-1,Math.max(0,x+d));for(let y=0;y<h;y++)o[y]+=gray[y*w+xx]/3}return o};
+  const order=(n)=>{const o=[];for(let k=0;k<n;k++){const f=.5+((k%2?1:-1)*Math.ceil(k/2))/(n+1)*.9;o.push(f)}return o};
+  for(const f of order(21)){const c=bcDecodeRow(row(Math.round(f*(h-1))));if(c)return c}
+  for(const f of order(21)){const c=bcDecodeRow(col(Math.round(f*(w-1))));if(c)return c}
+  return null;
+}
+/* ---- Food score: Nutri-Score (from Open Food Facts, or estimated from the label), additives, processing (NOVA), organic ---- */
+const AD_NOTE={e171:"Titanium dioxide: banned as a food additive in the EU since 2022",e924:"Potassium bromate: banned in the EU, possible carcinogen (IARC 2B)",e123:"Amaranth: banned in the US, restricted elsewhere",e128:"Red 2G: banned in the EU",e216:"Propylparaben: banned in the EU",e217:"Propylparaben sodium: banned in the EU",
+ e102:"Tartrazine: EU warning label (may affect attention in children)",e104:"Quinoline yellow: EU warning label",e110:"Sunset yellow: EU warning label",e122:"Carmoisine: EU warning label",e124:"Ponceau 4R: EU warning label",e129:"Allura red: EU warning label",e127:"Erythrosine: thyroid concerns, restricted use",
+ e249:"Nitrite: processed-meat cancer link (IARC)",e250:"Sodium nitrite: processed-meat cancer link (IARC)",e251:"Nitrate: processed-meat cancer link (IARC)",e252:"Potassium nitrate: processed-meat cancer link (IARC)",e320:"BHA: possible carcinogen (IARC 2B)",e321:"BHT: antioxidant, some safety debate",
+ e210:"Benzoic acid: can form benzene with vitamin C",e211:"Sodium benzoate: can form benzene with vitamin C",e212:"Potassium benzoate",e213:"Calcium benzoate",e220:"Sulphur dioxide: sulphite allergen",e221:"Sodium sulphite: sulphite allergen",e222:"Sodium bisulphite: sulphite allergen",e223:"Sodium metabisulphite: sulphite allergen",e224:"Potassium metabisulphite: sulphite allergen",e228:"Potassium bisulphite: sulphite allergen",
+ e950:"Acesulfame K: sweetener, debated",e951:"Aspartame: possibly carcinogenic (IARC 2B, 2023)",e952:"Cyclamate: banned in the US",e954:"Saccharin: sweetener",e955:"Sucralose: sweetener, gut-effect research",e407:"Carrageenan: gut irritation debated",e433:"Polysorbate 80: emulsifier, gut research",e466:"CMC: emulsifier, gut research",e471:"Mono- and diglycerides: emulsifier",e150c:"Ammonia caramel: 4-MEI contaminant",e150d:"Sulphite ammonia caramel: 4-MEI contaminant",e621:"MSG: flavour enhancer",e627:"Disodium guanylate: flavour enhancer",e631:"Disodium inosinate: flavour enhancer",e339:"Sodium phosphate: excess phosphate",e340:"Potassium phosphate: excess phosphate",e341:"Calcium phosphate",e451:"Triphosphates",e452:"Polyphosphates"};
+const AD_RISK={3:["e171","e924","e123","e128","e216","e217"],2:["e102","e104","e110","e122","e124","e129","e127","e249","e250","e251","e252","e320","e321","e210","e211","e212","e213","e220","e221","e222","e223","e224","e228","e950","e951","e952"],1:["e954","e955","e407","e433","e466","e471","e150c","e150d","e621","e627","e631","e339","e340","e341","e451","e452"]};
+const AD_LV={};Object.entries(AD_RISK).forEach(([r,a])=>a.forEach(k=>AD_LV[k]=+r));
+function adInfo(tag){
+  const m=/^[a-z]{2}:e(\d{3,4})([a-z]?)/i.exec(tag||"");if(!m)return null;
+  const full="e"+m[1]+m[2].toLowerCase(),base="e"+m[1],key=AD_LV[full]!=null?full:AD_LV[base]!=null?base:null;
+  return {code:full.toUpperCase(),r:key?AD_LV[key]:0,note:key?AD_NOTE[key]||"":""};
+}
+function nsEst(p,fv){ // Nutri-Score for general foods (2023 tables) from per-100 g values. Beverages, fats and cheese have their own tables: those are estimated with the general one.
+  const up=(v,t)=>t.filter(x=>v>x).length;
+  const kj=p.kcal*4.184,N=up(kj,Array.from({length:10},(_,i)=>(i+1)*335))+up(p.sugar,[3.4,6.8,10,14,17,20,24,27,31,34,37,41,44,48,51])+Math.min(10,up(p.sat,[1,2,3,4,5,6,7,8,9,10]))+Math.min(20,up(p.salt,Array.from({length:20},(_,i)=>(i+1)*.2)));
+  const f=fv>80?5:fv>60?2:fv>40?1:0,fib=up(p.fiber,[3,4.1,5.2,6.3,7.4]),pro=up(p.p,[2.4,4.8,7.2,9.6,12,14,17]);
+  const score=N-(fib+f+(N>=11&&f<5?0:pro));
+  return {score,grade:score<=0?"a":score<=2?"b":score<=10?"c":score<=18?"d":"e",est:true};
+}
+const BANDS=[[75,"Excellent","#22c55e"],[50,"Good","#84cc16"],[25,"Poor","#f59e0b"],[0,"Bad","#ef4444"]];
+const bandOf=t=>BANDS.find(b=>t>=b[0]);
+function foodScore(it){
+  const ns=it.ns&&it.ns.score!=null?it.ns:nsEst(it.per,it.fv||0);
+  const nut=Math.round(60*Math.max(0,Math.min(1,(22-ns.score)/37)));
+  let pen=0,hi=0;(it.add||[]).forEach(a=>{pen+=[0,1.5,5,12][a.r];if(a.r===3)hi++});
+  const add=Math.max(0,Math.round(25-pen)),proc=it.nova?[0,15,12,7,0][it.nova]:7,org=it.org?5:0;
+  let tot=Math.min(100,nut+add+proc+org);if(hi)tot=Math.min(tot,49);
+  const b=bandOf(tot);
+  return {tot,nut,add,proc,org,ns,hi,label:b[1],color:b[2]};
+}
 function offNorm(p){
   const n=p.nutriments||{},kcal=nz(n["energy-kcal_100g"])||nz(n.energy_100g)/4.184;
   if(!p.product_name||!(kcal>0))return null;
-  return {n:p.product_name+(p.brands?" ("+p.brands.split(",")[0].trim()+")":""),srv:Math.round(nz(p.serving_quantity))||100,
-    per:{kcal,p:nz(n.proteins_100g),c:nz(n.carbohydrates_100g),f:nz(n.fat_100g),fiber:nz(n.fiber_100g),
-      sodium:nz(n.sodium_100g)*1000,iron:nz(n.iron_100g)*1000,ca:nz(n.calcium_100g)*1000,mg:nz(n.magnesium_100g)*1000,
-      k:nz(n.potassium_100g)*1000,vd:nz(n["vitamin-d_100g"])*1e6,vc:nz(n["vitamin-c_100g"])*1000}};
+  const tags=a=>Array.isArray(a)?a:[],ing=tags(p.ingredients_analysis_tags);
+  const img=/^https:\/\/(images|static)\.openfoodfacts\.(org|net)\//.test(p.image_front_small_url||"")?p.image_front_small_url:"";
+  const g=String(p.nutriscore_grade||"").toLowerCase();
+  return {code:String(p.code||""),n:p.product_name+(p.brands?" ("+p.brands.split(",")[0].trim()+")":""),srv:Math.round(nz(p.serving_quantity))||100,img,
+    per:{kcal,p:nz(n.proteins_100g),c:nz(n.carbohydrates_100g),f:nz(n.fat_100g),fiber:nz(n.fiber_100g),sugar:nz(n.sugars_100g),sat:nz(n["saturated-fat_100g"]),
+      salt:nz(n.salt_100g)||nz(n.sodium_100g)*2.5,sodium:nz(n.sodium_100g)*1000||nz(n.salt_100g)*400,iron:nz(n.iron_100g)*1000,ca:nz(n.calcium_100g)*1000,mg:nz(n.magnesium_100g)*1000,
+      k:nz(n.potassium_100g)*1000,vd:nz(n["vitamin-d_100g"])*1e6,vc:nz(n["vitamin-c_100g"])*1000},
+    fv:nz(n["fruits-vegetables-legumes-estimate-from-ingredients_100g"])||nz(n["fruits-vegetables-nuts-estimate-from-ingredients_100g"]),
+    ns:/^[a-e]$/.test(g)&&p.nutriscore_score!=null?{grade:g,score:+p.nutriscore_score,est:false}:null,
+    nova:[1,2,3,4].includes(+p.nova_group)?+p.nova_group:0,
+    add:tags(p.additives_tags).map(adInfo).filter(Boolean).filter((a,i,s)=>s.findIndex(b=>b.code===a.code)===i).sort((a,b)=>b.r-a.r),
+    org:tags(p.labels_tags).some(t=>/^en:(organic|eu-organic|usda-organic)$/.test(t)),
+    al:tags(p.allergens_tags).map(t=>t.replace(/^en:/,"")),tr:tags(p.traces_tags).map(t=>t.replace(/^en:/,"")),
+    nonVegan:ing.includes("en:non-vegan"),nonVeg:ing.includes("en:non-vegetarian"),
+    ingr:String(p.ingredients_text||"").slice(0,900),cat:tags(p.categories_tags).filter(t=>/^en:/.test(t)).slice(-3).reverse()};
+}
+const ALG=[["gluten","Gluten"],["milk","Milk"],["eggs","Eggs"],["peanuts","Peanuts"],["nuts","Tree nuts"],["soybeans","Soy"],["fish","Fish"],["crustaceans","Shellfish"],["sesame-seeds","Sesame"]];
+function foodFlags(it){
+  const av=S.prof.avoid||[],f=[];
+  av.forEach(a=>{if(it.al.includes(a))f.push(["red",`Contains ${(ALG.find(x=>x[0]===a)||[0,a])[1].toLowerCase()}`]);else if(it.tr.includes(a))f.push(["warn",`May contain traces of ${(ALG.find(x=>x[0]===a)||[0,a])[1].toLowerCase()}`])});
+  if(S.prof.diet==="vegan"&&it.nonVegan)f.push(["red","Not vegan"]);
+  else if((S.prof.diet==="veg")&&(it.nonVeg||it.nonVegan))f.push(["red","Not vegetarian"]);
+  return f;
+}
+function dayLeft(){
+  try{
+    const d=selDay(),m=d.macros,xt=S.extra[d.date]||{kcal:0,p:0},fl=(S.flog&&S.flog[d.date])||[],fs=k=>fl.reduce((a,x)=>a+(x[k]||0),0);
+    const e=d.meals.reduce((q,mm,i)=>S.checks[`${d.date}|meal|${i}`]?{kcal:q.kcal+mm.kcal,P:q.P+mm.P,C:q.C+mm.C,F:q.F+mm.F}:q,{kcal:(+xt.kcal||0)+fs("kcal"),P:(+xt.p||0)+fs("p"),C:fs("c"),F:fs("f")});
+    return {kcal:m.kcal-e.kcal,P:m.P-e.P,C:m.C-e.C,F:m.F-e.F};
+  }catch(x){return null}
+}
+/* ---- history + favourites (this device only) ---- */
+const FHK="eliteScanHist",FVK="eliteScanFav";
+const lsJ=(k)=>{try{const v=JSON.parse(localStorage.getItem(k)||"[]");return Array.isArray(v)?v:[]}catch(e){return []}};
+const lsW=(k,v)=>{try{localStorage.setItem(k,JSON.stringify(v))}catch(e){console.warn(e)}};
+function fsRemember(it){if(!it||!it.code)return;const h=lsJ(FHK).filter(x=>x.code!==it.code);h.unshift(Object.assign({t:Date.now()},it));lsW(FHK,h.slice(0,40))}
+const fsIsFav=c=>lsJ(FVK).some(x=>x.code===c);
+function fsToggleFav(it){let a=lsJ(FVK);if(a.some(x=>x.code===it.code))a=a.filter(x=>x.code!==it.code);else a.unshift(Object.assign({t:Date.now()},it));lsW(FVK,a.slice(0,100))}
+const fsFix=x=>Object.assign({add:[],al:[],tr:[],cat:[],ingr:"",srv:100,fv:0},x,{per:Object.assign({kcal:0,p:0,c:0,f:0,fiber:0,sugar:0,sat:0,salt:0},x.per)});
+/* ---- lookup ---- */
+const FSF="code,product_name,brands,nutriments,serving_quantity,nutriscore_grade,nutriscore_score,nova_group,additives_tags,labels_tags,allergens_tags,traces_tags,ingredients_text,ingredients_analysis_tags,image_front_small_url,categories_tags";
+let FS={q:"",bc:"",cc:"united-states",res:[],msg:"",alt:null,open:-1,tab:"recent"};
+const nz=v=>{v=parseFloat(v);return isFinite(v)?v:0};
+async function offGet(url){
+  let r;
+  try{r=await fetch(url)}catch(e){await new Promise(t=>setTimeout(t,1200));r=await fetch(url)}
+  if(!r.ok)throw new Error("HTTP "+r.status);
+  return r.json();
 }
 async function fsSearch(){
   const q=FS.q.trim();
   if(q.length<2){FS.msg="Type at least 2 letters";return renderFood()}
-  FS.msg="Searching…";renderFood();
+  FS.msg="Searching…";FS.alt=null;renderFood();
   try{
-    const url="https://world.openfoodfacts.org/cgi/search.pl?search_simple=1&action=process&json=1&page_size=15&fields="+FSF+"&search_terms="+encodeURIComponent(q)+(FS.cc?"&tagtype_0=countries&tag_contains_0=contains&tag_0="+FS.cc:"");
-    let r;
-    try{r=await fetch(url)}catch(e){await new Promise(t=>setTimeout(t,1200));r=await fetch(url)}
-    if(!r.ok)throw new Error("HTTP "+r.status);
-    FS.res=((await r.json()).products||[]).map(offNorm).filter(Boolean);
+    const j=await offGet("https://world.openfoodfacts.org/cgi/search.pl?search_simple=1&action=process&json=1&page_size=15&fields="+FSF+"&search_terms="+encodeURIComponent(q)+(FS.cc?"&tagtype_0=countries&tag_contains_0=contains&tag_0="+FS.cc:""));
+    FS.res=(j.products||[]).map(offNorm).filter(Boolean);FS.open=-1;
     FS.msg=FS.res.length?"":"No matches. Try fewer words or a barcode";
   }catch(e){FS.msg="Food database unreachable: "+e.message;FS.res=[]}
   renderFood();
@@ -3110,47 +3527,156 @@ async function fsSearch(){
 async function fsBarcode(code){
   code=String(code||"").replace(/\D/g,"");
   if(code.length<8){FS.msg="Enter the 8 to 14 digit barcode";return renderFood()}
-  FS.msg="Looking up "+code+"…";renderFood();
-  try{
-    const r=await fetch("https://world.openfoodfacts.org/api/v2/product/"+code+".json?fields="+FSF);
-    if(!r.ok)throw new Error("HTTP "+r.status);
-    const j=await r.json(),it=j.status===1?offNorm(j.product):null;
-    FS.res=it?[it]:[];FS.msg=it?"":"Not in the database. Use the custom entry above";
-  }catch(e){FS.msg="Food database unreachable: "+e.message;FS.res=[]}
+  FS.msg="Looking up "+code+"…";FS.alt=null;renderFood();
+  const tries=[code];if(code.length===12)tries.push("0"+code);else if(code.length===13&&code[0]==="0")tries.push(code.slice(1));
+  let it=null,err=null;
+  for(const c of tries){
+    try{const j=await offGet("https://world.openfoodfacts.org/api/v2/product/"+c+".json?fields="+FSF);if(j.status===1){it=offNorm(j.product);if(it){it.code=it.code||c;break}}}
+    catch(e){err=e}
+  }
+  if(!it){const h=lsJ(FHK).concat(lsJ(FVK)).find(x=>tries.includes(x.code));if(h)it=h}
+  if(it){FS.res=[it];FS.open=0;FS.msg="";fsRemember(it)}
+  else{FS.res=[];FS.msg=err?"Food database unreachable: "+err.message:"Not in the database yet. Use the search or add it by hand with the custom entry above."}
   renderFood();
 }
 function fsAdd(i,g){
   const it=FS.res[i];g=nz(g);if(!it||g<=0)return;
-  const k=g/100,s=x=>Math.round(x*k*10)/10,e={id:Date.now().toString(36)+i,n:it.n,g:Math.round(g),kcal:Math.round(it.per.kcal*k),p:s(it.per.p),c:s(it.per.c),f:s(it.per.f),m:{}};
+  const k=g/100,s=x=>Math.round(x*k*10)/10,e={id:Date.now().toString(36)+i,n:it.n,g:Math.round(g),kcal:Math.round(it.per.kcal*k),p:s(it.per.p),c:s(it.per.c),f:s(it.per.f),m:{},sc:foodScore(it).tot};
   ["fiber","sodium","iron","ca","mg","k","vd","vc"].forEach(x=>{e.m[x]=s(it.per[x])});
-  (S.flog[S.sel]=S.flog[S.sel]||[]).push(e);save();renderPlan();
+  (S.flog[S.sel]=S.flog[S.sel]||[]).push(e);save();fsRemember(it);renderPlan();
 }
-async function fsScan(){
-  if(!("BarcodeDetector" in window)){FS.msg="This browser can't scan. Type the barcode number";return renderFood()}
-  let stream,iv;
-  const ov=document.createElement("div");
-  ov.style.cssText="position:fixed;inset:0;z-index:200;background:#000;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px";
-  ov.innerHTML='<video playsinline muted style="max-width:100%;max-height:70vh"></video><button class="btn pri">Cancel</button>';
-  document.body.appendChild(ov);
-  const done=c=>{clearInterval(iv);if(stream)stream.getTracks().forEach(t=>t.stop());ov.remove();if(c){FS.bc=c;fsBarcode(c)}};
+async function fsAlt(i){
+  const it=FS.res[i];if(!it)return;
+  if(!it.cat||!it.cat.length){FS.alt={i,msg:"No category data for this product, so there is nothing to compare it with.",res:[]};return renderFood()}
+  FS.alt={i,msg:"Looking for better options…",res:[]};renderFood();
+  const base=foodScore(it).tot,seen=new Set([it.code]),found=[];
   try{
-    stream=await navigator.mediaDevices.getUserMedia({video:{facingMode:"environment"}});
-    const v=ov.querySelector("video");v.srcObject=stream;await v.play();
-    const det=new BarcodeDetector({formats:["ean_13","ean_8","upc_a","upc_e"]});
-    iv=setInterval(async()=>{try{const b=await det.detect(v);if(b.length)done(b[0].rawValue)}catch(e){console.warn(e)}},350);
-    ov.querySelector("button").onclick=()=>done();
-  }catch(e){done();FS.msg="Camera unavailable: "+e.message;renderFood()}
+    for(const cat of it.cat){
+      for(const gr of ["a","b"]){
+        const j=await offGet("https://world.openfoodfacts.org/cgi/search.pl?search_simple=1&action=process&json=1&page_size=20&sort_by=unique_scans_n&fields="+FSF+"&tagtype_0=categories&tag_contains_0=contains&tag_0="+encodeURIComponent(cat)+"&tagtype_1=nutrition_grades&tag_contains_1=contains&tag_1="+gr+(FS.cc?"&tagtype_2=countries&tag_contains_2=contains&tag_2="+FS.cc:""));
+        (j.products||[]).map(offNorm).filter(Boolean).forEach(x=>{if(!seen.has(x.code)){seen.add(x.code);x.sc=foodScore(x).tot;if(x.sc>base+4&&!foodFlags(x).some(f=>f[0]==="red"))found.push(x)}});
+        if(found.length>=4)break;
+      }
+      if(found.length>=4)break;
+    }
+    found.sort((a,b)=>b.sc-a.sc);
+    FS.alt={i,msg:found.length?"":"Nothing clearly better found in this category.",res:found.slice(0,4)};
+  }catch(e){FS.alt={i,msg:"Couldn't reach the food database: "+e.message,res:[]}}
+  renderFood();
+}
+
+/* ---- camera scanner: native BarcodeDetector where it exists, otherwise the decoder above (iPhone Safari has none) ---- */
+async function fsScan(){
+  if(!navigator.mediaDevices||!navigator.mediaDevices.getUserMedia){FS.msg="Live camera isn't available here. Use “Photo of barcode” or type the number.";return renderFood()}
+  const ov=document.createElement("div");
+  ov.className="scanov";ov.setAttribute("role","dialog");ov.setAttribute("aria-label","Barcode scanner");
+  ov.innerHTML='<video playsinline muted autoplay></video><div class="scanframe" aria-hidden="true"><i></i></div><div class="scanhint" id="scanHint">Fill the frame with the barcode. Hold steady, add light.</div><div class="scanbtns"><button class="btn" id="scanTorch" hidden>🔦 Light</button><button class="btn pri" id="scanX">Cancel</button></div>';
+  document.body.appendChild(ov);
+  let stream,timer,fin=false,last="",lastT=0,track;
+  const v=ov.querySelector("video"),cv=document.createElement("canvas"),cx=cv.getContext("2d",{willReadFrequently:true});
+  let det=null;try{if("BarcodeDetector" in window)det=new BarcodeDetector({formats:["ean_13","ean_8","upc_a","upc_e"]})}catch(e){det=null}
+  const done=c=>{if(fin)return;fin=true;clearTimeout(timer);document.removeEventListener("keydown",esc_);if(stream)stream.getTracks().forEach(t=>t.stop());ov.remove();if(c){if(navigator.vibrate)navigator.vibrate(60);FS.bc=c;fsBarcode(c)}};
+  const esc_=e=>{if(e.key==="Escape")done()};document.addEventListener("keydown",esc_);
+  ov.querySelector("#scanX").onclick=()=>done();
+  try{
+    stream=await navigator.mediaDevices.getUserMedia({video:{facingMode:{ideal:"environment"},width:{ideal:1920},height:{ideal:1080}},audio:false});
+    if(fin){stream.getTracks().forEach(t=>t.stop());return}
+    v.srcObject=stream;await v.play();
+    track=stream.getVideoTracks()[0];
+    try{const caps=track.getCapabilities?track.getCapabilities():{};if(caps.focusMode&&caps.focusMode.includes("continuous"))await track.applyConstraints({advanced:[{focusMode:"continuous"}]});
+      if(caps.torch){const tb=ov.querySelector("#scanTorch");tb.hidden=false;let on=false;tb.onclick=()=>{on=!on;track.applyConstraints({advanced:[{torch:on}]}).catch(()=>{})}}}catch(e){}
+  }catch(e){done();FS.msg=/denied|NotAllowed/i.test(e.name+e.message)?"Camera permission was denied. Allow it in your browser or phone settings, or use “Photo of barcode”.":"Camera unavailable: "+e.message;return renderFood()}
+  const tick=async()=>{
+    if(fin)return;
+    let code=null;
+    try{
+      if(v.readyState>=2&&v.videoWidth){
+        if(det){try{const b=await det.detect(v);if(b.length)code=b[0].rawValue}catch(e){det=null}}
+        if(!code){
+          const sc=Math.min(1,1100/v.videoWidth);cv.width=Math.round(v.videoWidth*sc);cv.height=Math.round(v.videoHeight*sc);
+          cx.drawImage(v,0,0,cv.width,cv.height);
+          const im=cx.getImageData(0,0,cv.width,cv.height);code=bcScanImage({data:im.data,w:cv.width,h:cv.height});
+        }
+      }
+    }catch(e){console.warn(e)}
+    if(code&&/^\d{8,14}$/.test(code)){
+      const now=Date.now();
+      if(code===last&&now-lastT<2500)return done(code);
+      last=code;lastT=now;
+    }
+    timer=setTimeout(tick,code?60:140);
+  };
+  tick();
+}
+async function fsPhoto(file){
+  if(!file)return;
+  FS.msg="Reading the photo…";renderFood();
+  try{
+    const bmp=await createImageBitmap(file,{imageOrientation:"from-image"}).catch(()=>createImageBitmap(file));
+    let code=null;
+    for(const maxW of [1600,1100,2200]){
+      const sc=Math.min(1,maxW/Math.max(bmp.width,bmp.height)),w=Math.round(bmp.width*sc),h=Math.round(bmp.height*sc),cv=document.createElement("canvas");
+      cv.width=w;cv.height=h;const cx=cv.getContext("2d",{willReadFrequently:true});cx.drawImage(bmp,0,0,w,h);
+      const im=cx.getImageData(0,0,w,h);code=bcScanImage({data:im.data,w,h});if(code)break;
+    }
+    if(bmp.close)bmp.close();
+    if(code){FS.bc=code;return fsBarcode(code)}
+    FS.msg="No barcode found in that photo. Get closer, keep it flat and sharp, and use good light. Or type the number.";
+  }catch(e){FS.msg="Couldn't read that photo: "+e.message}
+  renderFood();
+}
+
+/* ---- rendering ---- */
+const spill=(t,c)=>`<span class="sp" style="background:${c}" title="Food score ${t} out of 100">${t}</span>`;
+const NSC={a:"#1f9d55",b:"#7cb82f",c:"#e0b000",d:"#e8821a",e:"#d9382b"};
+const NOVAL=["","Unprocessed","Culinary ingredient","Processed","Ultra-processed"];
+function fsMacroLine(it,g){const k=g/100;return `${Math.round(it.per.kcal*k)} kcal · Protein ${r1(it.per.p*k)} g · Carbs ${r1(it.per.c*k)} g · Fat ${r1(it.per.f*k)} g`}
+function pcardFull(it,i,src){
+  const sc=foodScore(it),fl=foodFlags(it),left=dayLeft(),fav=fsIsFav(it.code),pd=it.per.kcal>0?it.per.p/it.per.kcal*100:0;
+  const chips=[`<span class="nsb" style="background:${NSC[sc.ns.grade]}" title="Nutri-Score ${sc.ns.grade.toUpperCase()}${sc.ns.est?" (estimated from the label)":""}">Nutri-Score ${sc.ns.grade.toUpperCase()}${sc.ns.est?"*":""}</span>`,
+    `<span class="chipx">${it.nova?`NOVA ${it.nova} · ${NOVAL[it.nova]}`:"NOVA unknown"}</span>`,
+    `<span class="chipx">${it.add.length?`${it.add.length} additive${it.add.length>1?"s":""}`:"No additives"}</span>`,it.org?'<span class="chipx g">Organic</span>':""].join("");
+  const fit=pd>=8?`<span class="chipx g">💪 ${r1(pd)} g protein / 100 kcal</span>`:pd>=4?`<span class="chipx">${r1(pd)} g protein / 100 kcal</span>`:`<span class="chipx w">Low protein: ${r1(pd)} g / 100 kcal</span>`;
+  const sug=it.per.sugar>=22.5?'<span class="chipx w">High sugar</span>':"",sal=it.per.salt>=1.5?'<span class="chipx w">High salt</span>':"";
+  const share=left&&left.kcal>0?(g=>`With ${g} g: ${Math.round(it.per.kcal*g/100/left.kcal*100)}% of the calories and ${left.P>0?Math.round(it.per.p*g/100/left.P*100)+"%":"all of the surplus"} of the protein you have left today.`)(it.srv):"";
+  const bk=(l,v,max,c)=>`<div class="vrow"><span>${l}</span><div class="vbar"><i style="width:${v/max*100}%;background:${c}"></i></div><small>${v}/${max}</small></div>`;
+  return `<div class="pc" style="--pc:${sc.color}">
+   <div class="pc-h">${it.img?`<img src="${esc(it.img)}" alt="" loading="lazy" referrerpolicy="no-referrer" onerror="this.remove()"/>`:""}<div class="pc-t"><b>${esc(it.n)}</b><small>${esc(it.code)}</small></div><div class="pc-s"><div class="sc" style="background:${sc.color}">${sc.tot}</div><small>${sc.label}</small></div></div>
+   ${fl.map(f=>`<div class="pc-flag ${f[0]}">${f[0]==="red"?"⛔":"⚠️"} ${esc(f[1])}</div>`).join("")}
+   <div class="pc-chips">${chips}</div><div class="pc-chips">${fit}${sug}${sal}</div>
+   <div class="d">Per 100 g: ${fsMacroLine(it,100)}</div>
+   <div class="perfrow"><input class="perf" type="number" inputmode="decimal" id="fsG${i}" value="${it.srv}" aria-label="Grams"/><span>g</span><button class="btn pri" data-fsadd="${i}">Add to today</button><button class="btn" data-fsfav="${i}" aria-pressed="${fav}">${fav?"★ Saved":"☆ Save"}</button></div>
+   ${share?`<div class="d" style="margin-top:6px">${share}</div>`:""}
+   <details class="rec"><summary>Score breakdown, additives, ingredients</summary>
+    ${bk("Nutrition",sc.nut,60,"var(--green)")}${bk("Additives",sc.add,25,"var(--accent)")}${bk("Processing",sc.proc,15,"var(--amber)")}${sc.org?bk("Organic bonus",sc.org,5,"var(--green)"):""}
+    ${sc.hi?'<div class="pc-flag red">⛔ Contains a high-risk additive, so the score is capped at 49.</div>':""}
+    ${it.add.length?`<div class="sechl" style="margin-top:10px">Additives</div>${it.add.map(a=>`<div class="adrow"><i class="r${a.r}"></i><b>${esc(a.code)}</b><span>${esc(a.note||"No specific concern listed")}</span></div>`).join("")}`:""}
+    ${it.ingr?`<div class="sechl" style="margin-top:10px">Ingredients</div><div class="d">${esc(it.ingr)}</div>`:""}
+    <div class="d" style="margin-top:8px">Score = nutrition 60 + additives 25 + processing 15 + organic 5, out of 100. Inspired by Yuka's approach, but a different formula: scores will not match theirs. ${sc.ns.est?"* Nutri-Score estimated from the label because the database has none for this product. ":""}Additive notes come from EU rulings and IARC/EFSA statements. It is guidance, not medical advice. Data: Open Food Facts.</div>
+   </details>
+   <div style="margin-top:8px"><button class="btn" data-fsalt="${i}">Find better options</button></div>
+   ${FS.alt&&FS.alt.i===i?`<div class="pc-alt"><div class="sechl">Better options in the same category</div>${FS.alt.msg?`<div class="d">${esc(FS.alt.msg)}</div>`:""}${FS.alt.res.map((a,j)=>`<div class="arow">${spill(a.sc,bandOf(a.sc)[2])}<div class="body"><div class="t">${esc(a.n)}</div><div class="d">Per 100 g: ${Math.round(a.per.kcal)} kcal · Protein ${r1(a.per.p)} g</div></div><button class="btn" data-fsaltuse="${j}">Open</button></div>`).join("")}</div>`:""}
+  </div>`;
+}
+function pcardRow(it,i){
+  const sc=foodScore(it),fl=foodFlags(it);
+  return `<div class="row"><div class="body"><div class="t" style="display:flex;gap:8px;align-items:center">${spill(sc.tot,sc.color)}<span>${esc(it.n)}</span></div>${fl.map(f=>`<div class="pc-flag ${f[0]}" style="margin-top:4px">${f[0]==="red"?"⛔":"⚠️"} ${esc(f[1])}</div>`).join("")}<div class="d">Per 100 g: ${Math.round(it.per.kcal)} kcal · Protein ${r1(it.per.p)} g · Carbs ${r1(it.per.c)} g · Fat ${r1(it.per.f)} g</div><div class="perfrow"><input class="perf" type="number" inputmode="decimal" id="fsG${i}" value="${it.srv}" aria-label="Grams"/><span>g</span><button class="btn pri" data-fsadd="${i}">Add</button><button class="btn" data-fsopen="${i}">Details</button></div></div></div>`;
 }
 function renderFood(){
   const b=$("foodBox");if(!b)return;
-  const list=(S.flog&&S.flog[S.sel])||[],t=k=>list.reduce((a,x)=>a+(x[k]||0),0);
-  b.innerHTML=`<div class="d">Search the Open Food Facts database or scan a barcode. Logged foods count toward "Eaten so far".</div>
-  <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:10px"><input id="fsQ" placeholder="Search foods, e.g. greek yogurt" value="${esc(FS.q)}" style="flex:1;min-width:180px"/><select id="fsCc" style="min-width:120px">${[["united-states","United States"],["canada","Canada"],["united-kingdom","United Kingdom"],["australia","Australia"],["","Anywhere"]].map(([v,l])=>`<option value="${v}"${FS.cc===v?" selected":""}>${l}</option>`).join("")}</select><button class="btn pri" id="fsGo">Search</button></div>
-  <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:8px"><input id="fsBc" inputmode="numeric" placeholder="Barcode number" value="${esc(FS.bc)}" style="flex:1;min-width:140px"/><button class="btn" id="fsBcGo">Look up</button>${"BarcodeDetector" in window?'<button class="btn" id="fsScan">Scan</button>':""}</div>
+  const list=(S.flog&&S.flog[S.sel])||[],t=k=>list.reduce((a,x)=>a+(x[k]||0),0),av=S.prof.avoid||[];
+  const hist=(FS.tab==="fav"?lsJ(FVK):lsJ(FHK)).map(fsFix);
+  b.innerHTML=`<div class="d">Scan a barcode for a 0–100 food score, additive check and better options. Logged foods count toward “Eaten so far”.</div>
+  <div class="fsact"><button class="btn pri" id="fsScan">📷 Scan barcode</button><label class="btn" for="fsPhoto">🖼 Photo of barcode</label><input type="file" id="fsPhoto" accept="image/*" capture="environment" hidden/></div>
+  <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:8px"><input id="fsBc" inputmode="numeric" placeholder="Or type the barcode number" value="${esc(FS.bc)}" style="flex:1;min-width:140px"/><button class="btn" id="fsBcGo">Look up</button></div>
+  <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:8px"><input id="fsQ" placeholder="Search foods, e.g. greek yogurt" value="${esc(FS.q)}" style="flex:1;min-width:180px"/><select id="fsCc" style="min-width:120px" aria-label="Country">${[["united-states","United States"],["canada","Canada"],["united-kingdom","United Kingdom"],["australia","Australia"],["","Anywhere"]].map(([v,l])=>`<option value="${v}"${FS.cc===v?" selected":""}>${l}</option>`).join("")}</select><button class="btn" id="fsGo">Search</button></div>
+  <details class="rec" style="margin-top:8px"${av.length?" open":""}><summary>Flag allergens${av.length?` (${av.length} on)`:""}</summary><div class="algs">${ALG.map(([k,l])=>`<button class="fchip" aria-pressed="${av.includes(k)}" data-fsavoid="${k}">${l}</button>`).join("")}</div><div class="d" style="margin-top:6px">Scans warn you when a product contains or may contain these${S.prof.diet==="vegan"||S.prof.diet==="veg"?`, and when it conflicts with your ${S.prof.diet==="vegan"?"vegan":"vegetarian"} diet`:""}. Always read the label: database entries can be wrong or out of date.</div></details>
   ${FS.msg?`<div class="d" style="margin-top:8px">${esc(FS.msg)}</div>`:""}
-  ${FS.res.map((it,i)=>`<div class="row"><div class="body"><div class="t">${esc(it.n)}</div><div class="d">per 100 g: ${Math.round(it.per.kcal)} kcal · Protein ${r1(it.per.p)} g · Carbs ${r1(it.per.c)} g · Fat ${r1(it.per.f)} g</div><div class="perfrow"><input class="perf" type="number" inputmode="decimal" id="fsG${i}" value="${it.srv}"/><span>g</span><button class="btn pri" data-fsadd="${i}">Add</button></div></div></div>`).join("")}
+  ${FS.res.map((it,i)=>(FS.res.length===1||FS.open===i)?pcardFull(it,i):pcardRow(it,i)).join("")}
   <h3>Logged ${S.sel===TODAY?"today":esc(S.sel)}</h3>
-  ${list.length?list.map(x=>`<div class="irow"><span>${esc(x.n)} · ${x.g} g</span><span class="ims">${x.kcal} kcal · Protein ${x.p} · Carbs ${x.c} · Fat ${x.f} <button class="rest" data-fsdel="${esc(x.id)}">Remove</button></span></div>`).join("")+`<div class="irow itot"><span>Total</span><span class="ims">${Math.round(t("kcal"))} kcal · Protein ${Math.round(t("p"))} · Carbs ${Math.round(t("c"))} · Fat ${Math.round(t("f"))}</span></div>`:'<div class="d">Nothing logged yet.</div>'}`;
+  ${list.length?list.map(x=>`<div class="irow"><span>${x.sc!=null?spill(x.sc,bandOf(x.sc)[2])+" ":""}${esc(x.n)} · ${x.g} g</span><span class="ims">${x.kcal} kcal · Protein ${x.p} · Carbs ${x.c} · Fat ${x.f} <button class="rest" data-fsdel="${esc(x.id)}">Remove</button></span></div>`).join("")+`<div class="irow itot"><span>Total</span><span class="ims">${Math.round(t("kcal"))} kcal · Protein ${Math.round(t("p"))} · Carbs ${Math.round(t("c"))} · Fat ${Math.round(t("f"))}</span></div>`:'<div class="d">Nothing logged yet.</div>'}
+  <h3 style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">Your products <span class="icgrp"><button class="icb" aria-pressed="${FS.tab!=="fav"}" data-fstab="recent">Recent scans</button><button class="icb" aria-pressed="${FS.tab==="fav"}" data-fstab="fav">★ Saved</button></span></h3>
+  ${hist.length?hist.slice(0,FS.tab==="fav"?100:15).map((x,j)=>`<div class="arow">${spill(foodScore(x).tot,foodScore(x).color)}<div class="body"><div class="t">${esc(x.n)}</div><div class="d">${Math.round(x.per.kcal)} kcal · Protein ${r1(x.per.p)} g per 100 g</div></div><button class="btn" data-fshist="${j}">Open</button></div>`).join(""):`<div class="d">${FS.tab==="fav"?"Tap ☆ Save on a product to keep it here.":"Products you scan appear here, even offline. Stored on this device only."}</div>`}`;
 }
 function renderMicro(){
   const b=$("microBox");if(!b)return;
@@ -3165,14 +3691,23 @@ function renderMicro(){
 }
 PLANX.push(renderFood,renderMicro);
 document.addEventListener("input",e=>{const t=e.target;if(t.id==="fsQ")FS.q=t.value;else if(t.id==="fsBc")FS.bc=t.value;else if(t.id==="fsCc")FS.cc=t.value});
+document.addEventListener("change",e=>{if(e.target.id==="fsPhoto"){const f=e.target.files&&e.target.files[0];e.target.value="";fsPhoto(f)}});
 document.addEventListener("keydown",e=>{if(e.key!=="Enter")return;if(e.target.id==="fsQ")fsSearch();else if(e.target.id==="fsBc")fsBarcode(FS.bc)});
 document.addEventListener("click",e=>{
   const t=e.target.closest("button");if(!t)return;
+  const d=t.dataset;
   if(t.id==="fsGo")fsSearch();
   else if(t.id==="fsBcGo")fsBarcode(FS.bc);
   else if(t.id==="fsScan")fsScan();
-  else if(t.dataset.fsadd!==undefined)fsAdd(+t.dataset.fsadd,$("fsG"+t.dataset.fsadd).value);
-  else if(t.dataset.fsdel){S.flog[S.sel]=(S.flog[S.sel]||[]).filter(x=>x.id!==t.dataset.fsdel);save();renderPlan()}
+  else if(d.fsadd!==undefined)fsAdd(+d.fsadd,$("fsG"+d.fsadd).value);
+  else if(d.fsopen!==undefined){FS.open=+d.fsopen;FS.alt=null;renderFood()}
+  else if(d.fsfav!==undefined){const it=FS.res[+d.fsfav];if(it){fsToggleFav(it);renderFood()}}
+  else if(d.fsalt!==undefined)fsAlt(+d.fsalt);
+  else if(d.fsaltuse!==undefined){const a=FS.alt&&FS.alt.res[+d.fsaltuse];if(a){FS.res=[a];FS.open=0;FS.alt=null;FS.msg="";fsRemember(a);renderFood()}}
+  else if(d.fstab){FS.tab=d.fstab;renderFood()}
+  else if(d.fshist!==undefined){const x=(FS.tab==="fav"?lsJ(FVK):lsJ(FHK)).map(fsFix)[+d.fshist];if(x){FS.res=[x];FS.open=0;FS.alt=null;FS.msg="";renderFood()}}
+  else if(d.fsavoid){const a=new Set(S.prof.avoid||[]);a.has(d.fsavoid)?a.delete(d.fsavoid):a.add(d.fsavoid);S.prof.avoid=[...a];save();renderFood()}
+  else if(d.fsdel){S.flog[S.sel]=(S.flog[S.sel]||[]).filter(x=>x.id!==d.fsdel);save();renderPlan()}
 });
 
 /* ===== SET LOG + PLATE CALCULATOR ===== */
@@ -3570,7 +4105,7 @@ async function stopCoach(coach){
 const hookURL=t=>SB_URL+"/functions/v1/health?t="+encodeURIComponent(t||"");
 function renderHealthSync(){
   const b=$("healthBox");if(!b)return;
-  const tok=lsGet(HTK),last=Object.keys(S.hd||{}).sort().pop(),age=last?diffD(last,TODAY):null;
+  const tok=lsGet(HTK),real=h=>h&&(h.steps>0||h.sleep>0||h.w>0||h.rhr>0||h.hrv>0||h.kcal>0||(h.cardio||[]).length>0),last=Object.keys(S.hd||{}).filter(k=>real(S.hd[k])).sort().pop(),age=last?diffD(last,TODAY):null;
   const status=!tok?"":age===null?callout("warn","⏳","Waiting for the first sync","","Finish one of the setups below, then run it once."):age<=1?callout("good","✅","Health sync is working",`Last data ${esc(dateLabel(last,{month:"short",day:"numeric"}))}`,"Steps, weight, sleep, HRV, resting heart rate and workouts fill in by themselves."):callout("warn","⚠️","Health sync has stopped",`Last data ${esc(dateLabel(last,{month:"short",day:"numeric"}))}`,"Open the exporter app or Shortcut and run it once. iPhone only sends Health data while the phone is unlocked.");
   b.insertAdjacentHTML("afterbegin",`<div class="sechl">Automatic daily sync</div>
    ${!SY.sess?callout("info","🔐","Sign in first","","Create an account in Profile → Sync, then come back here to connect Apple Health."):
@@ -3584,10 +4119,11 @@ function renderHealthSync(){
     <li>Add a second automation the same way with data type <b>Workouts</b>. Your walks, runs and rides then show up in Cardio.</li>
     <li>Set the sync to <b>hourly</b> or <b>daily</b>. To backfill, run a manual export of the last 30 days once.</li></ol></details>
    <details class="rec"><summary>Free option: Apple Shortcuts</summary><ol class="hsteps">
-    <li>Shortcuts → <b>Automation</b> → <b>+</b> → <b>Time of Day</b>: 9:00 PM, Daily, <b>Run Immediately</b>.</li>
-    <li>For each value add <b>Find Health Samples</b> (today), then <b>Calculate Statistics</b>: Steps (Sum), Active Energy (Sum), Resting Heart Rate (Average), Heart Rate Variability (Average), Weight (latest), Sleep Analysis "Asleep" (Sum of duration).</li>
-    <li>Add <b>Get Contents of URL</b>: paste your link, Method <b>POST</b>, Request Body <b>JSON</b> with fields <code>date</code> (Current Date as yyyy-MM-dd), <code>steps</code>, <code>kcal</code>, <code>rhr</code>, <code>hrv</code>, <code>weight</code>, <code>unit</code> = ${metric()?"kg":"lb"}, <code>sleep</code>.</li>
-    <li>Run it once with ▶ to check.</li></ol></details>
+    <li>Shortcuts → <b>Automation</b> → <b>+</b> → <b>Time of Day</b>: 9:00 PM, Daily, <b>Run Immediately</b> (not “Run After Confirmation”).</li>
+    <li>For each value add <b>Find Health Samples</b> (Start Date is today), then <b>Calculate Statistics</b>: Steps (<b>Sum</b>), Active Energy (<b>Sum</b>), Resting Heart Rate (<b>Average</b>), Heart Rate Variability (<b>Average</b>), Weight (<b>Latest</b>), Sleep Analysis asleep (<b>Sum</b> of duration).</li>
+    <li>Add <b>Get Contents of URL</b>: paste your link, Method <b>POST</b>, Request Body <b>JSON</b>. Add these fields, using the statistic results as values: <code>date</code> = Current Date formatted <b>Custom</b> <code>yyyy-MM-dd</code>, <code>steps</code>, <code>kcal</code>, <code>rhr</code>, <code>hrv</code>, <code>weight</code>, <code>unit</code> = ${metric()?"kg":"lb"}, <code>sleep</code>. Text like “8,421” or “7 hr 12 min” is fine.</li>
+    <li>Add <b>Show Result</b> after it, then tap ▶. You should see <code>{"ok":true,"days":1}</code>. If you see <code>days":0</code> the date field is missing or unreadable.</li>
+    <li>Come back here: the status above turns green only when real numbers arrive. “Send a test” only proves the link.</li></ol></details>
    <details class="rec"><summary>🤖 Android</summary><div class="d" style="margin-top:6px">Android doesn't let web apps read Health Connect. Any automation app that can send a web request (Tasker, or a Health Connect export app) can POST the same JSON to your link. Otherwise use the import below.</div></details>`
    :`<div class="d">Connect once and your phone sends steps, weight, sleep, HRV, resting heart rate and workouts every day, even with the app closed. Sleep and HRV feed your readiness check, steps fill the step counter, and workouts land in Cardio.</div><button class="btn pri" id="htNew" style="margin-top:10px">Connect Apple Health</button>`}
    <div class="d" id="htMsg" style="margin-top:6px"></div>`}
@@ -3601,10 +4137,10 @@ async function healthKey(on){
   }catch(e){const m=$("htMsg");if(m)m.textContent=v3Err(e)}
 }
 async function healthTest(){
-  const m=$("htMsg");m.textContent="Sending a test with today's steps…";
+  const m=$("htMsg");m.textContent="Checking your link…";
   try{
-    const r=await fetch(hookURL(lsGet(HTK)),{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({date:TODAY,steps:S.steps[TODAY]||0})}),j=await r.json().catch(()=>null);
-    m.textContent=r.ok&&j&&j.ok?"✅ Your link works. The server accepted the test.":"Test failed: "+((j&&j.error)||"HTTP "+r.status);
+    const r=await fetch(hookURL(lsGet(HTK)),{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({date:TODAY})}),j=await r.json().catch(()=>null);
+    m.textContent=r.ok&&j&&j.ok?"✅ Your link works: the server accepted it. This only checks the link. Your phone has not sent real data until the status above says so.":"Test failed: "+((j&&j.error)||"HTTP "+r.status);
   }catch(e){m.textContent="Test failed: "+v3Err(e)}
 }
 

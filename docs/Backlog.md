@@ -8,7 +8,15 @@
 - [ ] Optional: Auth → Providers → Email → leaked password protection.
 - [ ] Merge `claude/bold-bell-1sakoo` to `main` to deploy.
 
-## Next (v3.1)
+## Next (v3.5)
+- [ ] Owner: redeploy the `health` edge function (parse.mjs changed in v3.4).
+- [ ] Owner: run the Shortcut once with ▶ and a Show Result action; expect `{"ok":true,"days":1}`, then confirm the Health card turns green.
+- [ ] Owner: scan three real products on the iPhone (one normal, one small barcode, one in dim light) and report misses.
+- [ ] Nutrition chart: logged calories and macros vs target per day.
+- [ ] Barcode: UPC-E and ITF-14 support if real scans need it.
+- [ ] Alternatives: verify the category query against live Open Food Facts and tune.
+
+## Done in v3.1–v3.2
 - [ ] Verify the health edge function live with "Send a test", then one Health Auto Export run.
 - [ ] Live step counting while the app is open (DeviceMotion) — low value; the Health sync covers it.
 - [x] Web push for messages, assignments, check-ins, rest timer and workout reminders (v3.1).

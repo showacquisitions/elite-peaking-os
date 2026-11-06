@@ -357,6 +357,138 @@ async function page(browser, vp) {
     await p9.close();
   }
 
+  console.log("v3.4: charts, scanner, food score, Health parsing");
+  {
+    // ---- barcode decoder (EAN-13, UPC-A as EAN-13, EAN-8), noisy and blurred frames, plus the rule that noise never reads as a code
+    const Lc = ["0001101", "0011001", "0010011", "0111101", "0100011", "0110001", "0101111", "0111011", "0110111", "0001011"], Gc = ["0100111", "0110011", "0011011", "0100001", "0011101", "0111001", "0000101", "0010001", "0001001", "0010111"], Rc = ["1110010", "1100110", "1101100", "1000010", "1011100", "1001110", "1010000", "1000100", "1001000", "1110100"], PAR = ["LLLLLL", "LLGLGG", "LLGGLG", "LLGGGL", "LGLLGG", "LGGLLG", "LGGGLL", "LGLGLG", "LGLGGL", "LGGLGL"];
+    const chk = s => { let t = 0; for (let i = 0; i < s.length; i++) t += (+s[i]) * ((s.length - i) % 2 ? 3 : 1); return (10 - t % 10) % 10 };
+    const ean13 = c12 => { const c = c12 + chk(c12), p = PAR[+c[0]]; let b = "101"; for (let i = 0; i < 6; i++) b += (p[i] === "L" ? Lc : Gc)[+c[1 + i]]; b += "01010"; for (let i = 7; i < 13; i++) b += Rc[+c[i]]; return { bits: b + "101", code: c } };
+    const ean8 = c7 => { const c = c7 + chk(c7); let b = "101"; for (let i = 0; i < 4; i++) b += Lc[+c[i]]; b += "01010"; for (let i = 4; i < 8; i++) b += Rc[+c[i]]; return { bits: b + "101", code: c } };
+    let seed = 7; const rnd = () => (seed = (seed * 1664525 + 1013904223) >>> 0) / 4294967296, gs = () => { let u = 0; for (let i = 0; i < 6; i++) u += rnd(); return (u - 3) / Math.sqrt(.5) };
+    const frame = (b, mod, noise) => { const W = 480, H = 240, d = new Array(W * H).fill(215), n = Math.round((b.bits.length + 24) * mod), x0 = ((W - n) / 2) | 0; for (let y = 60; y < 180; y++) for (let x = 0; x < n; x++) { const m = Math.floor(x / mod) - 12; const bar = m >= 0 && m < b.bits.length && b.bits[m] === "1"; d[y * W + x0 + x] = Math.max(0, Math.min(255, (bar ? 30 : 215) + gs() * noise)) } return { data: d, w: W, h: H, gray: true } };
+    const cases = [ean13("590123412345"), ean13("301762042200"), ean13("001234567890"), ean8("9638507")];
+    const got = await pg.evaluate(fs_ => fs_.map(f => bcScanImage({ data: Uint8ClampedArray.from(f.data), w: f.w, h: f.h, gray: true })), cases.map((c, i) => frame(c, [2.4, 3, 3.6, 2.8][i], 14)));
+    ok(got.every((g, i) => g === cases[i].code), `decoder reads EAN-13, UPC-A and EAN-8 from noisy frames (${got.join(", ")})`);
+    const noise = await pg.evaluate(() => { let s = 5, c = 0; const r = () => (s = (s * 1664525 + 1013904223) >>> 0) / 4294967296; for (let k = 0; k < 40; k++) { const d = new Uint8ClampedArray(320 * 120); for (let i = 0; i < d.length; i++) d[i] = r() * 255; if (bcScanImage({ data: d, w: 320, h: 120, gray: true })) c++ } return c });
+    ok(noise <= 1, `random noise is not read as a barcode (${noise}/40 frames; the scanner also needs the same code twice)`);
+    ok(await pg.evaluate(() => bcScanImage({ data: new Uint8ClampedArray(200 * 100).fill(128), w: 200, h: 100, gray: true }) === null), "blank frame reads nothing");
+
+    // ---- food score
+    const sc = await pg.evaluate(() => {
+      const mk = o => offNorm(Object.assign({ code: "1", product_name: "X", nutriments: { "energy-kcal_100g": 100 } }, o));
+      const oats = mk({ nutriments: { "energy-kcal_100g": 370, proteins_100g: 13, carbohydrates_100g: 60, fat_100g: 7, fiber_100g: 10, sugars_100g: 1, "saturated-fat_100g": 1.2, salt_100g: .01 }, nova_group: 1, labels_tags: ["en:organic"] });
+      const spread = mk({ nutriments: { "energy-kcal_100g": 539, proteins_100g: 6.3, carbohydrates_100g: 57.5, fat_100g: 30.9, fiber_100g: 3.4, sugars_100g: 56.3, "saturated-fat_100g": 10.6, salt_100g: .107 }, nova_group: 4 });
+      const clean = mk({ nutriments: { "energy-kcal_100g": 60, proteins_100g: 10, carbohydrates_100g: 4, fat_100g: 1, sugars_100g: 3, salt_100g: .1 }, nova_group: 1, additives_tags: ["en:e171"], nutriscore_grade: "a", nutriscore_score: -6 });
+      const dye = mk({ nutriments: { "energy-kcal_100g": 150, sugars_100g: 8 }, additives_tags: ["en:e150c", "en:e330", "en:e110"], nova_group: 4 });
+      S.prof.avoid = ["milk", "gluten"]; S.prof.diet = "vegan";
+      const fl = foodFlags(mk({ allergens_tags: ["en:milk"], traces_tags: ["en:gluten"], ingredients_analysis_tags: ["en:non-vegan"] }));
+      S.prof.avoid = []; S.prof.diet = "omni";
+      return { oats: foodScore(oats), spread: foodScore(spread), clean: foodScore(clean), dye: foodScore(dye), dyeAdd: dye.add.map(a => a.code + ":" + a.r), fl: fl.map(f => f[0] + ":" + f[1]), n: nsEst({ kcal: 100, p: 0, fiber: 0, sugar: 0, sat: 0, salt: 0 }, 0).grade };
+    });
+    ok(sc.oats.ns.est && sc.oats.ns.grade === "a" && sc.oats.tot >= 85 && sc.oats.label === "Excellent", `plain organic oats: Nutri-Score A (estimated), score ${sc.oats.tot} Excellent`);
+    ok(sc.spread.ns.grade === "e" && sc.spread.tot <= 25, `sugary spread: Nutri-Score E, score ${sc.spread.tot}`);
+    ok(sc.clean.hi === 1 && sc.clean.tot <= 49, `one high-risk additive (E171) caps the score at 49 (got ${sc.clean.tot})`);
+    ok(sc.dyeAdd.join() === "E110:2,E150C:1,E330:0", `additives are tiered by risk (${sc.dyeAdd.join(" ")})`);
+    ok(sc.fl.join("|") === "red:Contains milk|warn:May contain traces of gluten|red:Not vegan", `allergen and diet flags (${sc.fl.join(" | ")})`);
+
+    // ---- scanner end to end: fake camera shows a barcode, no BarcodeDetector, mocked Open Food Facts
+    const sp = await page(browser, { width: 390, height: 900 });
+    await sp.addInitScript(() => { delete window.BarcodeDetector });
+    const hits = [];
+    const prod = { code: "5901234123457", product_name: "Rolled oats", brands: "Oat Co", serving_quantity: 40, nutriscore_grade: "a", nutriscore_score: -5, nova_group: 1, nutriments: { "energy-kcal_100g": 370, proteins_100g: 13, carbohydrates_100g: 60, fat_100g: 7, fiber_100g: 10, sugars_100g: 1, "saturated-fat_100g": 1.2, salt_100g: .01 }, additives_tags: [], labels_tags: ["en:organic"], allergens_tags: ["en:gluten"], categories_tags: ["en:cereals", "en:oat-flakes"] };
+    const bad = { code: "3017620422003", product_name: "Hazelnut spread", brands: "Nutella", serving_quantity: 15, nutriscore_grade: "e", nutriscore_score: 26, nova_group: 4, nutriments: { "energy-kcal_100g": 539, proteins_100g: 6.3, carbohydrates_100g: 57.5, fat_100g: 30.9, sugars_100g: 56.3, "saturated-fat_100g": 10.6, salt_100g: .107 }, additives_tags: ["en:e322"], allergens_tags: ["en:milk"], categories_tags: ["en:spreads", "en:hazelnut-spreads"] };
+    await sp.route(/openfoodfacts/, r => { const u = r.request().url(); hits.push(u); const m = /product\/(\d+)\.json/.exec(u); if (m) return r.fulfill({ json: m[1] === "5901234123457" ? { status: 1, product: prod } : m[1] === "3017620422003" ? { status: 1, product: bad } : { status: 0 } }); if (/tag_1=a/.test(u)) return r.fulfill({ json: { products: [prod] } }); return r.fulfill({ json: { products: [bad, prod] } }) });
+    await sp.evaluate(bits => {
+      const cv = document.createElement("canvas"); cv.width = 640; cv.height = 360; const c = cv.getContext("2d"), mod = 4.2, x0 = (640 - (bits.length + 24) * mod) / 2;
+      const draw = () => { c.fillStyle = "#d8d8d8"; c.fillRect(0, 0, 640, 360); c.fillStyle = "#1c1c1c"; for (let i = 0; i < bits.length; i++) if (bits[i] === "1") c.fillRect(x0 + (i + 12) * mod, 90, mod + .3, 180) };
+      draw(); setInterval(draw, 60);
+      navigator.mediaDevices.getUserMedia = async () => cv.captureStream(15);
+    }, cases[0].bits.replace(/^/, "").length ? ean13("590123412345").bits : "");
+    await sp.evaluate(() => { showTab("plan"); $("pane-plan").dataset.seg = "m" });
+    ok(await sp.locator("#fsScan").count() === 1, "Scan button is shown even where the browser has no BarcodeDetector (iPhone Safari)");
+    await sp.evaluate(() => { fsScan() });
+    ok(await sp.locator(".scanov video").count() === 1, "scanner overlay opens");
+    await sp.waitForFunction(() => !document.querySelector(".scanov"), null, { timeout: 15000 }).catch(() => {});
+    await sp.waitForSelector("#foodBox .pc", { timeout: 5000 }).catch(() => {});
+    ok(await sp.locator(".scanov").count() === 0, "overlay closes itself after a confirmed read");
+    ok(hits.some(u => /product\/5901234123457\.json/.test(u)), "scanned code is looked up in Open Food Facts");
+    const card = await sp.locator("#foodBox .pc").first().innerText().catch(() => "");
+    ok(/Rolled oats/.test(card) && /Excellent/i.test(card) && /Nutri-Score A/.test(card) && /Organic/.test(card), "product card shows name, score band, Nutri-Score and organic");
+    await sp.click("[data-fsadd='0']");
+    const lg = await sp.evaluate(() => { const l = S.flog[S.sel] || []; return { n: l.length, sc: l[0] && l[0].sc, g: l[0] && l[0].g, kcal: l[0] && l[0].kcal, hist: lsJ(FHK).length } });
+    ok(lg.n === 1 && lg.g === 40 && lg.kcal === 148 && lg.sc >= 75 && lg.hist === 1, `adding logs 40 g (148 kcal) with its score and keeps the scan in history (${JSON.stringify(lg)})`);
+    await sp.evaluate(() => fsBarcode("3017620422003")); await sp.waitForSelector("#foodBox .pc");
+    await sp.click("[data-fsfav='0']");
+    await sp.click("[data-fsalt='0']"); await sp.waitForSelector(".pc-alt .arow", { timeout: 5000 }).catch(() => {});
+    ok(await sp.locator(".pc-alt .arow").count() >= 1 && /Rolled oats/.test(await sp.textContent(".pc-alt")), "“Find better options” suggests a higher-scoring product from the same category");
+    ok(await sp.evaluate(() => fsIsFav("3017620422003")) && await sp.evaluate(() => lsJ(FHK).length) === 2, "save to favourites works, history has both scans");
+    await sp.evaluate(() => { S.prof.avoid = ["milk"]; renderFood() });
+    ok(/Contains milk/.test(await sp.textContent("#foodBox .pc")), "allergen warning appears on a scanned product");
+    await sp.evaluate(() => { fsBarcode("0000000000000") }); await sp.waitForTimeout(300);
+    ok(/Not in the database/.test(await sp.textContent("#foodBox")), "unknown barcode gives a clear message");
+    const ph = await sp.evaluate(async bits => {
+      const cv = document.createElement("canvas"); cv.width = 900; cv.height = 600; const c = cv.getContext("2d"), mod = 5; c.fillStyle = "#e6e2da"; c.fillRect(0, 0, 900, 600); c.fillStyle = "#222";
+      const x0 = (900 - (bits.length + 24) * mod) / 2; for (let i = 0; i < bits.length; i++) if (bits[i] === "1") c.fillRect(x0 + (i + 12) * mod, 200, mod, 200);
+      const blob = await new Promise(r => cv.toBlob(r, "image/jpeg", .85)); await fsPhoto(new File([blob], "b.jpg", { type: "image/jpeg" })); return FS.res[0] && FS.res[0].code;
+    }, ean13("590123412345").bits);
+    ok(ph === "5901234123457", "“Photo of barcode” decodes a still image (fallback when live scanning is not possible)");
+    ok(sp.errors.length === 0, "no JS errors in scanner flow " + sp.errors.join(" | "));
+    await sp.close();
+
+    // ---- interactive charts
+    const cp = await page(browser, { width: 360, height: 900 });
+    await cp.evaluate(() => {
+      S.prof.units = "imperial";
+      for (let i = 60; i >= 0; i--) { const d = addD(TODAY, -i); if (i % 2 === 0) S.log[d] = { w: 84 - i * .03 + Math.sin(i) * .4 }; S.steps[d] = 5000 + ((i * 937) % 7000); S.hd[d] = { steps: S.steps[d], sleep: 6 + (i % 5) * .5, hrv: 45 + ((i * 7) % 15), rhr: 55 + (i % 6), w: 0, kcal: 0, cardio: [] } }
+      showTab("progress"); renderProgress();
+    });
+    const ids = await cp.evaluate(() => [...document.querySelectorAll(".ichart")].map(e => e.dataset.ic));
+    ok(["weight", "steps", "sleep", "recovery"].every(x => ids.includes(x)), `weight, steps, sleep and recovery charts render (${ids.join(", ")})`);
+    const w = cp.locator('.ichart[data-ic="weight"]'); await w.scrollIntoViewIfNeeded();
+    const bx = await w.locator("svg").boundingBox();
+    const r0 = await w.locator(".icro").innerText();
+    await cp.mouse.move(bx.x + bx.width * .3, bx.y + bx.height / 2); const r1_ = await w.locator(".icro").innerText();
+    await cp.mouse.move(bx.x + bx.width * .8, bx.y + bx.height / 2); const r2_ = await w.locator(".icro").innerText();
+    ok(r1_ !== r2_ && r0 !== r1_ && /lb/.test(r1_), "hover or drag moves the crosshair and updates the readout");
+    const xBefore = await w.locator(".icx").getAttribute("x1");
+    await w.locator("svg").focus(); await cp.keyboard.press("ArrowLeft");
+    ok(await w.locator(".icx").getAttribute("x1") !== xBefore, "arrow keys step through the points");
+    const dots0 = await w.locator("svg circle").count();
+    await w.locator("[data-icr='90']").click();
+    ok(await w.locator("[data-icr='90']").getAttribute("aria-pressed") === "true" && await w.locator("svg text").count() > 0, "range chips switch the window");
+    await w.locator("[data-icl='t']").click();
+    ok(await w.locator("[data-icl='t']").getAttribute("aria-pressed") === "false" && !/Trend/.test(await w.locator(".icro").innerText()), "legend chips hide a series");
+    const st0 = await cp.evaluate(() => { IC.steps.rng = 7; icRefresh("steps"); return document.querySelectorAll('.ichart[data-ic="steps"] svg rect').length });
+    ok(st0 === 7, `steps chart draws one bar per day for 7D (${st0})`);
+    await cp.locator('.ichart[data-ic="recovery"] [data-icm="rhr"]').click();
+    ok(/bpm/.test(await cp.locator('.ichart[data-ic="recovery"] .icro').innerText()), "recovery chart switches between HRV and resting heart rate");
+    ok(await cp.evaluate(() => document.documentElement.scrollWidth <= document.documentElement.clientWidth), "charts cause no horizontal scroll at 360 px");
+    // strength: modes, PR stars, per-set detail
+    await cp.evaluate(() => { const u = "t:lift"; ["2026-09-01", "2026-09-08", "2026-09-15"].forEach((d, i) => { S.hist[u + "|" + d] = { u, n: "Lift", d, w: 60 + i * 5, r: 5 }; S.sets[u + "|" + d] = [{ w: 60 + i * 5, r: 5, rir: 2 }, { w: 55, r: 8 }] }); CH.uid = u; IC.strength = undefined; renderProgress() });
+    const sr = await cp.locator('.ichart[data-ic="strength"]');
+    ok(await sr.locator(".icpr").count() === 2 && /@2 RIR/.test(await sr.locator(".icro").innerText()), "strength chart marks personal bests and lists the sets of the selected day");
+    await sr.locator("[data-icm='vol']").click();
+    ok(await sr.locator("svg rect").count() === 3, "strength volume mode draws bars");
+    await cp.evaluate(() => { S.log = {}; S.steps = {}; S.hd = {}; renderProgress() });
+    ok(/Log your weight on 2 or more days/.test(await cp.locator('.ichart[data-ic="weight"]').innerText()), "empty state explains what to log");
+    ok(cp.errors.length === 0, "no JS errors in charts " + cp.errors.join(" | "));
+    await cp.close();
+
+    // ---- Health: Shortcut text values, test ping, honest status
+    const { toRows: tr } = await import(require("url").pathToFileURL(path.join(__dirname, "..", "supabase", "functions", "health", "parse.mjs")).href);
+    const sh = tr({ Date: "11/6/2026", Steps: "8,421", Weight: "165,4", Sleep: "7 hr 12 min", HRV: "48.2", "Resting Heart Rate": "54" })[0];
+    ok(sh.date === "2026-11-06" && sh.steps === "8421" && sh.weight === "165.4" && Math.abs(sh.sleep - 7.2) < 1e-9 && sh.rhr === "54", "Shortcut text values are cleaned (comma thousands and decimals, “7 hr 12 min”, US dates, key names)");
+    ok(tr({ date: "2026-11-06 21:00:00 -0500", sleep: "7:30:00" })[0].date === "2026-11-06" && tr({ sleep: "7:30:00" })[0].sleep === 7.5, "ISO timestamps and h:mm:ss durations are understood");
+    const hp = await page(browser, { width: 390, height: 900 }); let sent = null;
+    await hp.route(/functions\/v1\/health/, r => { sent = r.request().postData(); return r.fulfill({ json: { ok: true, days: 1 } }) });
+    await hp.evaluate(() => { lsSet("eliteHealthToken", "abc"); const d = document.createElement("div"); d.id = "htMsg"; document.body.appendChild(d); S.steps[TODAY] = 9999; return healthTest() });
+    await hp.waitForTimeout(200);
+    ok(JSON.parse(sent || "{}").steps === undefined && JSON.parse(sent || "{}").date, "“Send a test” sends no step count, so it can never overwrite real data");
+    const stat = await hp.evaluate(() => { SY.sess = { at: "t", rt: "r", exp: Date.now() + 36e5, uid: "me", email: "e@x.y" }; S.hd = {}; S.hd[TODAY] = { steps: 0, sleep: 0, w: 0, rhr: 0, hrv: 0, kcal: 0, cardio: [] }; showTab("progress"); renderProgress(); const a = $("healthBox").textContent; S.hd[TODAY].steps = 1234; renderProgress(); return [/Waiting for the first sync/.test(a), /Health sync is working/.test($("healthBox").textContent)] });
+    ok(stat[0] && stat[1], "an empty test row does not count as a working sync; real numbers do");
+    await hp.close();
+  }
+
   const vf = path.join(path.dirname(file), "version.json");
   if (fs.existsSync(vf)) {
     const v = JSON.parse(fs.readFileSync(vf, "utf8")).v, av = await pg.evaluate(() => APP_VER);

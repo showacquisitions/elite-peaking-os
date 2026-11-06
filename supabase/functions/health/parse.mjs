@@ -1,14 +1,51 @@
 // © 2026 Show Acquisitions. All rights reserved. Proprietary; see LICENSE.
 // Turns a Health Auto Export body, a Shortcut body, or a list of days into health_ingest rows.
 // Pure function, no I/O, shared by the edge function and the tests.
+// Shortcuts hands over text, not numbers: "8,421", "72,5", "7 hr 12 min", "7:12:00", dates like 11/6/2026. Normalise before the database sees it.
+const ALIAS = { step_count: "steps", stepcount: "steps", active_energy: "kcal", activeenergy: "kcal", calories: "kcal", resting_heart_rate: "rhr", restingheartrate: "rhr", heart_rate_variability: "hrv", heartratevariability: "hrv", weight_body_mass: "weight", bodyweight: "weight", body_weight: "weight", sleep_analysis: "sleep", sleephours: "sleep" };
+export function cleanNum(v) {
+  if (typeof v !== "string") return v;
+  const t = v.trim();
+  if (/^-?\d{1,3}(,\d{3})+(\.\d+)?$/.test(t)) return t.replace(/,/g, "");
+  if (/^-?\d+,\d{1,2}$/.test(t)) return t.replace(",", ".");
+  return t;
+}
+export function cleanHours(v) {
+  if (typeof v !== "string") return v;
+  const t = v.trim();
+  let m = /^(\d+):(\d{2})(?::(\d{2}))?$/.exec(t);
+  if (m) return +m[1] + +m[2] / 60 + (+m[3] || 0) / 3600;
+  const h = /(\d+(?:[.,]\d+)?)\s*(?:h|hr|hrs|hour|hours)\b/i.exec(t), mi = /(\d+(?:[.,]\d+)?)\s*(?:m|min|mins|minute|minutes)\b/i.exec(t), se = /(\d+(?:[.,]\d+)?)\s*(?:s|sec|secs|second|seconds)\b/i.exec(t);
+  if (h || mi || se) return (h ? parseFloat(h[1].replace(",", ".")) : 0) + (mi ? parseFloat(mi[1].replace(",", ".")) / 60 : 0) + (se ? parseFloat(se[1].replace(",", ".")) / 3600 : 0);
+  return cleanNum(t);
+}
+export function cleanDate(v) {
+  if (typeof v !== "string") return v;
+  const t = v.trim();
+  if (/^\d{4}-\d{2}-\d{2}/.test(t)) return t.slice(0, 10);
+  let m = /^(\d{1,2})[\/.](\d{1,2})[\/.](\d{4})/.exec(t); // US order, as an iPhone set to the US writes it
+  if (m && +m[1] <= 12) return `${m[3]}-${m[1].padStart(2, "0")}-${m[2].padStart(2, "0")}`;
+  if (m) return `${m[3]}-${m[2].padStart(2, "0")}-${m[1].padStart(2, "0")}`;
+  const d = new Date(t);
+  return isNaN(d) ? v : `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
+}
+export function cleanRow(r) {
+  if (!r || typeof r !== "object" || Array.isArray(r)) return r;
+  const o = {};
+  for (const [k, v] of Object.entries(r)) { const key = String(k).trim().toLowerCase().replace(/\s+/g, "_"); o[ALIAS[key] || key] = v; }
+  if (o.date != null) o.date = cleanDate(o.date);
+  for (const k of ["steps", "kcal", "rhr", "hrv", "weight"]) if (o[k] != null) o[k] = cleanNum(o[k]);
+  if (o.sleep != null) o.sleep = cleanHours(o.sleep);
+  return o;
+}
 export function toRows(body) {
   if (!body || typeof body !== "object") return [];
-  if (Array.isArray(body)) return body;
-  if (Array.isArray(body.rows)) return body.rows;
+  if (Array.isArray(body)) return body.map(cleanRow);
+  if (Array.isArray(body.rows)) return body.rows.map(cleanRow);
   const data = body.data && typeof body.data === "object" ? body.data : body;
   if (!Array.isArray(data.metrics) && !Array.isArray(data.workouts)) {
     const p = body.payload && typeof body.payload === "object" ? body.payload : body;
-    return Array.isArray(p) ? p : [p];
+    return (Array.isArray(p) ? p : [p]).map(cleanRow);
   }
   const day = v => String(v || "").slice(0, 10);
   const num = v => (v && typeof v === "object" ? num(v.qty ?? v.value) : (typeof v === "number" ? v : parseFloat(String(v ?? "").replace(/[^0-9.\-]/g, ""))));

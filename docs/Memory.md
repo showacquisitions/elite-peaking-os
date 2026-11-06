@@ -2,6 +2,20 @@
 
 State of the app and the decisions behind it. Newest first.
 
+## v3.4 — scanner for iPhone, food score, interactive charts, Health hardening, build 2026.11.06.6 (2026-11-06)
+
+- **Why the scan button was missing on iPhone.** v3.2 only offered Scan when `BarcodeDetector` exists. Safari has no `BarcodeDetector`, so iPhone users saw nothing. Now: native detector where present, otherwise a built-in EAN-13 / UPC-A / EAN-8 decoder (`bcScanImage`, no library). Live camera overlay (rear camera, 1080p request, torch where supported), "Photo of barcode" fallback for a still image, typed number as last resort. A code must be read twice within 2.5 s before it is accepted.
+- **Decoder verification (synthetic only).** Noisy/blurred frames at 2–4 px per module: 40/40. Random noise: 0 false reads in 3,000 lines, 3 in 40 full frames before tightening, 0 after (digit error < 2.1, mean error < 1.0). **Not tested on a real iPhone camera.** Expect a minimum of about 2.5 px per module: fill the frame, good light.
+- **Food score (Yuka-style, own formula).** 0–100 = nutrition 60 (Nutri-Score from Open Food Facts, else estimated from the label with the 2023 general-food tables, marked `*`) + additives 25 (3 risk tiers from EU rulings / IARC; any high-risk additive caps the total at 49) + processing 15 (NOVA) + organic bonus 5. Bands 75/50/25 like Yuka. **Scores will not match Yuka's**; additive tiers are a curated list of ~45 E-numbers (`AD_RISK`), not an authoritative database.
+- **Also from Yuka, adapted for training:** allergen and vegan/vegetarian flags (Food → Flag allergens, stored in `S.prof.avoid`), "Find better options" (same Open Food Facts category, Nutri-Score A/B, higher score, no red flags), recent scans and saved products (device-only `eliteScanHist` / `eliteScanFav`, work offline), protein per 100 kcal, share of today's remaining calories and protein. Not copied: cosmetics scanning, because the data source is food only.
+- **Charts.** One engine (`icBox(id)` + `ICD[id]` definitions): drag, hover or arrow keys move a crosshair; a readout under the chart keeps the selected day (touch-friendly); range chips, metric chips, legend toggles, stats strip. Charts: weight (raw + smoothed trend, rate per week, kcal/steps that day), strength (est. 1RM / top weight / volume / reps, PR stars, sets of the day), weekly training (volume / sets / minutes), steps (goal line, 7-day average), sleep, recovery (HRV or resting HR vs 14-day baseline). Wrapper class is `ichart` (`.ic` is taken by the tab icons). `#chartBox svg.chart` kept for the old test.
+- **Health Shortcut check (live, 2026-11-06).** Server side is fine: edge function active, token present, RPC accepts writes, 200s in the logs. But **every hit so far came from pg_net (my earlier test) or Safari (the in-app "Send a test" button); nothing from the Shortcuts app.** The only stored row was `steps: 0` from the test button. So the Shortcut itself has never reached the server; the fault is on the phone side (not run, not set to Run Immediately, or erroring before the request).
+  - Bugs fixed: the test button sent today's local step count (0) and could overwrite real steps; the status callout turned green because of that empty row. Now the test sends only the date, and only real numbers count as a working sync.
+  - Parser hardening (`parse.mjs`, needs an edge-function redeploy): Shortcut text such as `8,421`, `72,5`, `7 hr 12 min`, `7:30:00`, `11/6/2026`, key names in any case. Before this, `7 hr 12 min` became 11.9 h.
+  - Instructions in the app rewritten with an explicit field list and a "Show Result" step.
+- Tests: 136 passed (36 new).
+- Not verified: live Open Food Facts calls (the build sandbox cannot reach it; responses are mocked), the `categories` tag format used by "better options", a real phone camera.
+
 ## v3.2 — closes the v3 gap list, build 2026.11.06.5 (2026-11-06)
 
 - **Unread badges.** `coach_links.coach_read_at / client_read_at`, set by `msg_read(coach, client)`. Red count on the Today tab (client) and Clients tab (coach); per-client "N new messages" flag. Client marks read after 2.5 s on Today; coach marks read on opening the client.
