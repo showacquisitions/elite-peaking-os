@@ -248,6 +248,64 @@ async function page(browser, vp) {
     await p5.close();
   }
 
+  console.log("v3.1: coach macros, notifications");
+  {
+    const p6 = await page(browser, { width: 390, height: 900 });
+    const r = await p6.evaluate(() => {
+      const before = Math.round(W.T.kcal);
+      S.cx = { links: [], asg: {}, msgs: [], ci: {}, targets: { P: 180, C: 250, F: 70, note: "cut phase", by: "Sam" } }; regen(); renderAll(true);
+      const T = W.T, d = W.days.find(x => x.session), dr = W.days.find(x => !x.session);
+      showTab("overview"); const tgt = !!document.querySelector("#pane-overview .callout.c-coach");
+      for (let i = 0; i < 10; i++) S.log[addD(TODAY, -i * 2)] = { w: 80 + i * .15 };
+      showTab("progress"); renderProgress(); const tr = document.querySelector("#trend .callout.c-coach") && !document.getElementById("btnApply");
+      const avg = W.days.reduce((a, x) => a + x.macros.kcal, 0) / 7;
+      S.cx = {}; regen();
+      return { before, kcal: Math.round(T.kcal), P: T.P, coach: T.coach && T.coach.name, tgt, tr: !!tr, trainC: d.macros.C, restC: dr && dr.macros.C, avg: Math.round(avg), after: Math.round(W.T.kcal) };
+    });
+    ok(r.kcal === 2350 && r.P === 180 && r.coach === "Sam", `coach targets replace the client's calories and macros (${r.kcal} kcal)`);
+    ok(Math.abs(r.avg - 2350) <= 25 && r.trainC > r.restC, `daily meals average the coach's calories with carb cycling (${r.avg} kcal/day)`);
+    ok(r.tgt && r.tr, "Targets and Progress say the coach sets the numbers; auto-adjust buttons are hidden ");
+    ok(r.after === r.before, "clearing coach targets restores the profile numbers");
+    const rows = await p6.evaluate(() => { S.prof.wtime = "06:15"; const x = reminderRows(); return { n: x.length, sess: upcomingSessions().length, first: x[0], future: x.every(r => new Date(r.at) > new Date()) } });
+    ok(rows.n >= 1 && rows.n <= rows.sess && rows.future && /at 06:15/.test(rows.first.title) && new Date(rows.first.at).getHours() === 6, `workout reminders are built for upcoming training days at the workout time (${rows.n})`);
+    await p6.evaluate(() => showTab("profile"));
+    ok(await p6.isVisible("#pushProf .callout"), "Notifications card explains what's needed on this device");
+    const stale = await p6.evaluate(() => { SY.sess = { at: "t", rt: "r", exp: Date.now() + 36e5, uid: "u", email: "e@x.y" }; renderSync(); const r = !/Sign in above/.test($("coachProf").textContent); SY = {}; renderSync(); return r });
+    ok(stale, "signing in refreshes the Coaching and Notifications cards");
+    ok(await p6.evaluate(() => typeof VAPID_PUB === "string" && keyBytes(VAPID_PUB).length === 65 && keyBytes(VAPID_PUB)[0] === 4), "VAPID public key is a valid P-256 point");
+    ok(p6.errors.length === 0, "no JS errors " + p6.errors.join(" | "));
+    await p6.close();
+  }
+  {
+    const p7 = await page(browser, { width: 390, height: 900 }), calls = [];
+    await mock(p7, calls);
+    await p7.evaluate(() => { SY.sess = { at: "t", rt: "r", exp: Date.now() + 36e5, uid: "11111111-1111-1111-1111-111111111111", email: "c@x.y" }; lsSet("eliteCoachOn", "1"); renderNavCoach(); showTab("coach") });
+    await p7.waitForSelector(".cocard"); await p7.click(".cocard");
+    ok(await p7.isVisible("#ctSave"), "coach sees the nutrition targets card for a client");
+    await p7.fill("#ctP", "190"); await p7.fill("#ctC", "220"); await p7.fill("#ctF", "65");
+    ok(/2,?225|2225/.test(await p7.textContent("#ctK")), "kcal total updates as the coach types");
+    await p7.click("#ctSave"); await p7.waitForTimeout(150);
+    ok(calls.some(c => c.startsWith("POST /rest/v1/rpc/coach_set_targets")), "targets are saved through coach_set_targets");
+    ok(p7.errors.length === 0, "no JS errors in coach targets " + p7.errors.join(" | "));
+    await p7.close();
+  }
+  {
+    const swsrc = fs.readFileSync(path.join(path.dirname(file), "sw.js"), "utf8");
+    ok(/addEventListener\("push"/.test(swsrc) && /showNotification/.test(swsrc) && /notificationclick/.test(swsrc), "service worker shows pushes and opens the app on tap");
+    const { encrypt, deriveKeys, unb64u, b64u } = await import(require("url").pathToFileURL(path.join(__dirname, "..", "supabase", "functions", "push", "webpush.mjs")).href);
+    const s = crypto.subtle, ua = await s.generateKey({ name: "ECDH", namedCurve: "P-256" }, true, ["deriveBits"]);
+    const uaPub = new Uint8Array(await s.exportKey("raw", ua.publicKey)), auth = crypto.getRandomValues(new Uint8Array(16));
+    const body = await encrypt({ keys: { p256dh: b64u(uaPub), auth: b64u(auth) } }, '{"title":"t"}');
+    const salt = body.slice(0, 16), asPub = body.slice(21, 86), ct = body.slice(86);
+    const sh = new Uint8Array(await s.deriveBits({ name: "ECDH", public: await s.importKey("raw", asPub, { name: "ECDH", namedCurve: "P-256" }, false, []) }, ua.privateKey, 256));
+    const k = await deriveKeys(sh, auth, uaPub, asPub, salt);
+    const pt = new Uint8Array(await s.decrypt({ name: "AES-GCM", iv: k.nonce }, await s.importKey("raw", k.cek, "AES-GCM", false, ["decrypt"]), ct));
+    ok(new TextDecoder().decode(pt.slice(0, -1)) === '{"title":"t"}' && pt[pt.length - 1] === 2, "push payload encrypts and decrypts (RFC 8291)");
+    const A = { ua_public: "BCVxsr7N_eNgVRqvHtD0zTZsEc6-VV-JvLexhqUzORcxaOzi6-AYWXvTBHm4bjyPjs7Vd8pZGH6SRpkNtoIAiw4", as_public: "BP4z9KsN6nGRTbVYI_c7VJSPQTBtkgcy27mlmlMoZIIgDll6e3vCYLocInmYWAmS6TlzAC8wEqKK6PBru3jl7A8", ecdh: "kyrL1jIIOHEzg3sM2ZWRHDRB62YACZhhSlknJ672kSs", auth: "BTBZMqHH6r4Tts7J_aSIgg", salt: "DGv6ra1nlYgDCS1FRnbzlw" };
+    const kk = await deriveKeys(unb64u(A.ecdh), unb64u(A.auth), unb64u(A.ua_public), unb64u(A.as_public), unb64u(A.salt));
+    ok(b64u(kk.cek) === "oIhVW04MRdy2XN9CiKLxTg" && b64u(kk.nonce) === "4h_95klXJ5E_qnoN", "push key schedule matches the RFC 8291 test vector");
+  }
+
   const vf = path.join(path.dirname(file), "version.json");
   if (fs.existsSync(vf)) {
     const v = JSON.parse(fs.readFileSync(vf, "utf8")).v, av = await pg.evaluate(() => APP_VER);

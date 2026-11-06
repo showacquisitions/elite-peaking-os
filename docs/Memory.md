@@ -2,6 +2,20 @@
 
 State of the app and the decisions behind it. Newest first.
 
+## v3.1 — push notifications + coach macros, build 2026.11.06.4 (2026-11-06)
+
+**Coach nutrition targets.** `coach_links.targets` {P,C,F,note,at}, set only through `coach_set_targets` (validated: P 30–450, C 0–1000, F 15–300, ≥1000 kcal; only for your own client). The client pulls them into `S.cx.targets`; `buildWeek` runs `applyCoachTargets` on `baseTargets`, so meals, groceries and the Today numbers follow the coach while carb cycling still applies (training days +10% carbs). The client's auto-adjust is replaced by a "set by your coach" callout. Clearing restores profile numbers.
+
+**Push notifications (Web Push, no third-party code).**
+- `supabase/functions/push/webpush.mjs`: RFC 8291 aes128gcm encryption + RFC 8292 VAPID with WebCrypto only. Verified against the RFC 8291 test vector and a round-trip decrypt (both in `tests/smoke.cjs`).
+- Tables: `push_subs` (one row per device, prefs rest/rem/coach), `push_queue` (one pending row per user+tag, so bursts collapse).
+- Delivery: `pg_cron` job `elite-push` every 5 s runs `push_kick()`, which calls the `push` edge function through `pg_net` only when something is due. Instant events kick immediately.
+- Secrets in Vault: `push_cron_secret` (pg_net → function auth), `push_vapid_private` (JWK). Public key = `VAPID_PUB` in index.html. Rotating keys means every device re-subscribes.
+- Events: message (to the other side), assignment (to client, collapsed per coach, 4 s delay so a program is one push), check-in sent (to coach), check-in reply (to client), new targets (to client), rest timer (only when you leave the app mid-rest; cancelled when you return), workout reminders (next 14 days at the profile workout time, re-uploaded after each sync when changed).
+- Dead subscriptions (404/410) are removed automatically.
+- **Live-verified 2026-11-06** with a throwaway user via pg_net: health link stored data; push function authenticated, encrypted, posted to FCM and pruned the fake endpoint; wrong secret → 401. Not yet verified: a real phone receiving a notification.
+- iPhone: only works when the app is opened from the Home Screen (iOS 16.4+). Obsidian embed can't receive notifications.
+
 ## v3 callouts everywhere — build 2026.11.06.3 (2026-11-06)
 
 - Callouts now also used for: Profile setup banner, Targets plan notes and a volume verdict (muscles under or over range), Progress weight trend + calorie auto-adjust (with Apply button), deload/retest week, peak-week phases, empty custom plan, coach replies and coach-tab errors. Plain explanatory text stays plain on purpose.

@@ -462,6 +462,9 @@
   .pgsec::after{content:"";flex:1;height:1px;background:var(--ring)}
   .pgsec span{font-size:1rem;letter-spacing:0}
   #pane-progress>.pgsec:first-child{margin-top:4px}
+  .putog{display:flex!important;gap:12px;align-items:flex-start;padding:10px 2px;border-bottom:1px solid var(--ring);text-transform:none!important;letter-spacing:0!important;color:var(--text)!important;font-size:.9rem!important;cursor:pointer}
+  .putog input{width:20px!important;height:20px!important;min-height:0!important;margin:2px 0 0!important;flex:none;accent-color:var(--accent)}
+  .putog b{display:block;font-weight:700}.putog small{display:block;color:var(--muted);font-size:.8rem;margin-top:2px}
   .sechl{font-size:.72rem;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin:2px 0 8px}
   .sechl b{color:var(--text);letter-spacing:0;text-transform:none;font-size:.85rem;margin-left:6px}
   .sw-auto{margin:0 2px 12px!important;font-size:.82rem;color:var(--muted)}
@@ -1251,7 +1254,7 @@ function buildMeals(p,macros,seed,swapOff,st){
 /* ---------- WEEK BUILDER ---------- */
 function buildWeek(p,st,monISO,todayISO){
   const bw=Math.floor(diffD(st.blockStart,monISO)/7),wk=mod(bw,4),block=Math.floor(bw/4)+(st.blockOffset||0);
-  const T=baseTargets(p),notes=T.notes.slice();
+  const T=typeof applyCoachTargets==="function"?applyCoachTargets(baseTargets(p),st):baseTargets(p),notes=T.notes.slice();
   const program=buildProgram(p,block,st.swaps||{});
   const cust=customSessions(st,p,wk);
   const sess=cust||program.map(s=>instSession(s,p,wk));
@@ -1415,9 +1418,10 @@ function buildProfile(){
   </div>
   <div class="card"><h2><span>Sync phone ↔ desktop</span><span class="badge" id="syncMsg"></span></h2><div id="syncBox"></div></div>
   <div class="card"><h2><span>Coaching</span></h2><div id="coachProf"></div></div>
+  <div class="card"><h2><span>Notifications</span></h2><div id="pushProf"></div></div>
   <div class="card"><h2><span>Data</span></h2><div style="display:flex;gap:8px;flex-wrap:wrap">
    <button class="btn" id="btnExport">Export backup</button><button class="btn" id="btnImport">Import backup</button><button class="btn" onclick="window.print()">Print week</button><button class="btn danger" id="btnReset">Reset everything</button></div></div>`;
-  fillProfile();renderSync();if(typeof renderCoachProf==="function")renderCoachProf();
+  fillProfile();renderSync();if(typeof renderCoachProf==="function")renderCoachProf();if(typeof renderPushProf==="function")renderPushProf();
 }
 function fillProfile(){
   const p=S.prof;
@@ -1522,7 +1526,7 @@ function renderOverview(){
     return `<div class="vrow"><span>${l}</span><div class="vbar"><i style="width:${Math.min(100,v/24*100)}%;background:${col}"></i></div><b>${v}</b><small>${lo}–${hi}</small></div>`;
   }).join("");
   $("pane-overview").innerHTML=`
-   ${W.notes.map(n=>callout(/^Peak week/.test(n)?"warn":/clinician|aggravate/.test(n)?"red":"info",/^Peak week/.test(n)?"📅":/clinician|aggravate/.test(n)?"🩹":"📌",/^You are on your own/.test(n)?"Your own training plan":/^Peak week/.test(n)?"Peak week coming":/aggravate/.test(n)?"Injury filter on":"Note","",esc(n))).join("")}
+   ${W.notes.map(n=>/are set by/.test(n)?callout("coach","🎯","Targets from your coach","",esc(n)):callout(/^Peak week/.test(n)?"warn":/clinician|aggravate/.test(n)?"red":"info",/^Peak week/.test(n)?"📅":/clinician|aggravate/.test(n)?"🩹":"📌",/^You are on your own/.test(n)?"Your own training plan":/^Peak week/.test(n)?"Peak week coming":/aggravate/.test(n)?"Injury filter on":"Note","",esc(n))).join("")}
    ${(()=>{const lo=[],hi=[];MUSCLES.forEach(([k,l])=>{const v=W.vol[k]||0,[a,b]=bands[k];if(v<a)lo.push(l);else if(v>b)hi.push(l)});return !lo.length&&!hi.length?callout("good","🎯","Volume is on target","","Every muscle sits inside its weekly hard-set range."):callout("warn","⚖️","Volume needs attention","",`${lo.length?`<b>Under target:</b> ${esc(lo.join(", "))}. `:""}${hi.length?`<b>Over target:</b> ${esc(hi.join(", "))}. `:""}See the bars below.`)})()}
    <div class="kpis">
     <div class="kpi"><div class="l">Target calories</div><div class="v">${Math.round(T.kcal+0).toLocaleString()}</div><div class="s">${T.pct>0?"+":""}${(T.pct*100).toFixed(0)}% vs maintenance${p.kcalAdj?` · ${p.kcalAdj>0?"+":""}${p.kcalAdj} auto-adjust`:""}</div></div>
@@ -2128,7 +2132,7 @@ document.addEventListener("click",e=>{
 });
 
 /* ---------- APP VERSION, UPDATE PROMPT, INSTALL PROMPT ---------- */
-const APP_VER="2026.11.06.3",APP_MAJOR="3";
+const APP_VER="2026.11.06.4",APP_MAJOR="3.1";
 let UPD=false,BIP=null;
 const inFrame=()=>{try{return window.self!==window.top}catch(e){return true}};
 const isStandalone=()=>matchMedia("(display-mode: standalone)").matches||navigator.standalone===true;
@@ -2446,6 +2450,7 @@ function renderSync(){
   h+=`<h3>Invite a friend</h3><div class="d">Sends the plain app link. Your friend starts with a fresh, empty profile and never sees your data.</div><div style="margin-top:10px"><button class="btn pri" id="btnInvite">👋 Invite a friend</button></div>`;
   h+=`<h3>No account? Move your data to your own device</h3><div class="d">⚠️ Makes a link that <b>contains all your data</b>: weight, lifts, plans and notes. Only open it on your own phone or computer. Never send it to anyone else.</div><div style="margin-top:10px"><button class="btn" id="btnSyncLink">📲 Send my data to my other device</button></div>`;
   box.innerHTML=h;
+  if(typeof renderCoachProf==="function")renderCoachProf();if(typeof renderPushProf==="function")renderPushProf();
 }
 async function toB64(obj){
   const bytes=new TextEncoder().encode(JSON.stringify(obj));
@@ -3417,7 +3422,7 @@ async function pullV3(){
   try{
     S.hd=S.hd||{};const me=uidMe(),from=addD(TODAY,-21);
     const [links,asg,msgs,ci,hd]=await Promise.all([
-      sbGet("/rest/v1/coach_links?select=coach_id,client_id,coach_name,client_name,habits"),
+      sbGet("/rest/v1/coach_links?select=coach_id,client_id,coach_name,client_name,habits,targets"),
       sbGet(`/rest/v1/assignments?select=coach_id,date,session,note,updated_at&client_id=eq.${me}&date=gte.${from}`),
       sbGet(`/rest/v1/messages?select=id,coach_id,client_id,author,date,body,created_at&client_id=eq.${me}&order=created_at.desc&limit=60`),
       sbGet(`/rest/v1/checkins?select=week,data,reply,replied_at&client_id=eq.${me}&week=gte.${addD(TODAY,-70)}`),
@@ -3425,6 +3430,7 @@ async function pullV3(){
     ]);
     const c=cx(),before=JSON.stringify([c.links,c.asg,c.msgs,c.ci,S.hd]);
     c.links=links||[];
+    {const tl=c.links.find(l=>l.client_id===me&&l.targets&&l.targets.P>0);c.targets=tl?Object.assign({by:tl.coach_name||"your coach"},tl.targets):null}
     const coachName=id=>(c.links.find(l=>l.coach_id===id)||{}).coach_name||"Coach";
     const A={};(asg||[]).forEach(a=>{if(!A[a.date]||A[a.date].mt<a.updated_at)A[a.date]=Object.assign({},a.session,{note:a.note,coach:coachName(a.coach_id),mt:a.updated_at})});
     c.asg=A;c.msgs=msgs||[];
@@ -3441,6 +3447,7 @@ async function pullV3(){
     const changed=dataChanged||before!==JSON.stringify([c.links,c.asg,c.msgs,c.ci,S.hd]);
     if(changed){save();regen();renderAll(TAB==="profile"&&document.activeElement&&document.activeElement.closest&&document.activeElement.closest("#pane-profile"));if(TAB!=="profile")renderCoachProf()}
     renderNavCoach();
+    if(typeof pushReminders==="function")pushReminders();
   }catch(e){console.warn("v3 pull",e)}
   finally{cxPulling=false}
 }
@@ -3591,7 +3598,7 @@ async function loadClients(){
   if(!SY.sess)return;
   CO.loading=true;renderCoach();
   try{
-    const links=await sbGet(`/rest/v1/coach_links?select=coach_id,client_id,coach_name,client_name,habits,created_at&coach_id=eq.${uidMe()}`);
+    const links=await sbGet(`/rest/v1/coach_links?select=coach_id,client_id,coach_name,client_name,habits,targets,created_at&coach_id=eq.${uidMe()}`);
     cx().links=cx().links.filter(l=>l.coach_id!==uidMe()).concat(links||[]);
     const ids=(links||[]).map(l=>l.client_id);
     if(ids.length){
@@ -3617,7 +3624,7 @@ async function loadClients(){
 function clientState(id){
   const d=CO.rows[id]||{},st=Object.assign(freshState(),JSON.parse(JSON.stringify(d)));
   st.prof=Object.assign(JSON.parse(JSON.stringify(DEFP)),d.prof||{});st.cplan=normCP(st.cplan);
-  st.cx={asg:CO.asg[id]||{}};st.hd=CO.hd[id]||{};
+  const ln=CO_link(id);st.cx={asg:CO.asg[id]||{},targets:ln&&ln.targets?Object.assign({by:ln.coach_name||"you"},ln.targets):null};st.hd=CO.hd[id]||{};
   return st;
 }
 function clientStats(id){
@@ -3722,6 +3729,7 @@ function renderClient(id){
     <label class="trchk"><input type="checkbox" id="coRest" checked/> Make the other days rest days</label>
     <button class="btn pri" id="coAssignProg" style="margin-top:6px">Assign program</button></div>
 
+   ${coTargetsCard(id,wk)}
    <div class="grid2"><div>
     <div class="card"><h2><span>Workouts</span></h2>${hist.length?hist.map(([d,x])=>`<div class="row" style="cursor:default"><div class="body"><div class="t">${esc(x.name)} <span class="ims">${esc(dateLabel(d))}</span></div><div class="d">${x.mins} min · ${x.sets} sets · ${x.reps} reps${x.vol?` · ${Math.round(dW(x.vol)).toLocaleString()} ${wU()}`:""}</div>${x.note?`<div class="cue">${esc(x.note)}</div>`:""}${coSetsOf(st,d)}${cmt(d).map(m=>`<div class="note">💬 ${esc(m.body)}</div>`).join("")}<div style="display:flex;gap:6px;margin-top:6px"><input data-cocmt="${d}" placeholder="Comment on this workout" maxlength="2000" style="flex:1;min-width:0"/><button class="btn" data-cocmtgo="${d}">Send</button></div></div></div>`).join(""):'<div class="d">No finished workouts yet.</div>'}</div>
     <div class="card"><h2><span>Habits for this client</span></h2><div class="d">One per line, up to 10. They show under Daily habits on the client's Today screen.</div><textarea id="coHab" maxlength="900" placeholder="10k steps&#10;Protein at every meal&#10;Lights out by 11">${esc(((l.habits)||[]).join("\n"))}</textarea><button class="btn" id="coHabSave" style="margin-top:6px">Save habits</button></div>
@@ -3825,6 +3833,125 @@ document.addEventListener("change",e=>{
 document.addEventListener("keydown",e=>{if(e.key!=="Enter")return;const id=e.target.id;if(id==="cmIn")$("cmSend").click();else if(id==="coMsgIn")$("coMsgSend").click();else if(id==="cxCode")joinCoach()});
 PLANX.push(renderCoachToday);
 PROGX.push(renderCoachCheckin,renderWlogComments,renderHealthSync);
+
+/* ===================== V3.1: PUSH NOTIFICATIONS ===================== */
+/* Server: push_subs / push_queue tables, pg_cron every 5 s → push edge function (Web Push, VAPID). See supabase/v3.2-push-macros.sql. */
+const VAPID_PUB="BP4vRjVSPcPndu29L3UQ_eGkxcCbSt2CxwC1iJP9PBzkmM8PLdBflk7i3ULnSOEHnmtG6O4XoM9_4RzYBYPIMko";
+const PEK="elitePushEp",PPK="elitePushPrefs",PRK="elitePushRemHash";
+const PU={msg:"",busy:false,timer:false};
+const pushPrefs=()=>{try{return Object.assign({rest:true,rem:true,coach:true},JSON.parse(lsGet(PPK)||"{}"))}catch(e){return {rest:true,rem:true,coach:true}}};
+const pushOn=()=>!!lsGet(PEK)&&typeof Notification!=="undefined"&&Notification.permission==="granted";
+function pushSupport(){
+  if(!location.protocol.startsWith("http"))return "file";
+  if(inFrame())return "frame";
+  if(!("serviceWorker" in navigator)||!("PushManager" in window)||typeof Notification==="undefined")return isIOS()&&!isStandalone()?"ios-install":"none";
+  return "ok";
+}
+const keyBytes=b=>Uint8Array.from(atob(b.replace(/-/g,"+").replace(/_/g,"/")+"===".slice((b.length+3)%4)),c=>c.charCodeAt(0));
+async function pushEnable(){
+  if(!SY.sess){PU.msg="Sign in first (Sync, above).";return renderPushProf()}
+  PU.busy=true;PU.msg="Asking for permission…";renderPushProf();
+  try{
+    const perm=await Notification.requestPermission();
+    if(perm!=="granted")throw new Error(perm==="denied"?"Notifications are blocked for this app. Turn them on in your phone's Settings → Notifications.":"Permission was not granted.");
+    const reg=await navigator.serviceWorker.ready;
+    let sub=await reg.pushManager.getSubscription();
+    if(!sub)sub=await reg.pushManager.subscribe({userVisibleOnly:true,applicationServerKey:keyBytes(VAPID_PUB)});
+    const j=sub.toJSON();
+    await sbRpc("push_subscribe",{ep:j.endpoint,k:j.keys.p256dh,a:j.keys.auth,pr:pushPrefs()});
+    lsSet(PEK,j.endpoint);lsSet(PRK,"");PU.msg="Notifications are on for this device.";
+    pushReminders(true);
+  }catch(e){PU.msg=v3Err(e)}
+  PU.busy=false;renderPushProf();
+}
+async function pushDisable(){
+  const ep=lsGet(PEK);
+  try{if(ep&&SY.sess)await sbRpc("push_unsubscribe",{ep});const reg=await navigator.serviceWorker.ready,sub=await reg.pushManager.getSubscription();if(sub)await sub.unsubscribe()}catch(e){console.warn(e)}
+  try{localStorage.removeItem(PEK)}catch(e){}PU.msg="Notifications are off for this device.";renderPushProf();
+}
+async function pushSetPref(k,v){
+  const p=pushPrefs();p[k]=v;lsSet(PPK,JSON.stringify(p));
+  try{if(lsGet(PEK))await sbRpc("push_set_prefs",{ep:lsGet(PEK),pr:p});if(k==="rem"){lsSet(PRK,"");pushReminders(true)}}catch(e){PU.msg=v3Err(e);renderPushProf()}
+}
+async function pushTest(){PU.msg="Sending…";renderPushProf();try{await sbRpc("push_test",{ep:lsGet(PEK)});PU.msg="Sent. It should arrive within a few seconds. Lock your phone to see it as a banner."}catch(e){PU.msg=v3Err(e)}renderPushProf()}
+
+/* Workout reminders: the next 14 days of training sessions at your workout time, recomputed after every sync. */
+function upcomingSessions(){
+  const out=[],mon=mondayOf(TODAY);
+  [0,7].forEach(off=>{try{const w=buildWeek(S.prof,S,addD(mon,off),TODAY);w.days.forEach(d=>{if(d.session&&d.session.ex&&d.session.ex.length&&d.date>=TODAY)out.push(d)})}catch(e){}});
+  return out;
+}
+function reminderRows(){
+  const wt=S.prof.wtime||"17:30",[hh,mm]=wt.split(":").map(Number);
+  return upcomingSessions().map(d=>{const [y,m,dd]=d.date.split("-").map(Number),at=new Date(y,m-1,dd,hh||17,mm||0);return {key:d.date,at:at.toISOString(),title:`🏋️ ${d.session.name} at ${wt}`,body:`${d.session.ex.length} exercises · ~${Math.round(d.session.ex.reduce((a,x)=>a+x.sets*(x.rest+40),0)/60)} min. Tap to start.`}}).filter(r=>new Date(r.at)>new Date());
+}
+async function pushReminders(force){
+  if(!SY.sess||!pushOn())return;
+  const rows=pushPrefs().rem?reminderRows():[];
+  const h=JSON.stringify(rows);
+  if(!force&&lsGet(PRK)===h)return;
+  try{await sbRpc("push_schedule",{rows});lsSet(PRK,h)}catch(e){console.warn("reminders",e)}
+}
+
+/* Rest timer: if you leave the app while resting, the server sends the "rest is over" notification. */
+let tmrEnd=0;
+(function(){const st=startTimer;startTimer=function(s){tmrEnd=Date.now()+s*1000;return st.apply(this,arguments)}})();
+const restPushOK=()=>SY.sess&&pushOn()&&pushPrefs().rest;
+async function restPush(on){
+  try{
+    if(on){const secs=Math.round((tmrEnd-Date.now())/1000);if(secs<3)return;PU.timer=true;await sbFetch("/rest/v1/rpc/push_timer",{method:"POST",keepalive:true,body:JSON.stringify({ep:lsGet(PEK),secs})},await sbToken())}
+    else if(PU.timer){PU.timer=false;await sbFetch("/rest/v1/rpc/push_timer_cancel",{method:"POST",keepalive:true,body:"{}"},await sbToken())}
+  }catch(e){console.warn("rest push",e)}
+}
+document.addEventListener("visibilitychange",()=>{if(!restPushOK())return;if(document.visibilityState==="hidden"&&tmrEnd>Date.now()+3000)restPush(true);else if(document.visibilityState==="visible")restPush(false)});
+$("tStop").addEventListener("click",()=>{tmrEnd=0;if(PU.timer)restPush(false)});
+
+/* Opening the app from a notification */
+function navTo(h){h=String(h||"");if(h==="#coach"&&coachOn())showTab("coach");else if(h==="#progress")showTab("progress");else if(h==="#today"||h==="#wm"){showTab("plan");S.sel=TODAY;regen();renderAll(true)}}
+if(navigator.serviceWorker)navigator.serviceWorker.addEventListener("message",e=>{if(e.data&&e.data.nav!=null)navTo(e.data.nav)});
+setTimeout(()=>{if(/^#(coach|progress|today|wm)$/.test(location.hash)){const h=location.hash;history.replaceState(null,"",location.pathname+location.search);navTo(h)}},0);
+
+function renderPushProf(){
+  const el=$("pushProf");if(!el)return;
+  const sup=pushSupport(),p=pushPrefs(),on=pushOn(),perm=typeof Notification!=="undefined"?Notification.permission:"default";
+  let h="";
+  if(sup==="file"||sup==="frame")h=callout("info","🔔","Open the app directly",""," Notifications only work in the app itself, not inside Obsidian or a file preview. Open the app link in Safari or Chrome.");
+  else if(sup==="ios-install")h=callout("warn","📲","Add to Home Screen first","iPhone","iPhone only allows notifications for apps on the Home Screen. In Safari tap <b>Share</b> → <b>Add to Home Screen</b>, open Elite OS from there, then come back here.");
+  else if(sup==="none")h=callout("info","🔔","Not supported here","","This browser can't receive notifications. Use Safari on iPhone (from the Home Screen) or Chrome.");
+  else if(!SY.sess)h=callout("info","🔐","Sign in first","","Sign in above, then turn on notifications.");
+  else if(perm==="denied")h=callout("red","🚫","Notifications are blocked","","Turn them on in your phone's Settings → Notifications → Elite OS (or the browser's site settings), then reload.");
+  else if(!on)h=`<div class="d">Get a nudge when your rest is over (even with the phone locked), a reminder before each workout, and an alert when your coach messages you or changes your plan.</div><button class="btn pri" id="puOn" style="margin-top:10px" ${PU.busy?"disabled":""}>🔔 Turn on notifications</button>`;
+  else h=callout("good","🔔","Notifications are on","This device","")+[["rest","⏱ Rest timer","When your rest ends and you're out of the app"],["rem","🏋️ Workout reminders",`Training days at ${esc(S.prof.wtime||"17:30")} (change the time in Training)`],["coach","💬 Coach","Messages, new workouts, targets and check-in replies"]].map(([k,t,d])=>`<label class="putog"><input type="checkbox" data-pu="${k}" ${p[k]?"checked":""}/><span><b>${t}</b><small>${d}</small></span></label>`).join("")+`<div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:10px"><button class="btn" id="puTest">Send a test</button><button class="btn danger" id="puOff">Turn off on this device</button></div>`;
+  el.innerHTML=h+(PU.msg?`<div class="d" style="margin-top:8px">${esc(PU.msg)}</div>`:"");
+}
+document.addEventListener("click",e=>{const t=e.target.closest("button");if(!t)return;if(t.id==="puOn")pushEnable();else if(t.id==="puOff")pushDisable();else if(t.id==="puTest")pushTest()});
+document.addEventListener("change",e=>{const k=e.target.dataset&&e.target.dataset.pu;if(k)pushSetPref(k,e.target.checked)});
+
+/* ===================== V3.1: COACH NUTRITION TARGETS ===================== */
+function applyCoachTargets(T,st){
+  const t=st&&st.cx&&st.cx.targets;if(!t||!(t.P>0))return T;
+  const kcal=4*t.P+4*t.C+9*t.F;
+  return Object.assign({},T,{P:+t.P,C:+t.C,F:+t.F,kcal,pct:T.tdee?kcal/T.tdee-1:0,fiber:14*kcal/1000,coach:{name:t.by||"your coach",note:t.note||""},notes:T.notes.concat([`Calories and macros are set by ${t.by||"your coach"}${t.note?": "+t.note:""}.`])});
+}
+function coTargetsCard(id,wk){
+  const l=CO_link(id),t=l&&l.targets,T=wk&&wk.T,cur=t||(T?{P:Math.round(T.P),C:Math.round(T.C),F:Math.round(T.F)}:{P:150,C:200,F:60});
+  const kc=x=>Math.round(4*x.P+4*x.C+9*x.F);
+  return `<div class="card"><h2><span>🍽️ Nutrition targets</span><span class="badge ${t?"bl":""}">${t?"Set by you":"Client's own"}</span></h2>
+   ${t?callout("coach","🎯",`${kc(t)} kcal · P ${t.P} · C ${t.C} · F ${t.F}`,"Active",t.note?esc(t.note):"Meals and the client's grocery list follow these numbers."):callout("info","🧮",`${T?Math.round(T.kcal):"–"} kcal from their profile`,"Auto",`Calculated from the client's stats and goal (P ${T?Math.round(T.P):"–"} · C ${T?Math.round(T.C):"–"} · F ${T?Math.round(T.F):"–"}). Set your own below to take over.`)}
+   <div class="fgrid"><div class="cg"><label>Protein (g)</label><input type="number" inputmode="numeric" id="ctP" value="${cur.P}"/></div><div class="cg"><label>Carbs (g)</label><input type="number" inputmode="numeric" id="ctC" value="${cur.C}"/></div><div class="cg"><label>Fat (g)</label><input type="number" inputmode="numeric" id="ctF" value="${cur.F}"/></div></div>
+   <div class="d" id="ctK" style="margin-top:6px">= <b>${kc(cur)} kcal</b> per day on average (training days get about 10% more carbs, rest days less)</div>
+   <input id="ctN" placeholder="Note for the client (optional), e.g. cut phase, refeed Saturdays" maxlength="300" value="${esc((t&&t.note)||"")}" style="width:100%;margin-top:8px"/>
+   <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:8px"><button class="btn pri" id="ctSave">${t?"Update targets":"Set targets"}</button>${t?'<button class="btn" id="ctClear">Go back to their own numbers</button>':""}</div></div>`;
+}
+document.addEventListener("input",e=>{if(!/^ct[PCF]$/.test(e.target.id))return;const v=k=>+($(k).value)||0,k=Math.round(4*v("ctP")+4*v("ctC")+9*v("ctF"));$("ctK").innerHTML=`= <b>${k} kcal</b> per day on average (training days get about 10% more carbs, rest days less)`});
+document.addEventListener("click",e=>{
+  const t=e.target.closest("button");if(!t)return;
+  if(t.id==="ctSave"){const v=k=>Math.round(+($(k).value)||0);sbRpc("coach_set_targets",{client:CO.sel,t:{P:v("ctP"),C:v("ctC"),F:v("ctF"),note:$("ctN").value.slice(0,300)}}).then(loadClients).catch(err=>alert(v3Err(err)))}
+  else if(t.id==="ctClear"){if(confirm("Remove your targets? The client goes back to the numbers calculated from their profile."))sbRpc("coach_set_targets",{client:CO.sel,t:null}).then(loadClients).catch(err=>alert(v3Err(err)))}
+});
+
+/* Progress: when a coach sets the numbers, the client's own auto-adjust steps aside */
+PROGX.push(function(){const el=$("trend");if(!el||!W||!W.T.coach)return;const c=el.querySelector(".callout");if(c)c.outerHTML=callout("coach","🎯","Calories are set by "+esc(W.T.coach.name),"Coach","Your weight trend is shared with your coach, who adjusts your targets. Message them if you think a change is needed.")});
 
 initTheme();regen();renderAll();restoreNav();initSync();initSys();renderNavCoach();
 

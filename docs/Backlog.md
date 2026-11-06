@@ -11,7 +11,9 @@
 ## Next (v3.1)
 - [ ] Verify the health edge function live with "Send a test", then one Health Auto Export run.
 - [ ] Live step counting while the app is open (DeviceMotion) — low value; the Health sync covers it.
-- [ ] Web push for messages, assignments and workout reminders (needs a VAPID key pair + a send function; iOS needs the app on the home screen).
+- [x] Web push for messages, assignments, check-ins, rest timer and workout reminders (v3.1).
+- [x] Coach sets client calories and macros (v3.1).
+- [ ] Owner: turn on notifications on your phone (Profile → Notifications) and tap Send a test.
 - [ ] Unread tracking for messages (currently "Message waiting" means the last message came from the client).
 - [ ] Coach: copy one client's week to another client; program templates with progression per week.
 - [ ] Coach: client progress photos (needs Supabase Storage with per-client RLS; photos are device-only today).
