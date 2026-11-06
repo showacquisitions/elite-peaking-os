@@ -257,6 +257,51 @@
   .wm-name{font-size:clamp(1.5rem,6vw,2.1rem);line-height:1.2;letter-spacing:-.01em}
   .wm-target{font-size:1.2rem}
   .wm-dots{display:flex;gap:8px;margin:6px 0}
+  .tab[hidden]{display:none!important}
+  @media(max-width:700px){.tabs.six{grid-template-columns:repeat(6,1fr)}.tabs.six .tab{font-size:.62rem}}
+  .badge.rd{background:rgba(239,68,68,.15);color:var(--red)}.badge.bl{background:var(--glow);color:var(--accent2)}
+  .cogrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:12px}
+  .cocard{display:block;width:100%;text-align:left;background:var(--panel2);border:1px solid var(--border);border-radius:14px;padding:12px;color:var(--text);font:inherit;cursor:pointer}
+  .cocard:hover{border-color:var(--accent)}
+  .coh{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px}.coh b{font-size:1.05rem}
+  .coscore{display:inline-grid;place-items:center;min-width:40px;height:30px;border-radius:999px;font-weight:800;font-size:.95rem}
+  .coscore.g{background:rgba(16,185,129,.18);color:var(--green)}.coscore.a{background:rgba(245,158,11,.18);color:var(--amber)}.coscore.r{background:rgba(239,68,68,.18);color:var(--red)}
+  .cokv{display:flex;justify-content:space-between;gap:8px;font-size:.85rem;padding:2px 0}.cokv span{color:var(--muted)}
+  .coflags{display:flex;flex-wrap:wrap;gap:4px;margin-top:6px}
+  .dot{display:inline-block;width:9px;height:9px;border-radius:50%;margin-right:5px}.dot.green{background:var(--green)}.dot.yellow{background:var(--amber)}.dot.red{background:var(--red)}
+  .cocode{font-size:2rem;font-weight:800;letter-spacing:.2em;margin:10px 0 4px;font-family:ui-monospace,Menlo,monospace}
+  .cocal{display:grid;grid-template-columns:repeat(7,1fr);gap:6px}
+  @media(max-width:700px){.cocal{grid-template-columns:repeat(2,1fr)}}
+  .coday{display:flex;flex-direction:column;gap:3px;align-items:flex-start;text-align:left;min-width:0;background:var(--panel2);border:1px solid var(--border);border-radius:10px;padding:8px;color:var(--text);font:inherit;cursor:pointer}
+  .coday b{font-size:.85rem;overflow-wrap:anywhere}.coday small{color:var(--muted);font-size:.75rem}
+  .coday.on{border-color:var(--accent);box-shadow:0 0 0 2px var(--glow)}.coday.today{border-style:dashed}
+  .coed{margin-top:10px;padding:12px;border:1px solid var(--accent);border-radius:12px}
+  .coci{border-bottom:1px solid var(--border);padding:8px 0}.coci textarea{margin-top:6px}
+  .msg{background:var(--panel2);border:1px solid var(--border);border-radius:12px;padding:8px 10px;margin:6px 0;max-width:88%}
+  .msg.me{margin-left:auto;background:var(--glow)}.msg small{display:block;color:var(--muted);font-size:.72rem;margin-top:2px}
+  .hsteps{padding-left:18px;font-size:.88rem;line-height:1.5}.hsteps li{margin:4px 0}
+  .v3modal{position:fixed;inset:0;z-index:90;background:rgba(0,0,0,.55);display:grid;place-items:center;padding:16px}
+  .v3card{background:var(--panel);border:1px solid var(--border);border-radius:16px;padding:18px;width:100%;max-width:420px;max-height:90vh;overflow:auto}
+  .v3card h2{margin:0 0 4px}
+  /* v3 superset groups */
+  .ssg{border:1px solid rgba(245,158,11,.45);border-left:4px solid var(--amber);border-radius:14px;padding:10px 10px 2px;margin-bottom:12px;background:rgba(245,158,11,.05)}
+  .ssh{display:flex;flex-wrap:wrap;gap:6px 10px;align-items:center;font-size:.82rem;color:var(--muted);margin:0 2px 8px}
+  .ssh b{color:var(--amber);font-size:.95rem;letter-spacing:.02em}
+  .ssl{display:inline-grid;place-items:center;min-width:30px;height:24px;padding:0 6px;margin-right:8px;border-radius:8px;background:rgba(245,158,11,.18);color:var(--amber);font-size:.78rem;font-weight:800;vertical-align:1px}
+  #wList .ssg .row{counter-increment:none}
+  #wList .ssg .row .t::before{content:none}
+  #wList .ssg .row:last-child{margin-bottom:8px}
+  .trex.ssin{border-left:4px solid var(--amber)}
+  .trex.ssin.ssnext{margin-bottom:0;border-bottom-left-radius:0;border-bottom-right-radius:0;border-bottom-style:dashed}
+  .trex.ssin.ssprev{border-top-left-radius:0;border-top-right-radius:0;border-top:0}
+  .trssh{font-size:.8rem;font-weight:800;color:var(--amber);margin:4px 2px 6px}
+  .trss{display:flex;align-items:center;gap:8px;margin-top:8px;font-size:.85rem;font-weight:600}
+  .wm-ss{border:1px solid rgba(245,158,11,.5);border-left:4px solid var(--amber);border-radius:14px;padding:10px;background:rgba(245,158,11,.06)}
+  .wm-ssh{font-weight:800;color:var(--amber);margin-bottom:6px;display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap}
+  .wm-ssm{display:flex;width:100%;gap:8px;align-items:center;justify-content:flex-start;text-align:left;background:var(--panel2);border:1px solid var(--border);border-radius:10px;padding:8px 10px;margin:4px 0;color:var(--text);font:inherit;cursor:pointer}
+  .wm-ssm span{margin-left:auto;color:var(--muted);font-size:.85rem;white-space:nowrap}
+  .wm-ssm.on{border-color:var(--amber);box-shadow:0 0 0 2px rgba(245,158,11,.35)}
+  .wm-ssm.done{opacity:.55}
   .wm-dots i{flex:1;max-width:48px;height:12px;border-radius:6px;background:var(--panel2);border:1px solid var(--border)}
   .wm-dots i.on{background:var(--green);border-color:var(--green)}
   .wm-inputs{display:grid;grid-template-columns:1fr 1fr;gap:12px}
@@ -396,11 +441,13 @@
   <button class="tab" data-tab="food"><span class="ic">🍽️</span><span class="full">Food</span><span class="short">Food</span></button>
   <button class="tab" data-tab="overview"><span class="ic">📊</span><span class="full">Targets</span><span class="short">Targets</span></button>
   <button class="tab" data-tab="progress"><span class="ic">📈</span><span class="full">Progress</span><span class="short">Progress</span></button>
+  <button class="tab" data-tab="coach" id="tabCoach" hidden><span class="ic">🧑‍🏫</span><span class="full">Clients</span><span class="short">Clients</span></button>
   </nav>
 
 <section id="pane-train" class="pane"></section>
 <section id="pane-profile" class="pane"></section>
 <section id="pane-overview" class="pane"></section>
+<section id="pane-coach" class="pane"></section>
 
 <section id="pane-plan" class="pane active" data-seg="w">
   <div class="wknav" id="weekNav"></div>
@@ -408,6 +455,7 @@
   <div id="hero"></div>
   <div class="kpis" id="kpis"></div>
   <div id="peakNote"></div>
+  <div id="coachBox"></div>
   <div class="seg planseg" role="tablist"><button class="on" data-pseg="w">🏋️ Workout</button><button data-pseg="m">🍽️ Nutrition</button></div>
   <div class="card" data-s="w"><h2><span>Readiness check</span><span class="badge" id="rdBadge"></span></h2><div id="readyBox"></div></div>
   <div class="grid2">
@@ -1143,8 +1191,13 @@ function buildWeek(p,st,monISO,todayISO){
       else{kind="event";label="Pre-event pump (T – 75 min)";session={name:"Pre-event pump",rir:4,wk:0,ex:pumpCircuit(p,block,3)}}
     }else{
       date=addD(monISO,i);
-      const hit=sess.find(s=>s.dow===i);
-      if(hit){session=hit;kind="train";label=hit.name;macros={P:T.P,C:trainC,F:T.F}}
+      const hit=sess.find(s=>s.dow===i),asg=st.cx&&st.cx.asg&&st.cx.asg[date];
+      if(asg&&typeof asgSession==="function"){
+        const a=asg.ex&&asg.ex.length?asgSession(asg,i,p,wk):null;
+        if(a){session=a;kind="train";label=a.name;macros={P:T.P,C:trainC,F:T.F}}
+        else{label="Rest (from "+(asg.coach||"coach")+")";macros={P:T.P,C:restC,F:T.F}}
+      }
+      else if(hit){session=hit;kind="train";label=hit.name;macros={P:T.P,C:trainC,F:T.F}}
       else{label="Rest & recovery";macros={P:T.P,C:restC,F:T.F}}
     }
     macros.kcal=Math.round(kcalOf(macros));
@@ -1279,9 +1332,10 @@ function buildProfile(){
    </div>
   </div>
   <div class="card"><h2><span>Sync phone ↔ desktop</span><span class="badge" id="syncMsg"></span></h2><div id="syncBox"></div></div>
+  <div class="card"><h2><span>Coaching</span></h2><div id="coachProf"></div></div>
   <div class="card"><h2><span>Data</span></h2><div style="display:flex;gap:8px;flex-wrap:wrap">
    <button class="btn" id="btnExport">Export backup</button><button class="btn" id="btnImport">Import backup</button><button class="btn" onclick="window.print()">Print week</button><button class="btn danger" id="btnReset">Reset everything</button></div></div>`;
-  fillProfile();renderSync();
+  fillProfile();renderSync();if(typeof renderCoachProf==="function")renderCoachProf();
 }
 function fillProfile(){
   const p=S.prof;
@@ -1350,6 +1404,7 @@ function dayKeys(d){
   if(d.session)d.session.ex.forEach((_,i)=>k.push(`${d.date}|ex|${i}`));
   d.meals.forEach((_,i)=>k.push(`${d.date}|meal|${i}`));
   ["water","move","sleep"].forEach(h=>k.push(`${d.date}|hab|${h}`));
+  if(typeof cxHabits==="function")cxHabits().forEach((_,i)=>k.push(`${d.date}|hab|c${i}`));
   return k;
 }
 function dayProg(d){const k=dayKeys(d),n=k.filter(x=>S.checks[x]).length;return {n,t:k.length,pct:k.length?n/k.length:0}}
@@ -1418,7 +1473,7 @@ function renderPlan(){
   const mon=weekMon();
   $("weekNav").innerHTML=peakShown
     ?`<span class="badge a">Peak week · event ${dateLabel(p.event)}</span><button class="btn" id="btnIcs">📅 Add week to calendar</button>`
-    :`<button class="btn" data-wk="-1">‹</button><b>${dateLabel(mon,{month:"short",day:"numeric"})} – ${dateLabel(addD(mon,6),{month:"short",day:"numeric"})}</b><button class="btn" data-wk="1">›</button>${S.weekOffset?'<button class="btn" data-wk="0">Today</button>':""}<span class="badge"><span class="bfull">Week ${W.wk+1} of 4 · RIR ${W.rir}${W.wk===3?" · deload":""}</span><span class="bshort">W${W.wk+1} · RIR ${W.rir}${W.wk===3?" · DL":""}</span></span><details class="more"><summary class="btn" aria-label="More week options" title="More">⋯</summary><div class="menu"><button class="btn" id="btnRotate">🔄 New block (rotate exercises)</button><button class="btn" id="btnIcs">📅 Add week to calendar</button><button class="btn" data-ui="ics4">⏰ Reminders: next 4 weeks</button><button class="btn" id="btnWake">${wlWant?"🔆 Screen stays on ✓":"🔆 Keep screen on"}</button><div class="mver">Version ${APP_VER}</div></div></details>`;
+    :`<button class="btn" data-wk="-1">‹</button><b>${dateLabel(mon,{month:"short",day:"numeric"})} – ${dateLabel(addD(mon,6),{month:"short",day:"numeric"})}</b><button class="btn" data-wk="1">›</button>${S.weekOffset?'<button class="btn" data-wk="0">Today</button>':""}<span class="badge"><span class="bfull">Week ${W.wk+1} of 4 · RIR ${W.rir}${W.wk===3?" · deload":""}</span><span class="bshort">W${W.wk+1} · RIR ${W.rir}${W.wk===3?" · DL":""}</span></span><details class="more"><summary class="btn" aria-label="More week options" title="More">⋯</summary><div class="menu"><button class="btn" id="btnRotate">🔄 New block (rotate exercises)</button><button class="btn" id="btnIcs">📅 Add week to calendar</button><button class="btn" data-ui="ics4">⏰ Reminders: next 4 weeks</button><button class="btn" id="btnWake">${wlWant?"🔆 Screen stays on ✓":"🔆 Keep screen on"}</button><div class="mver">Version ${APP_MAJOR} · build ${APP_VER}</div></div></details>`;
   $("days").innerHTML=W.days.map(x=>{
     const pr=dayProg(x);
     return `<button aria-pressed="${x.date===d.date}" class="day ${x.date===d.date?"active":""} ${pr.t&&pr.n===pr.t?"done":""}" data-day="${x.date}"><b>${dateLabel(x.date,{weekday:"short"})}${x.date===TODAY?" · today":""}</b><small>${dateLabel(x.date,{month:"short",day:"numeric"})}</small><small>${esc(x.label)}</small><div class="mini"><i style="width:${pr.pct*100}%"></i></div></button>`;
@@ -1444,9 +1499,14 @@ function renderPlan(){
     $("wBadge").textContent=`Week ${s.wk+1} · ${s.rir} RIR`;
     $("wEdit").hidden=false;$("wStart").hidden=!s.ex.length;
     $("wList").innerHTML=`<div class="d" style="margin-bottom:6px">Warm-up: 5 min easy cardio and joint circles, then 2 ramp-up sets of the first exercise.</div><label class="trchk" style="margin:0 0 10px"><input type="checkbox" id="autoRest" ${autoRestOn()?"checked":""}/> Auto-start the rest timer when I log a set</label>`+
-     s.ex.map((e,i)=>row(`${d.date}|ex|${i}`,esc(e.name)+(e.ss?' <span class="badge a">Superset ↓</span>':(i>0&&s.ex[i-1].ss?' <span class="badge a">Superset pair</span>':""))+formLink(e.name),`${setLine(e,rd)}<br>${esc(e.load)}${e.wu?`<br><span class="wu">Warm-up: ${WU[e.wu]}</span>`:""}`,
+     (()=>{const G=ssGroups(s.ex);return s.ex.map((e,i)=>{const gi=G[i];
+      const r=row(`${d.date}|ex|${i}`,(gi?`<span class="ssl">${gi.g}${gi.k}</span>`:"")+esc(e.name)+formLink(e.name),`${setLine(e,rd,gi)}<br>${esc(e.load)}${e.wu?`<br><span class="wu">Warm-up: ${WU[e.wu]}</span>`:""}`,
       `${e.note?`<div class="d">${esc(e.note)}</div>`:""}<div class="cue">${esc(e.cue)}</div>${perfHTML(e)}`,
-      `${e.ss?"":`<button type="button" class="rest" data-t="${e.rest}">⏱ ${e.rest}s</button>`}${e.key!=="pump"&&e.key!=="cust"?`<button type="button" class="rest" data-swap="${esc(e.key)}">↻ swap</button>`:""}`)).join("");
+      `${e.ss?"":`<button type="button" class="rest" data-t="${e.rest}">⏱ ${e.rest}s</button>`}${e.key!=="pump"&&e.key!=="cust"?`<button type="button" class="rest" data-swap="${esc(e.key)}">↻ swap</button>`:""}`);
+      if(!gi)return r;
+      const head=gi.k===1?`<div class="ssg" role="group" aria-label="Superset ${gi.g}"><div class="ssh"><b>⛓ SUPERSET ${gi.g}</b><span>${gi.n===2?"2 exercises":gi.n===3?"Tri-set · 3 exercises":"Giant set · "+gi.n+" exercises"} · ${ssRounds(s.ex,gi,rd)} rounds</span><span>${s.ex.slice(gi.s,gi.e+1).map((x,k)=>gi.g+(k+1)).join(" → ")}, then rest ${s.ex[gi.e].rest}s</span></div>`:"";
+      return head+r+(gi.k===gi.n?"</div>":"");
+     }).join("")})();
   }else{
     $("wTitle").textContent=d.label;$("wBadge").textContent=d.kind==="rest"?"Recovery":"No lifting";$("wEdit").hidden=false;$("wStart").hidden=true;
     const walk=d.kind==="flush"?"35 min Zone 2 walk, nasal breathing. 4 × 45s dead hangs. 5 × 20s stomach vacuums.":d.kind==="posing"?"10 min mobility, 5 × 20s stomach vacuums, practice poses. No hard training.":(T.goal==="cut"?"30–40 min Zone 2 walk (conversational pace) plus 10 min mobility. Target 9–11k steps.":"20–30 min easy walk plus 10 min mobility. Target 7–9k steps.");
@@ -1559,6 +1619,7 @@ function showTab(n,sub){
   document.querySelectorAll("[data-food]").forEach(b=>b.classList.toggle("on",b.dataset.food===FOODSUB));
   document.querySelectorAll(".hprof").forEach(b=>b.classList.toggle("active",n==="profile"));
   try{localStorage.setItem(TABK,JSON.stringify([n,FOODSUB]))}catch(e){}
+  if(n==="coach"&&typeof renderCoach==="function"){renderCoach();loadClients()}
   window.scrollTo({top:0});
 }
 function setPlanSeg(k){
@@ -1569,7 +1630,7 @@ function setPlanSeg(k){
 function restoreNav(){
   try{
     const v=JSON.parse(localStorage.getItem(TABK)||"null");
-    if(v&&["plan","train","food","progress","overview","profile"].includes(v[0]))showTab(v[0],["grocery","kitchen"].includes(v[1])?v[1]:"grocery");
+    if(v&&["plan","train","food","progress","overview","profile"].concat(lsGet("eliteCoachOn")==="1"?["coach"]:[]).includes(v[0]))showTab(v[0],["grocery","kitchen"].includes(v[1])?v[1]:"grocery");
     else showTab("plan");
     const sg=localStorage.getItem(TABK+"Seg");if(sg==="w"||sg==="m")setPlanSeg(sg);
   }catch(e){showTab("plan")}
@@ -1657,29 +1718,29 @@ function trPicker(d){
    <button type="button" class="btn" data-tr="close" style="margin-top:8px">Done</button>
   </div>`;
 }
-function trExRow(d,i,x,n){
-  const tags=[x.wu?x.wu+" warm-up":"",x.ss?"superset":"",x.prog==="reps"?"reps-only":"",x.inc>0?"+"+x.inc+" "+wU():""].filter(Boolean);
-  return `<div class="trex" data-d="${d}" data-i="${i}">
-    <div class="trh"><span class="trdrag" title="Drag to reorder" aria-label="Drag to reorder">⠿</span><span class="trnum">${i+1}</span><div><b>${esc(x.name)}</b><small>${esc(muLabel(x.mu))}</small></div>
+function trExRow(d,i,x,n,gi,prevIn){
+  const tags=[x.wu?x.wu+" warm-up":"",x.prog==="reps"?"reps-only":"",x.inc>0?"+"+x.inc+" "+wU():""].filter(Boolean);
+  return `${gi&&gi.k===1?`<div class="trssh">⛓ Superset ${gi.g}: ${gi.n} exercises back to back, rest after ${gi.g}${gi.n}</div>`:""}<div class="trex ${gi?"ssin":""} ${gi&&gi.k<gi.n?"ssnext":""} ${gi&&gi.k>1?"ssprev":""}" data-d="${d}" data-i="${i}">
+    <div class="trh"><span class="trdrag" title="Drag to reorder" aria-label="Drag to reorder">⠿</span><span class="${gi?"ssl":"trnum"}">${gi?gi.g+gi.k:i+1}</span><div><b>${esc(x.name)}</b><small>${esc(muLabel(x.mu))}</small></div>
      <div class="trbtn"><button type="button" class="rest" data-tr="up" data-v="${d}|${i}" aria-label="Move up" ${i===0?"disabled":""}>▲</button><button type="button" class="rest" data-tr="down" data-v="${d}|${i}" aria-label="Move down" ${i===n-1?"disabled":""}>▼</button><button type="button" class="rest" data-tr="del" data-v="${d}|${i}" aria-label="Remove">✕</button></div></div>
     <div class="trf">
      <label>Sets<input type="number" inputmode="numeric" min="1" max="10" data-trf="sets" data-d="${d}" data-i="${i}" value="${esc(x.sets)}"/></label>
      <label>Reps<input type="text" data-trf="reps" data-d="${d}" data-i="${i}" value="${esc(x.reps)}" maxlength="12"/></label>
      <label>Rest (s)<input type="number" inputmode="numeric" min="0" max="600" step="15" data-trf="rest" data-d="${d}" data-i="${i}" value="${esc(x.rest)}"/></label>
     </div>
-    <details class="trmore" ${tags.length?"open":""}><summary>Warm-up, superset, progression${tags.length?` <span class="badge">${esc(tags.join(" · "))}</span>`:""}</summary>
+    ${i<n-1?`<label class="trss"><input type="checkbox" data-trf="ss" data-d="${d}" data-i="${i}" ${x.ss?"checked":""}/> ⛓ Superset with the next exercise${x.ss&&gi?` <span class="badge a">${gi.g}${gi.k} → ${gi.g}${gi.k+1}</span>`:""}</label>`:""}
+    <details class="trmore" ${tags.length?"open":""}><summary>Warm-up and progression${tags.length?` <span class="badge">${esc(tags.join(" · "))}</span>`:""}</summary>
      <div class="trf2">
       <label>Warm-up sets<select data-trf="wu" data-d="${d}" data-i="${i}">${[0,1,2,3,4].map(k=>`<option value="${k}" ${+x.wu===k?"selected":""}>${k?k+" ramp-up":"None"}</option>`).join("")}</select></label>
       <label>Progression<select data-trf="prog" data-d="${d}" data-i="${i}"><option value="dbl" ${x.prog!=="reps"?"selected":""}>Add load at top of range</option><option value="reps" ${x.prog==="reps"?"selected":""}>Add reps only</option></select></label>
       <label>Load step (${wU()})<input type="number" inputmode="decimal" step="0.5" min="0" max="100" data-trf="inc" data-d="${d}" data-i="${i}" value="${x.inc>0?esc(x.inc):""}" placeholder="auto"/></label>
-      ${i<n-1?`<label class="trchk"><input type="checkbox" data-trf="ss" data-d="${d}" data-i="${i}" ${x.ss?"checked":""}/> Superset with the next exercise</label>`:""}
      </div></details></div>`;
 }
 function trDayCard(d){
   const day=PD()[d],ex=(day&&day.ex)||[];
   return `<div class="card trday"><h2><span>${DAYN[d]}</span><span style="display:flex;gap:8px;align-items:center">${ex.length?`<select class="trcopy" data-trf="copyto" data-d="${d}" aria-label="Copy ${DAYN[d]} to another day"><option value="">Copy to…</option>${DAYN.map((n,k)=>k!==d?`<option value="${k}">${n}</option>`:"").join("")}</select>`:""}<span class="badge ${ex.length?"g":""}">${ex.length?ex.length+" exercises":"Rest day"}</span></span></h2>
    ${ex.length||TR.open===d?`<input class="trname" data-trf="name" data-d="${d}" placeholder="Session name (e.g. Push, Legs, Upper)" maxlength="40" value="${esc((day&&day.name)||"")}"/>`:""}
-   <div class="trlist" data-d="${d}">${ex.map((x,i)=>trExRow(d,i,x,ex.length)).join("")}</div>
+   <div class="trlist" data-d="${d}">${(()=>{const G=ssGroups(ex);return ex.map((x,i)=>trExRow(d,i,x,ex.length,G[i])).join("")})()}</div>
    ${TR.open===d?trPicker(d):`<button type="button" class="btn ${ex.length?"":"pri"}" data-tr="open" data-v="${d}">+ Add exercise</button>${ex.length?`<button type="button" class="btn danger" data-tr="clearday" data-v="${d}" style="margin-left:8px">Clear day</button>`:""}`}
   </div>`;
 }
@@ -1821,9 +1882,9 @@ function autoRest(uid,r,rir){
   const x=EXI[uid];if(!x||x.ss||!(x.rest>0))return;
   startTimer(adaptRest(x,r,rir));
 }
-function pushSet(uid,w,r,rir){
+function pushSet(uid,w,r,rir,noRest){
   const k=uid+"|"+S.sel,o={w,r};if(rir>=0&&rir<=10)o.rir=rir;(S.sets[k]=S.sets[k]||[]).push(o);
-  topSet(uid);autoRest(uid,r,rir);
+  topSet(uid);if(!noRest)autoRest(uid,r,rir);
 }
 
 /* ---------- WORKOUT MODE ---------- */
@@ -1844,13 +1905,22 @@ function wmDraw(){
   const w0=last?last.w:(v.w===""?0:v.w),wv=w0>0?r1(dW(w0)):"",r0=last?last.r:(v.r||"");
   WM.rir=a.rir;
   const nxt=s.ex[WM.i+1],pop=WM.just===e.uid,sug=sugText(e.uid);WM.just=null;
+  const G=ssGroups(s.ex),gi=G[WM.i];
+  let ssBox="";
+  if(gi){
+    const mem=s.ex.slice(gi.s,gi.e+1).map((x,k)=>{const i=gi.s+k,c=(S.sets[x.uid+"|"+WM.date]||[]).length,t=adjusted(x,rd).sets;return {i,x,c,t,lab:gi.g+(k+1)}});
+    const rounds=Math.max(...mem.map(m=>m.t)),round=Math.min(rounds,Math.min(...mem.filter(m=>m.c<m.t).map(m=>m.c).concat([rounds-1]))+1);
+    ssBox=`<div class="wm-ss"><div class="wm-ssh"><span>⛓ Superset ${gi.g} · ${gi.n} exercises</span><span>Round ${round} of ${rounds}</span></div>
+     ${mem.map(m=>`<button type="button" class="wm-ssm ${m.i===WM.i?"on":""} ${m.c>=m.t?"done":""}" data-wmgo="${m.i}"><span class="ssl">${m.lab}</span>${esc(m.x.name)}<span>${m.c}/${m.t} sets</span></button>`).join("")}
+     <div class="d">Do ${mem.map(m=>m.lab).join(" → ")} back to back, then rest ${s.ex[gi.e].rest}s. Repeat for ${rounds} rounds.</div></div>`;
+  }
   const dots=Array.from({length:Math.max(a.sets,done.length)},(_,k)=>`<i class="${k<done.length?"on":""}${pop&&k===done.length-1?" pop":""}"></i>`).join("");
   $("wm").innerHTML=`
    <div class="wm-top"><button class="btn" data-wm="close">✕ Exit</button><div class="wm-prog">${esc(s.name)} · exercise ${WM.i+1} of ${n}<div class="bar"><div style="width:${WM.i/n*100}%"></div></div></div></div>
    <div class="wm-body">
     <h2 class="wm-name">${esc(e.name)}</h2>
-    ${e.ss?'<div><span class="badge a">Superset: straight to the next exercise, rest after the pair</span></div>':""}
-    <div class="wm-target">${setLine(e,rd)}</div>
+    ${ssBox}
+    <div class="wm-target">${gi?`<span class="ssl">${gi.g}${gi.k}</span>`:""}${setLine(e,rd,gi)}</div>
     <div class="d">${esc(e.load)}${formLink(e.name)}</div>
     ${e.wu&&!done.length?`<div class="note">Warm-up first: ${WU[e.wu]}</div>`:""}
     ${e.cue?`<div class="cue">${esc(e.cue)}</div>`:""}
@@ -1860,7 +1930,7 @@ function wmDraw(){
     <button class="btn pri wm-log" data-wm="log">Log set ${done.length+1} ✓</button>
     ${pop&&sug.includes("New PR")?'<div class="prflash">🏆 New PR</div>':""}<div class="d">${esc(sug)}</div>
     ${done.length?`<div class="d">Done: ${done.map(x=>(x.w>0?dW(x.w)+" × ":"")+x.r+(x.rir!=null?" @"+x.rir+" RIR":"")).join(" · ")} <button class="rest" data-wm="undo">Undo last</button></div>`:""}
-    ${nxt?`<div class="d" style="margin-top:12px">Up next: <b>${esc(nxt.name)}</b></div>`:""}
+    ${(()=>{const nx=gi?wmNextInGroup(s,G,WM.i,true):null,o=nx!=null?s.ex[nx]:(gi?s.ex[gi.e+1]:nxt);return o?`<div class="d" style="margin-top:12px">Up next: <b>${esc(o.name)}</b>${nx!=null&&nx<=WM.i?" (after rest)":""}</div>`:""})()}
    </div>
    <div class="wm-nav"><button class="btn" data-wm="prev" ${WM.i===0?"disabled":""}>‹ Prev</button><button class="btn ${WM.i===n-1?"pri":""}" data-wm="next">${WM.i===n-1?"Finish ✓":"Next ›"}</button></div>`;
 }
@@ -1869,16 +1939,28 @@ function wmLog(){
   if(r<=0){$("wmR").focus();return}
   const wv=$("wmW").value,w=wv===""?0:fromW(parseFloat(wv));
   if(!(S.wlog=S.wlog||{})[WM.date])S.wlog[WM.date]={name:s.name,start:WM.openedAt||NOW()};
-  pushSet(e.uid,w,r,WM.rir);WM.just=e.uid;
+  const G=ssGroups(s.ex),gi=G[WM.i];
+  pushSet(e.uid,w,r,WM.rir,!!gi);WM.just=e.uid;
   const cnt=(S.sets[e.uid+"|"+WM.date]||[]).length;
   if(cnt>=adjusted(e,readiness(WM.date)).sets){const key=`${WM.date}|ex|${WM.i}`;S.checks[key]=true;markDone(key);save()}
-  /* superset rotation: A, B, A, B ... then move on */
-  const prev=WM.i>0?s.ex[WM.i-1]:null;
-  if(e.ss&&WM.i<s.ex.length-1)WM.i++;
-  else if(prev&&prev.ss&&(S.sets[prev.uid+"|"+WM.date]||[]).length<adjusted(prev,readiness(WM.date)).sets)WM.i--;
+  /* superset rotation: A1 → A2 → A3, rest, repeat, for groups of any size; members with fewer sets drop out of later rounds */
+  if(gi){
+    const nx=wmNextInGroup(s,G,WM.i,false);
+    if(nx===null||nx<=WM.i){const last=s.ex[gi.e];if(autoRestOn()&&last.rest>0&&(nx!==null||gi.e<s.ex.length-1))startTimer(adaptRest(EXI[last.uid]||last,r,WM.rir))}
+    if(nx!==null)WM.i=nx;else if(gi.e<s.ex.length-1)WM.i=gi.e+1;
+  }
   wmDraw();
 }
+/* Next member of i's superset that still needs sets, scanning forward and wrapping. Returns null when the group is done. peek: same, without counting i itself as needing a set. */
+function wmNextInGroup(s,G,i,peek){
+  const gi=G[i];if(!gi)return null;
+  const rd=readiness(WM.date),need=k=>(S.sets[s.ex[k].uid+"|"+WM.date]||[]).length<adjusted(s.ex[k],rd).sets;
+  for(let st=1;st<=gi.n;st++){const k=gi.s+((i-gi.s+st)%gi.n);if(peek&&k===i&&st<gi.n)continue;if(need(k))return k}
+  return null;
+}
 function wmClick(t){
+  const go=t.closest("[data-wmgo]");
+  if(go){WM.i=+go.dataset.wmgo;wmDraw();return true}
   const rb=t.closest("[data-wmrir]");
   if(rb){WM.rir=+rb.dataset.wmrir;document.querySelectorAll("[data-wmrir]").forEach(x=>x.classList.toggle("on",x===rb));return true}
   const b=t.closest("[data-wm]");if(!b)return false;
@@ -1962,7 +2044,7 @@ document.addEventListener("click",e=>{
 });
 
 /* ---------- APP VERSION, UPDATE PROMPT, INSTALL PROMPT ---------- */
-const APP_VER="2026.11.05.6";
+const APP_VER="2026.11.06.1",APP_MAJOR="3";
 let UPD=false,BIP=null;
 const inFrame=()=>{try{return window.self!==window.top}catch(e){return true}};
 const isStandalone=()=>matchMedia("(display-mode: standalone)").matches||navigator.standalone===true;
@@ -2143,8 +2225,9 @@ document.addEventListener("click",e=>{
     case "btnClrEx":delete S.extra[S.sel];save();renderPlan();break;
     case "btnSbIn":case "btnSbUp":signIn(t.id==="btnSbUp");break;
     case "btnSbDel":delAccount();break;
+    case "btnSbForgot":forgotPw();break;
     case "btnSyncNow":syncNow();break;
-    case "btnSyncOff":SY={};saveSY();setMsg("Signed out");renderSync();break;
+    case "btnSyncOff":SY={};saveSY();S.cx={};save();setMsg("Signed out");regen();renderAll();renderNavCoach();break;
     case "btnSyncLink":shareLink();break;
     case "btnInvite":inviteFriend();break;
     case "btnConfirm":S.confirmed=true;save();fillProfile();break;
@@ -2203,7 +2286,10 @@ async function sbFetch(path,opt,tok){
 }
 function setSess(j){SY.sess={at:j.access_token,rt:j.refresh_token,exp:Date.now()+(j.expires_in||3600)*1000,uid:j.user.id,email:j.user.email};saveSY()}
 async function sbToken(){
-  if(SY.sess.exp-60000<Date.now())setSess(await sbFetch("/auth/v1/token?grant_type=refresh_token",{method:"POST",body:JSON.stringify({refresh_token:SY.sess.rt})}));
+  if(SY.sess.exp-60000<Date.now()){
+    try{setSess(await sbFetch("/auth/v1/token?grant_type=refresh_token",{method:"POST",body:JSON.stringify({refresh_token:SY.sess.rt})}))}
+    catch(e){if(e.status)e.auth=true;throw e} /* a rejected refresh token means signed out; a network error does not */
+  }
   return SY.sess.at;
 }
 async function startSession(j){
@@ -2258,8 +2344,9 @@ async function syncNow(){
     else if(!remote||rm<lm){SY.base=await pushNow(tok);setMsg("Synced "+tm)}
     else{SY.base=rm;setMsg("Up to date "+tm)}
     saveSY();
+    if(typeof pullV3==="function")setTimeout(pullV3,0);
   }catch(e){
-    if(e.status===400||e.status===401||e.status===403){SY={};saveSY();renderSync();setMsg("Session expired, sign in again")}
+    if(e.auth||e.status===401){SY={};saveSY();renderSync();setMsg("Session expired, sign in again")}
     else setMsg(e.status?"Sync failed: "+e.message:"Can't reach the server. Will retry");
     console.warn("sync error",e);
   }finally{syncing=false}
@@ -2270,7 +2357,7 @@ function renderSync(){
   const row="display:flex;gap:8px;flex-wrap:wrap;margin-top:10px";
   let h;
   if(SY.sess)h=`<div class="d">Signed in as <b>${esc(SY.sess.email)}</b>. Your progress is private to this account. Changes upload a few seconds after you make them, and every signed-in device checks for newer data every minute and when you open the app.</div><div style="${row}"><button class="btn pri" id="btnSyncNow">Sync now</button><button class="btn" id="btnSyncOff">Sign out</button></div><h3>Danger zone</h3><div class="d">Deletes your account and the copy stored online. Progress already on this device stays.</div><div style="${row}"><button class="btn danger" id="btnSbDel">Delete my account and cloud data</button></div>`;
-  else h=`<div class="d">Make an account to keep your own progress and sync it to every device. Sign in with the same email on each device.</div><div style="${row}"><input type="email" id="sbEmail" placeholder="Email" autocomplete="email" style="flex:1;min-width:200px"/><input type="password" id="sbPw" placeholder="Password (6+ characters)" autocomplete="current-password" style="flex:1;min-width:200px"/></div><div style="${row}"><button class="btn pri" id="btnSbIn">Sign in</button><button class="btn" id="btnSbUp">Create account</button></div>`;
+  else h=`<div class="d">Make an account to keep your own progress and sync it to every device. Sign in with the same email on each device.</div><div style="${row}"><input type="email" id="sbEmail" placeholder="Email" autocomplete="email" style="flex:1;min-width:200px"/><input type="password" id="sbPw" placeholder="Password (6+ characters)" autocomplete="current-password" style="flex:1;min-width:200px"/></div><div style="${row}"><button class="btn pri" id="btnSbIn">Sign in</button><button class="btn" id="btnSbUp">Create account</button><button class="btn" id="btnSbForgot">Forgot password?</button></div>`;
   h+=`<h3>Invite a friend</h3><div class="d">Sends the plain app link. Your friend starts with a fresh, empty profile and never sees your data.</div><div style="margin-top:10px"><button class="btn pri" id="btnInvite">👋 Invite a friend</button></div>`;
   h+=`<h3>No account? Move your data to your own device</h3><div class="d">⚠️ Makes a link that <b>contains all your data</b>: weight, lifts, plans and notes. Only open it on your own phone or computer. Never send it to anyone else.</div><div style="margin-top:10px"><button class="btn" id="btnSyncLink">📲 Send my data to my other device</button></div>`;
   box.innerHTML=h;
@@ -2312,7 +2399,60 @@ async function importHash(){
     if(r&&r.data&&confirm("Replace this device's progress with the data from the link?"))applyData(r.data);
   }catch(e){alert("That sync link could not be read.");console.warn(e)}
 }
+/* ---------- PASSWORD RESET + EMAIL LINKS (Supabase implicit flow: tokens come back in the URL hash) ---------- */
+const appURL=()=>location.protocol.startsWith("http")?location.origin+location.pathname:APP_URL;
+async function forgotPw(){
+  const email=($("sbEmail")||{}).value?$("sbEmail").value.trim():"";
+  if(!/^\S+@\S+\.\S+$/.test(email)){setMsg("Type your email above, then tap Forgot password");$("sbEmail")&&$("sbEmail").focus();return}
+  setMsg("Sending reset link…");
+  try{
+    await sbFetch("/auth/v1/recover?redirect_to="+encodeURIComponent(appURL()),{method:"POST",body:JSON.stringify({email})});
+    setMsg("If that email has an account, a reset link is on its way. Check spam too. The link works once and expires in 1 hour.");
+  }catch(e){setMsg(e.status===429?"Too many emails sent. Wait a few minutes and try again.":"Could not send: "+e.message)}
+}
+function pwModal(j){
+  const m=document.createElement("div");m.id="pwModal";m.className="v3modal";m.setAttribute("role","dialog");m.setAttribute("aria-label","Set a new password");
+  m.innerHTML=`<div class="v3card"><h2>Set a new password</h2><div class="d">For ${esc(j.user.email||"your account")}</div>
+   <input type="password" id="pwNew" placeholder="New password (6+ characters)" autocomplete="new-password" style="width:100%;margin-top:10px"/>
+   <input type="password" id="pwNew2" placeholder="Repeat it" autocomplete="new-password" style="width:100%;margin-top:8px"/>
+   <div class="d" id="pwMsg" style="margin-top:8px"></div>
+   <div style="display:flex;gap:8px;margin-top:10px"><button class="btn pri" id="pwSave">Save and sign in</button><button class="btn" id="pwCancel">Cancel</button></div></div>`;
+  document.body.appendChild(m);$("pwNew").focus();
+  const msg=t=>{$("pwMsg").textContent=t};
+  $("pwCancel").onclick=()=>m.remove();
+  $("pwSave").onclick=async()=>{
+    const a=$("pwNew").value,b=$("pwNew2").value;
+    if(a.length<6)return msg("Use at least 6 characters.");
+    if(a!==b)return msg("The two passwords do not match.");
+    msg("Saving…");
+    try{
+      await sbFetch("/auth/v1/user",{method:"PUT",body:JSON.stringify({password:a})},j.access_token);
+      m.remove();showTab("profile");
+      if(await startSession(j))setMsg("Password changed. You are signed in.");
+    }catch(e){msg(e.status===422?"Pick a different password: "+e.message:"Could not save: "+e.message)}
+  };
+}
+async function authHash(){
+  const h=location.hash.slice(1);
+  if(!/(^|&)(access_token|error_description|error)=/.test(h))return false;
+  const p=new URLSearchParams(h);
+  history.replaceState(null,"",location.pathname+location.search);
+  if(p.get("error")||p.get("error_description")){
+    showTab("profile");
+    setMsg(/expired|invalid/i.test(p.get("error_description")||p.get("error_code")||"")?"That email link has expired or was already used. Request a new one below.":"Email link failed: "+(p.get("error_description")||p.get("error")));
+    return true;
+  }
+  const at=p.get("access_token"),type=p.get("type")||"";
+  try{
+    const user=await sbFetch("/auth/v1/user",{},at);
+    const j={access_token:at,refresh_token:p.get("refresh_token"),expires_in:+p.get("expires_in")||3600,user};
+    if(type==="recovery")pwModal(j);
+    else{showTab("profile");if(await startSession(j))setMsg(type==="signup"?"Email confirmed. You are signed in.":"Signed in")}
+  }catch(e){showTab("profile");setMsg("That link could not be used: "+e.message)}
+  return true;
+}
 function initSync(){
+  authHash();
   importHash();
   if(SY.sess)syncNow();
   document.addEventListener("visibilitychange",()=>{if(document.visibilityState==="visible"&&SY.sess)syncNow()});
@@ -2355,6 +2495,7 @@ function readiness(date){
   if(s>0)parts.push([.4,Math.max(0,Math.min(1,(s-5)/3))]);
   if(e>0)parts.push([.35,(e-1)/4]);
   if(sr>0)parts.push([.25,(5-sr)/4]);
+  if(typeof healthParts==="function")healthParts(S.log,S.hd||{},date).forEach(x=>parts.push(x));
   if(!parts.length)return null;
   const wsum=parts.reduce((a,p)=>a+p[0],0),score=parts.reduce((a,p)=>a+p[0]*p[1],0)/wsum;
   return {score,level:score>=.7?"green":score>=.4?"yellow":"red",off:!!l.ro};
@@ -2364,12 +2505,23 @@ function adjusted(e,rd){
   if(rd.level==="yellow")return {sets:Math.max(2,e.sets-1),rir:e.rir+1};
   return {sets:Math.max(2,Math.ceil(e.sets*.6)),rir:e.rir+2};
 }
-function setLine(e,rd){
+/* Superset groups: a run of exercises chained by ss ("superset with next"). Info per index: {g:"A", k:1-based position, n:size, s:first index, e:last index}. */
+function ssGroups(ex){
+  const out=ex.map(()=>null);let L=0;
+  for(let i=0;i<ex.length;){
+    if(ex[i].ss&&i<ex.length-1){let j=i;while(j<ex.length-1&&ex[j].ss)j++;const g=String.fromCharCode(65+(L++%26));for(let k=i;k<=j;k++)out[k]={g,k:k-i+1,n:j-i+1,s:i,e:j};i=j+1}
+    else i++;
+  }
+  return out;
+}
+const ssRounds=(ex,gi,rd)=>Math.max(...ex.slice(gi.s,gi.e+1).map(x=>adjusted(x,rd).sets));
+function setLine(e,rd,gi){
   const a=adjusted(e,rd);
   let reps=e.reps;
   if(e.bmReps&&a.rir!==e.rir)reps=String(Math.max(1,parseInt(e.reps)-(a.rir-e.rir)));
   const changed=a.sets!==e.sets||a.rir!==e.rir;
-  return `<b>${a.sets} × ${reps}</b> · ${a.rir} RIR · ${e.ss?"no rest, straight to the next":"rest "+e.rest+"s"}${changed?` <span class="badge a">readiness</span>`:""}`;
+  const rest=gi?(gi.k<gi.n?`then straight to ${gi.g}${gi.k+1}`:`rest ${e.rest}s, then back to ${gi.g}1`):e.ss?"no rest, straight to the next":"rest "+e.rest+"s";
+  return `<b>${a.sets} × ${reps}</b> · ${a.rir} RIR · ${rest}${changed?` <span class="badge a">readiness</span>`:""}`;
 }
 function renderReady(){
   const d=selDay(),l=S.log[d.date]||{},rd=readiness(d.date);
@@ -3078,7 +3230,444 @@ function healthHash(){
 }
 setTimeout(healthHash,0);
 
-initTheme();regen();renderAll();restoreNav();initSync();initSys();
+/* ===================== V3: COACHING + HEALTH AUTO-SYNC ===================== */
+/* Server tables (supabase/v3.sql): coach_links, coach_invites, assignments, messages, checkins, health_daily, health_tokens.
+   A coach NEVER writes into a client's progress row. Coach writes go to assignments / messages / checkin replies; the
+   client app pulls them on every sync and overlays them (S.cx), which is local-only and never pushed. */
+const CXK="eliteCoachOn",CNK="eliteCoachName",HTK="eliteHealthToken";
+S.cx=S.cx&&typeof S.cx==="object"?S.cx:{};
+function cx(){const c=S.cx=S.cx&&typeof S.cx==='object'?S.cx:{};c.links=c.links||[];c.asg=c.asg||{};c.msgs=c.msgs||[];c.ci=c.ci||{};return c}
+S.hd=S.hd&&typeof S.hd==="object"?S.hd:{};
+function coachOn(){return lsGet("eliteCoachOn")==="1"}
+function uidMe(){return SY.sess&&SY.sess.uid}
+function myCoaches(){return uidMe()?cx().links.filter(l=>l.client_id===uidMe()):[]}
+function myClients(){return uidMe()?cx().links.filter(l=>l.coach_id===uidMe()):[]}
+function cxHabits(){const o=[];myCoaches().forEach(l=>(Array.isArray(l.habits)?l.habits:[]).forEach(h=>{if(typeof h==="string"&&h.trim()&&o.length<10)o.push({t:h.trim().slice(0,80),by:l.coach_name})}));return o}
+const sbGet=async p=>sbFetch(p,{},await sbToken());
+const sbRpc=async(fn,args)=>sbFetch("/rest/v1/rpc/"+fn,{method:"POST",body:JSON.stringify(args||{})},await sbToken());
+const sbUpsert=async(table,rows,onc)=>sbFetch("/rest/v1/"+table+"?on_conflict="+onc,{method:"POST",headers:{Prefer:"resolution=merge-duplicates,return=minimal"},body:JSON.stringify(rows)},await sbToken());
+const sbDel=async p=>sbFetch("/rest/v1/"+p,{method:"DELETE",headers:{Prefer:"return=minimal"}},await sbToken());
+const v3Err=e=>e&&(e.status===404||/relation|does not exist|schema cache/i.test(e.message))?"Coaching is not set up on the server yet. Run supabase/v3.sql.":(e&&e.message)||"Failed";
+const fmtTime=t=>{const d=new Date(t);return isNaN(d)?"":d.toLocaleDateString(undefined,{month:"short",day:"numeric"})+" "+d.toLocaleTimeString(undefined,{hour:"numeric",minute:"2-digit"})};
+
+/* ---------- readiness from Health (HRV and resting heart rate vs your own 14-day baseline) ---------- */
+function healthParts(log,hd,date){
+  const h=hd&&hd[date];if(!h)return [];
+  const base=k=>{const v=[];for(let i=1;i<=14;i++){const x=hd[addD(date,-i)];if(x&&+x[k]>0)v.push(+x[k])}return v.length>=3?v.reduce((a,b)=>a+b,0)/v.length:0};
+  const out=[],cl=x=>Math.max(0,Math.min(1,x));
+  const bh=base("hrv");if(+h.hrv>0&&bh)out.push([.3,cl((h.hrv/bh-.85)/.25)]);
+  const br=base("rhr");if(+h.rhr>0&&br)out.push([.15,cl(1-(h.rhr-br)/7)]);
+  return out;
+}
+
+/* ---------- pull everything the server holds for me ---------- */
+let cxPulling=false;
+async function pullV3(){
+  if(!SY.sess||cxPulling)return;
+  cxPulling=true;
+  try{
+    S.hd=S.hd||{};const me=uidMe(),from=addD(TODAY,-21);
+    const [links,asg,msgs,ci,hd]=await Promise.all([
+      sbGet("/rest/v1/coach_links?select=coach_id,client_id,coach_name,client_name,habits"),
+      sbGet(`/rest/v1/assignments?select=coach_id,date,session,note,updated_at&client_id=eq.${me}&date=gte.${from}`),
+      sbGet(`/rest/v1/messages?select=id,coach_id,client_id,author,date,body,created_at&client_id=eq.${me}&order=created_at.desc&limit=60`),
+      sbGet(`/rest/v1/checkins?select=week,data,reply,replied_at&client_id=eq.${me}&week=gte.${addD(TODAY,-70)}`),
+      sbGet(`/rest/v1/health_daily?select=date,steps,weight_kg,sleep_h,rhr,hrv,kcal&user_id=eq.${me}&date=gte.${addD(TODAY,-90)}`)
+    ]);
+    const c=cx(),before=JSON.stringify([c.links,c.asg,c.msgs,c.ci,S.hd]);
+    c.links=links||[];
+    const coachName=id=>(c.links.find(l=>l.coach_id===id)||{}).coach_name||"Coach";
+    const A={};(asg||[]).forEach(a=>{if(!A[a.date]||A[a.date].mt<a.updated_at)A[a.date]=Object.assign({},a.session,{note:a.note,coach:coachName(a.coach_id),mt:a.updated_at})});
+    c.asg=A;c.msgs=msgs||[];
+    const C={};(ci||[]).forEach(r=>C[r.week]=r);c.ci=C;
+    let dataChanged=false;
+    (hd||[]).forEach(r=>{
+      const d=r.date;S.hd[d]={rhr:r.rhr!=null?+r.rhr:0,hrv:r.hrv!=null?+r.hrv:0,kcal:r.kcal||0,sleep:r.sleep_h!=null?+r.sleep_h:0,steps:r.steps||0,w:r.weight_kg!=null?+r.weight_kg:0};
+      if(r.steps>0&&S.steps[d]!==r.steps){S.steps[d]=r.steps;dataChanged=true}
+      const l=S.log[d]=S.log[d]||{};
+      if(r.weight_kg>0&&(!l.w||l.wh)&&Math.abs((+l.w||0)-r.weight_kg)>.01){l.w=+r.weight_kg;l.wh=1;dataChanged=true}
+      if(r.sleep_h>0&&(!l.s||l.sh)&&String(l.s)!==String(+r.sleep_h)){l.s=String(+r.sleep_h);l.sh=1;dataChanged=true}
+      if(!Object.keys(l).length)delete S.log[d];
+    });
+    const changed=dataChanged||before!==JSON.stringify([c.links,c.asg,c.msgs,c.ci,S.hd]);
+    if(changed){save();regen();renderAll(TAB==="profile"&&document.activeElement&&document.activeElement.closest&&document.activeElement.closest("#pane-profile"));if(TAB!=="profile")renderCoachProf()}
+    renderNavCoach();
+  }catch(e){console.warn("v3 pull",e)}
+  finally{cxPulling=false}
+}
+
+/* ---------- client side: assignment overlay is applied inside buildWeek via st.cx ---------- */
+function asgSession(a,dow,p,wk){
+  const s=customSessions({cplan:{mode:"custom",deload:false,active:"c",plans:{c:{name:"c",days:{[dow]:{name:a.name,ex:a.ex||[]}}}}}},p,wk);
+  return s&&s[0]?Object.assign(s[0],{coach:a.coach||"Coach"}):null;
+}
+
+/* Today: coach note, coach messages, coach habits */
+function renderCoachToday(){
+  const d=selDay(),a=cx().asg[d.date],box=$("coachBox");
+  if(a&&$("wList")){
+    $("wList").insertAdjacentHTML("afterbegin",`<div class="note">📋 <b>${a.ex&&a.ex.length?"Assigned by":"Rest day set by"} ${esc(a.coach||"your coach")}.</b>${a.note?" "+esc(a.note):""}</div>`);
+  }
+  const hs=cxHabits();
+  if(hs.length&&$("hList"))$("hList").insertAdjacentHTML("beforeend",hs.map((h,i)=>row(`${d.date}|hab|c${i}`,esc(h.t),"From "+esc(h.by||"your coach"))).join(""));
+  if(!box)return;
+  const cs=myCoaches();
+  if(!SY.sess||!cs.length){box.innerHTML="";return}
+  const ms=cx().msgs.slice(0,6).reverse();
+  box.innerHTML=`<div class="card" data-s="w"><h2><span>💬 ${esc(cs.map(c=>c.coach_name||"Coach").join(", "))}</span><span class="badge">Coach</span></h2>
+   ${ms.length?ms.map(m=>msgHTML(m,uidMe())).join(""):'<div class="d">No messages yet. Ask your coach anything here.</div>'}
+   <div style="display:flex;gap:8px;margin-top:8px">${cs.length>1?`<select id="cmTo">${cs.map(c=>`<option value="${esc(c.coach_id)}">${esc(c.coach_name||"Coach")}</option>`).join("")}</select>`:""}<input id="cmIn" placeholder="Message your coach" maxlength="2000" style="flex:1;min-width:0"/><button class="btn pri" id="cmSend">Send</button></div></div>`;
+}
+const msgHTML=(m,me)=>`<div class="msg ${m.author===me?"me":""}"><div>${esc(m.body)}</div><small>${m.date?"About "+esc(dateLabel(m.date))+" · ":""}${esc(fmtTime(m.created_at))}</small></div>`;
+async function sendMsg(coach_id,client_id,body,date,after){
+  body=String(body||"").trim().slice(0,2000);if(!body)return;
+  try{
+    const o={coach_id,client_id,body};if(date)o.date=date;
+    await sbFetch("/rest/v1/messages",{method:"POST",headers:{Prefer:"return=minimal"},body:JSON.stringify(o)},await sbToken());
+    if(after)await after();
+  }catch(e){alert("Message not sent: "+v3Err(e))}
+}
+
+/* Progress: check-in for the coach */
+function renderCoachCheckin(){
+  const el=$("checkin");if(!el||!SY.sess||!myCoaches().length)return;
+  const wk=mondayOf(TODAY),cur=cx().ci[wk]||{},dd=cur.data||{};
+  const sel=(k,l)=>`<div class="cg"><label>${l}</label><select data-ci="${k}"><option value="">–</option>${[1,2,3,4,5].map(v=>`<option value="${v}" ${+dd[k]===v?"selected":""}>${v}</option>`).join("")}</select></div>`;
+  el.insertAdjacentHTML("beforeend",`<h3>Send this week's check-in to your coach</h3>
+   <div class="fgrid">${sel("energy","Energy (1–5)")}${sel("hunger","Hunger (1–5)")}${sel("stress","Stress (1–5)")}${sel("sleepq","Sleep quality (1–5)")}${sel("adh","Stuck to the plan (1–5)")}</div>
+   <textarea data-ci="wins" placeholder="Wins this week" maxlength="600" style="margin-top:8px">${esc(dd.wins||"")}</textarea>
+   <textarea data-ci="hard" placeholder="What was hard, any pain or injury" maxlength="600" style="margin-top:8px">${esc(dd.hard||"")}</textarea>
+   <textarea data-ci="ask" placeholder="Question for your coach" maxlength="600" style="margin-top:8px">${esc(dd.ask||"")}</textarea>
+   <div style="display:flex;gap:8px;align-items:center;margin-top:8px"><button class="btn pri" id="ciSend">${cur.week?"Update check-in":"Send check-in"}</button><span class="d" id="ciMsg">${cur.week?"Sent for the week of "+esc(dateLabel(wk)):""}</span></div>
+   ${cur.reply?`<div class="note" style="margin-top:8px"><b>Coach reply:</b> ${esc(cur.reply)}</div>`:""}`);
+}
+function ciAuto(){
+  const days=[];for(let i=0;i<7;i++)days.push(addD(TODAY,-i));
+  const av=f=>{const v=days.map(f).filter(x=>x>0);return v.length?r1(v.reduce((a,b)=>a+b,0)/v.length):0};
+  const wl=Object.entries(S.wlog||{}).filter(([d,l])=>l&&l.end&&d>=days[6]).length;
+  return {kg:av(d=>+(S.log[d]||{}).w||0),sleep:av(d=>parseFloat((S.log[d]||{}).s)||0),steps:Math.round(av(d=>S.steps[d]||0)),workouts:wl,planned:W.nTrain};
+}
+async function sendCheckin(){
+  const data={};document.querySelectorAll("[data-ci]").forEach(x=>{if(x.value!=="")data[x.dataset.ci]=x.tagName==="SELECT"?+x.value:x.value.slice(0,600)});
+  data.auto=ciAuto();
+  const wk=mondayOf(TODAY);
+  $("ciMsg").textContent="Sending…";
+  try{await sbUpsert("checkins",[{client_id:uidMe(),week:wk,data,updated_at:new Date().toISOString()}],"client_id,week");$("ciMsg").textContent="Sent ✓";cx().ci[wk]=Object.assign(cx().ci[wk]||{},{week:wk,data});save()}
+  catch(e){$("ciMsg").textContent=v3Err(e)}
+}
+
+/* Workout history: show coach comments under each session */
+function renderWlogComments(){
+  const box=$("wlogBox");if(!box||!cx().msgs.length)return;
+  const by={};cx().msgs.forEach(m=>{if(m.date)(by[m.date]=by[m.date]||[]).push(m)});
+  box.querySelectorAll(".row").forEach(r=>{const t=r.querySelector(".ims");if(!t)return;const d=Object.keys(S.wlog||{}).find(k=>dateLabel(k)===t.textContent);if(d&&by[d])r.querySelector(".body").insertAdjacentHTML("beforeend",by[d].map(m=>`<div class="note">💬 ${esc(m.body)}</div>`).join(""))});
+}
+
+/* ---------- Profile: coaching card ---------- */
+function renderCoachProf(){
+  const el=$("coachProf");if(!el)return;
+  if(!SY.sess){el.innerHTML='<div class="d">Sign in above to work with a coach, or to coach other people.</div>';return}
+  const cs=myCoaches();
+  el.innerHTML=`<h3>My coach</h3>
+   ${cs.length?cs.map(c=>`<div class="row" style="cursor:default"><div class="body"><div class="t">${esc(c.coach_name||"Coach")}</div><div class="d">Can see your plan, logs, workouts, check-ins and Health data. Can assign workouts and habits. Cannot change your own data.</div></div><div class="btns"><button class="btn danger" data-cxstop="${esc(c.coach_id)}">Stop sharing</button></div></div>`).join(""):'<div class="d">Got an invite code from your coach? Enter it here. Your coach will be able to see your progress until you stop sharing.</div>'}
+   <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:8px"><input id="cxName" placeholder="Your name (your coach sees this)" maxlength="60" value="${esc(lsGet(CNK)||"")}" style="flex:1;min-width:160px"/><input id="cxCode" placeholder="Invite code" maxlength="12" style="width:140px;text-transform:uppercase"/><button class="btn pri" id="cxJoin">Join coach</button></div>
+   <div class="d" id="cxMsg" style="margin-top:6px"></div>
+   <h3>I coach other people</h3>
+   <label class="trchk"><input type="checkbox" id="cxOn" ${coachOn()?"checked":""}/> Show the Clients tab</label>`;
+}
+async function joinCoach(){
+  const code=$("cxCode").value.trim(),name=cleanName($("cxName").value);
+  if(!code){$("cxCode").focus();return}
+  if(!name){$("cxMsg").textContent="Add your name so your coach knows who joined.";$("cxName").focus();return}
+  lsSet(CNK,name);$("cxMsg").textContent="Joining…";
+  try{const r=await sbRpc("coach_invite_accept",{invite:code,my_name:name});$("cxMsg").textContent="Connected to "+(r&&r.coach_name||"your coach")+" ✓";await pullV3();renderCoachProf()}
+  catch(e){$("cxMsg").textContent=v3Err(e)}
+}
+async function stopCoach(coach){
+  if(!confirm("Stop sharing your progress with this coach? Their assigned workouts and messages are removed too."))return;
+  try{await sbDel(`coach_links?coach_id=eq.${coach}&client_id=eq.${uidMe()}`);await pullV3();regen();renderAll()}catch(e){alert(v3Err(e))}
+}
+
+/* ---------- Health auto-sync card ---------- */
+function renderHealthSync(){
+  const b=$("healthBox");if(!b)return;
+  const tok=lsGet(HTK),ep=SB_URL+"/rest/v1/rpc/health_ingest",last=Object.keys(S.hd||{}).sort().pop();
+  const recipe=`<ol class="hsteps">
+    <li>Open <b>Shortcuts</b> → <b>Automation</b> → <b>+</b> → <b>Time of Day</b>: 9:00 PM, Daily, <b>Run Immediately</b> (turn off Notify When Run). Tap Next → New Blank Automation.</li>
+    <li>Add <b>Find Health Samples</b>: Type <b>Steps</b>, Start Date <b>is today</b>. Add <b>Calculate Statistics</b>: Sum. Add <b>Set Variable</b> named <b>steps</b>.</li>
+    <li>Repeat for <b>Active Energy</b> (Sum → <b>kcal</b>), <b>Resting Heart Rate</b> (Average, start date in the last 1 day → <b>rhr</b>), <b>Heart Rate Variability</b> (Average, last 1 day → <b>hrv</b>), <b>Weight</b> (Sort by Start Date, Latest First, Limit 1 → <b>weight</b>).</li>
+    <li>Sleep: <b>Find Health Samples</b> Type <b>Sleep Analysis</b>, Start Date in the last 1 day, Value is <b>Asleep</b> (or Core/Deep/REM). Add <b>Calculate Statistics</b>: Sum of the Duration → <b>sleep</b> (minutes or hours both work).</li>
+    <li>Add <b>Dictionary</b> with keys: <code>token</code> (text, your key below) and <code>payload</code> (Dictionary with <code>date</code> = Current Date formatted <b>yyyy-MM-dd</b>, <code>steps</code>, <code>kcal</code>, <code>rhr</code>, <code>hrv</code>, <code>weight</code>, <code>unit</code> = ${metric()?"kg":"lb"}, <code>sleep</code>).</li>
+    <li>Add <b>Get Contents of URL</b>: URL below, Method <b>POST</b>, Headers <code>apikey</code> = the app key below and <code>Content-Type</code> = <code>application/json</code>, Request Body <b>File</b> = the Dictionary.</li>
+    <li>Run it once with ▶. The app shows the new day the next time it syncs.</li></ol>`;
+  b.insertAdjacentHTML("afterbegin",`<h3 style="margin-top:0">Automatic daily sync</h3>
+   ${!SY.sess?'<div class="d">Sign in (Profile → Sync) to turn on automatic Health sync.</div>':
+   `<div class="d">Set up once. Your phone then sends steps, weight, sleep, resting heart rate, HRV and active calories every day, even when the app is closed. Sleep, HRV and resting heart rate feed the readiness check.${last?` Last Health data: <b>${esc(dateLabel(last))}</b>.`:""}</div>
+   ${tok?`<div class="fgrid" style="margin-top:8px"><div class="cg"><label>Your sync key (private, like a password)</label><input readonly value="${esc(tok)}" id="htTok" onclick="this.select()"/></div><div class="cg"><label>URL</label><input readonly value="${esc(ep)}" onclick="this.select()"/></div><div class="cg"><label>App key (apikey header)</label><input readonly value="${esc(SB_KEY)}" onclick="this.select()"/></div></div>
+     <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:8px"><button class="btn" id="htCopy">Copy key</button><button class="btn" id="htNew">New key</button><button class="btn danger" id="htOff">Turn off</button><button class="btn" id="htTest">Send a test</button></div>`
+   :`<div style="margin-top:8px"><button class="btn pri" id="htNew">Create my sync key</button></div>`}
+   <details class="rec"><summary>📱 iPhone: set up the daily Shortcut (5 minutes, once)</summary>${recipe}</details>
+   <details class="rec"><summary>🤖 Android</summary><div class="d" style="margin-top:6px">Android does not let web apps read Health Connect. Use any automation app that can read your health data and send a web request (for example a Tasker profile or a Health Connect export app) to POST the same JSON to the URL above with the <code>apikey</code> header. Otherwise use the CSV import below. A native Android app is on the roadmap.</div></details>
+   <div class="d" id="htMsg" style="margin-top:6px"></div>`}
+   <h3>Manual entry and import</h3>`);
+}
+async function healthKey(on){
+  try{
+    if(on){if(lsGet(HTK)&&!confirm("Make a new key? The old one stops working, so update your Shortcut."))return;const t=await sbRpc("health_token_new");lsSet(HTK,t)}
+    else{if(!confirm("Turn off automatic Health sync? Your Shortcut will stop working. Data already synced stays."))return;await sbRpc("health_token_revoke");try{localStorage.removeItem(HTK)}catch(e){}}
+    renderProgress();
+  }catch(e){const m=$("htMsg");if(m)m.textContent=v3Err(e)}
+}
+async function healthTest(){
+  const m=$("htMsg");m.textContent="Sending a test with today's steps…";
+  try{
+    const r=await sbFetch("/rest/v1/rpc/health_ingest",{method:"POST",body:JSON.stringify({token:lsGet(HTK),payload:{date:TODAY,steps:S.steps[TODAY]||0}})});
+    m.textContent=r&&r.ok?"Server accepted it ✓ Your key works.":"Unexpected reply";
+  }catch(e){m.textContent="Test failed: "+v3Err(e)}
+}
+
+/* ===================== COACH: CLIENTS TAB ===================== */
+const CO={sel:"",rows:{},hd:{},ci:{},asg:{},msgs:{},loading:false,msg:"",code:"",wk:0,day:"",edit:null};
+function renderNavCoach(){
+  const b=$("tabCoach");if(!b)return;
+  const show=coachOn()&&!!SY.sess;
+  b.hidden=!show;document.querySelector(".tabs").classList.toggle("six",show);
+  if(!show&&TAB==="coach")showTab("plan");
+}
+async function loadClients(){
+  if(!SY.sess)return;
+  CO.loading=true;renderCoach();
+  try{
+    const links=await sbGet(`/rest/v1/coach_links?select=coach_id,client_id,coach_name,client_name,habits,created_at&coach_id=eq.${uidMe()}`);
+    cx().links=cx().links.filter(l=>l.coach_id!==uidMe()).concat(links||[]);
+    const ids=(links||[]).map(l=>l.client_id);
+    if(ids.length){
+      const inn=`in.(${ids.join(",")})`,from=addD(TODAY,-35);
+      const [pr,hd,ci,asg,ms]=await Promise.all([
+        sbGet(`/rest/v1/progress?select=user_id,data,mtime&user_id=${inn}`),
+        sbGet(`/rest/v1/health_daily?select=user_id,date,steps,weight_kg,sleep_h,rhr,hrv&user_id=${inn}&date=gte.${from}`),
+        sbGet(`/rest/v1/checkins?select=client_id,week,data,reply,replied_at,updated_at&client_id=${inn}&week=gte.${addD(TODAY,-63)}&order=week.desc`),
+        sbGet(`/rest/v1/assignments?select=client_id,date,session,note,updated_at&coach_id=eq.${uidMe()}&date=gte.${addD(TODAY,-28)}`),
+        sbGet(`/rest/v1/messages?select=id,client_id,author,date,body,created_at&coach_id=eq.${uidMe()}&order=created_at.desc&limit=300`)
+      ]);
+      CO.rows={};(pr||[]).forEach(r=>CO.rows[r.user_id]=r.data||{});
+      CO.hd={};(hd||[]).forEach(r=>{(CO.hd[r.user_id]=CO.hd[r.user_id]||{})[r.date]={steps:r.steps||0,w:+r.weight_kg||0,sleep:+r.sleep_h||0,rhr:+r.rhr||0,hrv:+r.hrv||0}});
+      CO.ci={};(ci||[]).forEach(r=>(CO.ci[r.client_id]=CO.ci[r.client_id]||[]).push(r));
+      CO.asg={};(asg||[]).forEach(r=>{(CO.asg[r.client_id]=CO.asg[r.client_id]||{})[r.date]=Object.assign({},r.session,{note:r.note,mt:r.updated_at})});
+      CO.msgs={};(ms||[]).forEach(m=>(CO.msgs[m.client_id]=CO.msgs[m.client_id]||[]).push(m));
+    }
+    CO.msg="";
+  }catch(e){CO.msg=v3Err(e)}
+  CO.loading=false;renderCoach();
+}
+/* Client state rebuilt from their synced row, so the same engine (buildWeek) shows their real week */
+function clientState(id){
+  const d=CO.rows[id]||{},st=Object.assign(freshState(),JSON.parse(JSON.stringify(d)));
+  st.prof=Object.assign(JSON.parse(JSON.stringify(DEFP)),d.prof||{});st.cplan=normCP(st.cplan);
+  st.cx={asg:CO.asg[id]||{}};st.hd=CO.hd[id]||{};
+  return st;
+}
+function clientStats(id){
+  const st=clientState(id),hd=st.hd,days=n=>{const o=[];for(let i=0;i<n;i++)o.push(addD(TODAY,-i));return o};
+  const done=Object.entries(st.wlog||{}).filter(([,l])=>l&&l.end).map(([d])=>d).sort();
+  const last=done[done.length-1]||"";
+  const cp=st.cplan,custom=cp.mode==="custom",pd=custom?(cp.plans[cp.active]||{}).days||{}:{};
+  const perWk=Math.max(1,custom?Object.values(pd).filter(x=>x&&x.ex&&x.ex.length).length:+st.prof.days||4);
+  const d28=days(28),d7=days(7);
+  const n28=done.filter(d=>d>=d28[27]).length,n7=done.filter(d=>d>=d7[6]).length;
+  const adh=Math.min(1,n28/(perWk*4));
+  const wv=d28.map(d=>+((st.log[d]||{}).w)||(hd[d]&&hd[d].w)||0).reverse();
+  const wNow=wv.filter(x=>x>0),avg=a=>a.length?a.reduce((x,y)=>x+y,0)/a.length:0;
+  const wA=avg(wv.slice(0,7).filter(x=>x>0)),wB=avg(wv.slice(21).filter(x=>x>0)),wDelta=wA&&wB?(wB-wA)/3:0;
+  const steps=Math.round(avg(d7.map(d=>(st.steps||{})[d]||(hd[d]&&hd[d].steps)||0).filter(x=>x>0)));
+  const nh=3+((CO_link(id)||{}).habits||[]).length;
+  let hk=0;d7.forEach(d=>Object.keys(st.checks||{}).forEach(k=>{if(k.startsWith(d+"|hab|")&&st.checks[k])hk++}));
+  const habAdh=Math.min(1,hk/(7*nh));
+  const ci=(CO.ci[id]||[])[0],ciWeek=mondayOf(TODAY),ciThis=ci&&ci.week>=addD(ciWeek,-7);
+  const prs=[];{const m={};Object.values(st.hist||{}).forEach(h=>(m[h.u]=m[h.u]||[]).push(h));Object.values(m).forEach(a=>{a.sort((x,y)=>x.d<y.d?-1:1);let b=0;a.forEach((h,i)=>{const v=valOf(h);if(v>b){if(i>0&&h.d>=addD(TODAY,-14))prs.push(h);b=v}})})}
+  const lr=d7.map(d=>{const l=st.log[d]||{},s=parseFloat(l.s),e=parseFloat(l.e),sr=parseFloat(l.sr),p=[];if(s>0)p.push([.4,Math.max(0,Math.min(1,(s-5)/3))]);if(e>0)p.push([.35,(e-1)/4]);if(sr>0)p.push([.25,(5-sr)/4]);healthParts(st.log,hd,d).forEach(x=>p.push(x));if(!p.length)return null;const ws=p.reduce((a,x)=>a+x[0],0),sc=p.reduce((a,x)=>a+x[0]*x[1],0)/ws;return {d,sc,lv:sc>=.7?"green":sc>=.4?"yellow":"red"}}).find(Boolean);
+  const score=Math.round((.6*adh+.25*habAdh+.15*(ciThis?1:0))*100);
+  const flags=[];
+  if(!CO.rows[id])flags.push(["r","No synced data yet"]);
+  else if(!last||diffD(last,TODAY)>=7)flags.push(["r",last?"No workout in "+diffD(last,TODAY)+" days":"No workouts logged"]);
+  if(adh<.6&&CO.rows[id])flags.push(["a","Adherence "+Math.round(adh*100)+"%"]);
+  if(ci&&!ci.reply)flags.push(["b","Check-in to review"]);
+  if(lr&&lr.lv==="red")flags.push(["r","Readiness red"]);
+  const lm=(CO.msgs[id]||[])[0];
+  if(lm&&lm.author===id)flags.push(["b","Message waiting"]);
+  return {st,last,n7,n28,perWk,adh,habAdh,wNow:wNow[wNow.length-1]||0,wDelta,wv:wv.filter(x=>x>0),steps,ci,ciThis,prs,lr,score,flags};
+}
+const CO_link=id=>cx().links.find(l=>l.coach_id===uidMe()&&l.client_id===id);
+const flagW=s=>s.flags.reduce((t,f)=>t+(f[0]==="r"?3:f[0]==="a"?2:1),0);
+const flagHTML=f=>`<span class="badge ${f[0]==="r"?"rd":f[0]==="a"?"a":"bl"}">${esc(f[1])}</span>`;
+
+function renderCoach(){
+  const el=$("pane-coach");if(!el)return;
+  if(!SY.sess){el.innerHTML='<div class="card"><h2><span>Clients</span></h2><div class="d">Sign in from Profile → Sync to coach clients.</div></div>';return}
+  if(CO.sel&&CO_link(CO.sel))return renderClient(CO.sel);
+  CO.sel="";
+  const cl=myClients(),stats=cl.map(l=>[l,clientStats(l.client_id)]).sort((a,b)=>flagW(b[1])-flagW(a[1])||a[1].score-b[1].score);
+  el.innerHTML=`<div class="card"><h2><span>Clients</span><span style="display:flex;gap:8px;align-items:center"><span class="badge">${cl.length}</span><button class="btn" id="coRefresh">↻ Refresh</button></span></h2>
+   ${CO.loading?'<div class="d">Loading…</div>':""}${CO.msg?`<div class="note">${esc(CO.msg)}</div>`:""}
+   ${stats.length?`<div class="cogrid">${stats.map(([l,s])=>`<button type="button" class="cocard" data-co="${esc(l.client_id)}">
+     <div class="coh"><b>${esc(l.client_name||"Client")}</b><span class="coscore ${s.score>=80?"g":s.score>=55?"a":"r"}">${s.score}</span></div>
+     <div class="cokv"><span>Workouts 7 d</span><b>${s.n7} / ${s.perWk}</b></div>
+     <div class="cokv"><span>Adherence 28 d</span><b>${Math.round(s.adh*100)}%</b></div>
+     <div class="cokv"><span>Last workout</span><b>${s.last?esc(dateLabel(s.last,{month:"short",day:"numeric"})):"–"}</b></div>
+     <div class="cokv"><span>Weight</span><b>${s.wNow?dW(s.wNow)+" "+wU():"–"}${s.wDelta?` <small style="color:var(--muted)">${s.wDelta>0?"+":""}${dW(s.wDelta)}/wk</small>`:""}</b></div>
+     <div class="cokv"><span>Steps 7 d</span><b>${s.steps?s.steps.toLocaleString():"–"}</b></div>
+     <div class="cokv"><span>Readiness</span><b>${s.lr?`<span class="dot ${s.lr.lv}"></span>${s.lr.lv}`:"–"}</b></div>
+     ${s.wv.length>1?sparkline(s.wv,220,30):""}
+     <div class="coflags">${s.flags.map(flagHTML).join("")}${s.prs.length?`<span class="badge g">🏆 ${s.prs.length} PR${s.prs.length>1?"s":""} in 14 d</span>`:""}</div>
+    </button>`).join("")}</div>`:'<div class="d">No clients yet. Create an invite code below and send it to your client. They enter it in Profile → Coaching.</div>'}
+   <div class="d" style="margin-top:8px">Score = 60% workouts done vs planned (28 d) + 25% habits (7 d) + 15% check-in sent this week or last. Clients that need attention are listed first.</div></div>
+   <div class="card"><h2><span>Invite a client</span></h2>
+    <div style="display:flex;gap:8px;flex-wrap:wrap"><input id="coName" placeholder="Your name as clients see it" maxlength="60" value="${esc(lsGet(CNK)||"")}" style="flex:1;min-width:180px"/><button class="btn pri" id="coInvite">Create invite code</button></div>
+    ${CO.code?`<div class="cocode">${esc(CO.code)}</div><div class="d">Valid for 7 days, for any number of clients. Creating a new code cancels this one.</div><div style="margin-top:8px"><button class="btn" id="coShare">Share code</button></div>`:""}
+   </div>`;
+}
+async function coInvite(){
+  const n=cleanName($("coName").value);if(!n){$("coName").focus();return}
+  lsSet(CNK,n);
+  try{CO.code=await sbRpc("coach_invite_new",{my_name:n});renderCoach()}catch(e){CO.msg=v3Err(e);renderCoach()}
+}
+async function coShare(){
+  const text=`Join me as your coach on Elite OS. Open ${APP_URL}, create an account (Profile → Sync), then go to Profile → Coaching and enter code ${CO.code}`;
+  try{if(navigator.share)await navigator.share({title:"Coach invite",text});else if(navigator.clipboard){await navigator.clipboard.writeText(text);alert("Invite copied")}else prompt("Copy",text)}catch(e){}
+}
+
+/* ---------- client detail ---------- */
+function renderClient(id){
+  const el=$("pane-coach"),l=CO_link(id),s=clientStats(id),st=s.st;
+  const mon=addD(mondayOf(TODAY),CO.wk*7);
+  let wk=null;try{wk=buildWeek(st.prof,st,mon,TODAY)}catch(e){console.warn(e)}
+  const ms=(CO.msgs[id]||[]).filter(m=>!m.date).slice(0,12).reverse();
+  const cis=(CO.ci[id]||[]).slice(0,4);
+  const hist=Object.entries(st.wlog||{}).filter(([,x])=>x&&x.end).sort((a,b)=>a[0]<b[0]?1:-1).slice(0,8);
+  const cmt=d=>(CO.msgs[id]||[]).filter(m=>m.date===d);
+  el.innerHTML=`<div class="card"><h2><span><button class="btn" id="coBack">‹ Clients</button> ${esc(l.client_name||"Client")}</span><span class="coscore ${s.score>=80?"g":s.score>=55?"a":"r"}">${s.score}</span></h2>
+    <div class="coflags">${s.flags.map(flagHTML).join("")}</div>
+    <div class="kpis" style="margin-top:8px"><div class="kpi"><div class="l">Workouts 7 / 28 d</div><div class="v">${s.n7} / ${s.n28}</div><div class="s">Plans ${s.perWk}/week · ${Math.round(s.adh*100)}% adherence</div></div>
+     <div class="kpi"><div class="l">Weight</div><div class="v">${s.wNow?dW(s.wNow)+" "+wU():"–"}</div><div class="s">${s.wDelta?(s.wDelta>0?"+":"")+dW(s.wDelta)+" "+wU()+"/week (4-week trend)":"Not enough weigh-ins"}</div>${s.wv.length>1?sparkline(s.wv,200,28):""}</div>
+     <div class="kpi"><div class="l">Habits 7 d · steps</div><div class="v">${Math.round(s.habAdh*100)}%</div><div class="s">${s.steps?s.steps.toLocaleString()+" steps/day":"No steps"}</div></div>
+     <div class="kpi"><div class="l">Goal · plan</div><div class="v" style="font-size:1rem">${esc(st.prof.goal)} · ${st.cplan.mode==="custom"?"own plan":"auto plan"}</div><div class="s">${esc(st.prof.exp)} · ${st.prof.days} days · ${st.prof.len} min</div></div></div></div>
+
+   <div class="card"><h2><span>📅 Calendar</span><span style="display:flex;gap:6px;align-items:center"><button class="btn" data-cowk="-1">‹</button><b>${esc(dateLabel(mon,{month:"short",day:"numeric"}))}</b><button class="btn" data-cowk="1">›</button>${CO.wk?'<button class="btn" data-cowk="0">This week</button>':""}</span></h2>
+    <div class="cocal">${wk?wk.days.map(d=>{const a=(CO.asg[id]||{})[d.date],lg=(st.wlog||{})[d.date],done=lg&&lg.end;
+      return `<button type="button" class="coday ${CO.day===d.date?"on":""} ${d.date===TODAY?"today":""}" data-coday="${d.date}"><small>${esc(dateLabel(d.date,{weekday:"short",day:"numeric"}))}</small><b>${esc(d.session?d.session.name:d.label)}</b>${a?'<span class="badge bl">Assigned</span>':""}${done?`<span class="badge g">✓ ${lg.sets} sets</span>`:d.date<TODAY&&d.session?'<span class="badge rd">Missed</span>':""}</button>`}).join(""):'<div class="d">Could not build this client\'s week.</div>'}</div>
+    ${CO.day?coDayEditor(id,wk):'<div class="d" style="margin-top:8px">Tap a day to assign or change the workout.</div>'}
+    <h3>Assign a program</h3><div class="d">Copies one of your own plans (Train tab) onto this client's calendar.</div>
+    <div class="fgrid" style="margin-top:6px"><div class="cg"><label>Your plan</label><select id="coProg">${coPlans().map(([pid,p])=>`<option value="${esc(pid)}">${esc(p.name)} (${Object.values(p.days).filter(x=>x&&x.ex&&x.ex.length).length} days)</option>`).join("")}</select></div>
+     <div class="cg"><label>Start (Monday)</label><input type="date" id="coStart" value="${esc(addD(mondayOf(TODAY),7))}"/></div>
+     <div class="cg"><label>Weeks</label><select id="coWeeks">${[1,2,3,4,6,8,12].map(n=>`<option ${n===4?"selected":""}>${n}</option>`).join("")}</select></div></div>
+    <label class="trchk"><input type="checkbox" id="coRest" checked/> Make the other days rest days</label>
+    <button class="btn pri" id="coAssignProg" style="margin-top:6px">Assign program</button></div>
+
+   <div class="grid2"><div>
+    <div class="card"><h2><span>Workouts</span></h2>${hist.length?hist.map(([d,x])=>`<div class="row" style="cursor:default"><div class="body"><div class="t">${esc(x.name)} <span class="ims">${esc(dateLabel(d))}</span></div><div class="d">${x.mins} min · ${x.sets} sets · ${x.reps} reps${x.vol?` · ${Math.round(dW(x.vol)).toLocaleString()} ${wU()}`:""}</div>${x.note?`<div class="cue">${esc(x.note)}</div>`:""}${coSetsOf(st,d)}${cmt(d).map(m=>`<div class="note">💬 ${esc(m.body)}</div>`).join("")}<div style="display:flex;gap:6px;margin-top:6px"><input data-cocmt="${d}" placeholder="Comment on this workout" maxlength="2000" style="flex:1;min-width:0"/><button class="btn" data-cocmtgo="${d}">Send</button></div></div></div>`).join(""):'<div class="d">No finished workouts yet.</div>'}</div>
+    <div class="card"><h2><span>Habits for this client</span></h2><div class="d">One per line, up to 10. They show under Daily habits on the client's Today screen.</div><textarea id="coHab" maxlength="900" placeholder="10k steps&#10;Protein at every meal&#10;Lights out by 11">${esc(((l.habits)||[]).join("\n"))}</textarea><button class="btn" id="coHabSave" style="margin-top:6px">Save habits</button></div>
+   </div><div>
+    <div class="card"><h2><span>Check-ins</span></h2>${cis.length?cis.map(c=>{const d=c.data||{},a=d.auto||{};return `<div class="coci"><b>Week of ${esc(dateLabel(c.week))}</b>
+      <div class="d">${a.workouts!=null?`Workouts ${a.workouts}/${a.planned||"?"} · `:""}${a.kg?`Avg weight ${dW(a.kg)} ${wU()} · `:""}${a.sleep?`Sleep ${a.sleep} h · `:""}${a.steps?`Steps ${a.steps.toLocaleString()}`:""}</div>
+      <div class="d">${["energy","hunger","stress","sleepq","adh"].filter(k=>d[k]).map(k=>({energy:"Energy",hunger:"Hunger",stress:"Stress",sleepq:"Sleep quality",adh:"Adherence"})[k]+" "+d[k]+"/5").join(" · ")}</div>
+      ${d.wins?`<div class="cue">👍 ${esc(d.wins)}</div>`:""}${d.hard?`<div class="cue">⚠️ ${esc(d.hard)}</div>`:""}${d.ask?`<div class="cue">❓ ${esc(d.ask)}</div>`:""}
+      <textarea data-coreply="${esc(c.week)}" placeholder="Reply to this check-in" maxlength="2000">${esc(c.reply||"")}</textarea><button class="btn" data-coreplygo="${esc(c.week)}" style="margin-top:4px">${c.reply?"Update reply":"Send reply"}</button></div>`}).join(""):'<div class="d">No check-ins yet. Clients send them from Progress → Weekly check-in.</div>'}</div>
+    <div class="card"><h2><span>💬 Messages</span></h2>${ms.length?ms.map(m=>msgHTML(m,uidMe())).join(""):'<div class="d">No messages yet.</div>'}
+     <div style="display:flex;gap:8px;margin-top:8px"><input id="coMsgIn" placeholder="Message ${esc(l.client_name||"client")}" maxlength="2000" style="flex:1;min-width:0"/><button class="btn pri" id="coMsgSend">Send</button></div></div>
+    <div class="card"><h2><span>Remove client</span></h2><div class="d">Ends access to their data and deletes your assignments and messages with them.</div><button class="btn danger" id="coRemove" style="margin-top:6px">Remove ${esc(l.client_name||"client")}</button></div>
+   </div></div>`;
+}
+const coPlans=()=>{const c=normCP(JSON.parse(JSON.stringify(S.cplan)));return Object.entries(c.plans).filter(([,p])=>!p.deleted)};
+function coSetsOf(st,date){
+  const rows=[];Object.entries(st.sets||{}).forEach(([k,a])=>{const i=k.lastIndexOf("|");if(k.slice(i+1)!==date||!a.length)return;const uid=k.slice(0,i),nm=(EX.find(e=>`${e.slot}:${e.id}`===uid)||{}).n||(Object.values(st.hist||{}).find(h=>h.u===uid)||{}).n||uid.split(":").pop();rows.push(`${esc(nm)}: ${a.map(x=>(x.w>0?dW(x.w)+"×":"")+x.r).join(", ")}`)});
+  return rows.length?`<details class="rec"><summary>Sets</summary><div class="d">${rows.join("<br>")}</div></details>`:"";
+}
+/* Day editor: the assignment is a plan day ({name, ex:[...]}) so the client's engine treats it like their own plan */
+function coDayEditor(id,wk){
+  const d=CO.day,day=wk&&wk.days.find(x=>x.date===d),a=(CO.asg[id]||{})[d];
+  if(!CO.edit||CO.edit.date!==d||CO.edit.id!==id){
+    const src=a?{name:a.name||"",ex:(a.ex||[]).map(x=>Object.assign({},x)),note:a.note||""}:{name:day&&day.session?day.session.name:"",ex:day&&day.session?day.session.ex.map(x=>mkEx({uid:x.uid,id:x.id,slot:x.slot,name:x.name,mu:x.mu,mu2:x.mu2||[],sets:x.sets,reps:x.reps,rest:x.rest,cue:x.cue,load:x.load,ss:!!x.ss,wu:x.wu||0})):[],note:""};
+    CO.edit=Object.assign(src,{date:d,id,dirty:false});
+  }
+  const E=CO.edit,G=ssGroups(E.ex),opts=coPlans().flatMap(([pid,p])=>Object.entries(p.days).filter(([,x])=>x&&x.ex&&x.ex.length).map(([dw,x])=>`<option value="${esc(pid)}|${dw}">${esc(p.name)} · ${DAYN[dw]}: ${esc(x.name||"Workout")}</option>`));
+  return `<div class="coed"><h3 style="margin-top:0">${esc(dateLabel(d))} ${a?'<span class="badge bl">Assigned</span>':'<span class="badge">Client\'s own plan</span>'}</h3>
+   <div style="display:flex;gap:8px;flex-wrap:wrap"><select id="coFrom"><option value="">Load from my plans…</option>${opts.join("")}</select><button class="btn" id="coRestDay">Make it a rest day</button></div>
+   <input id="coSesName" placeholder="Session name" maxlength="40" value="${esc(E.name)}" style="width:100%;margin-top:8px"/>
+   ${E.ex.map((x,i)=>{const gi=G[i];return `<div class="trex ${gi?"ssin":""} ${gi&&gi.k<gi.n?"ssnext":""} ${gi&&gi.k>1?"ssprev":""}"><div class="trh"><span class="${gi?"ssl":"trnum"}">${gi?gi.g+gi.k:i+1}</span><div><b>${esc(x.name)}</b><small>${esc(muLabel(x.mu))}</small></div><div class="trbtn"><button type="button" class="rest" data-coex="up|${i}" ${i===0?"disabled":""}>▲</button><button type="button" class="rest" data-coex="down|${i}" ${i===E.ex.length-1?"disabled":""}>▼</button><button type="button" class="rest" data-coex="del|${i}">✕</button></div></div>
+     <div class="trf"><label>Sets<input type="number" min="1" max="10" data-coef="sets|${i}" value="${esc(x.sets)}"/></label><label>Reps<input data-coef="reps|${i}" value="${esc(x.reps)}" maxlength="12"/></label><label>Rest (s)<input type="number" min="0" max="600" step="15" data-coef="rest|${i}" value="${esc(x.rest)}"/></label></div>
+     ${i<E.ex.length-1?`<label class="trss"><input type="checkbox" data-coef="ss|${i}" ${x.ss?"checked":""}/> ⛓ Superset with the next exercise</label>`:""}</div>`}).join("")}
+   <div style="display:flex;gap:8px;margin-top:6px"><input id="coAddQ" list="coExList" placeholder="Add exercise (type to search)" style="flex:1;min-width:0"/><datalist id="coExList">${EX.map(e=>`<option value="${esc(e.n)}">`).join("")}</datalist><button class="btn" id="coAddEx">Add</button></div>
+   <textarea id="coNote" placeholder="Note for the client (focus, tempo, how heavy)" maxlength="500" style="margin-top:8px">${esc(E.note)}</textarea>
+   <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:8px"><button class="btn pri" id="coSaveDay">${a?"Update":"Assign"} ${esc(dateLabel(d,{weekday:"short"}))}</button>${a?'<button class="btn danger" id="coClearDay">Remove assignment</button>':""}<button class="btn" id="coCloseDay">Close</button></div></div>`;
+}
+const coSnap=()=>{const E=CO.edit;if(!E)return;const n=$("coSesName"),t=$("coNote");if(n)E.name=cleanName(n.value);if(t)E.note=t.value.slice(0,500)};
+async function coSaveDay(clear){
+  const E=CO.edit;if(!E)return;coSnap();
+  try{
+    if(clear)await sbDel(`assignments?coach_id=eq.${uidMe()}&client_id=eq.${E.id}&date=eq.${E.date}`);
+    else{const ex=E.ex.map((x,i,a)=>Object.assign({},x,{ss:!!x.ss&&i<a.length-1}));await sbUpsert("assignments",[{coach_id:uidMe(),client_id:E.id,date:E.date,session:{name:E.name||(ex.length?"Workout":"Rest"),ex},note:E.note||"",updated_at:new Date().toISOString()}],"coach_id,client_id,date")}
+    CO.edit=null;await loadClients();
+  }catch(e){alert(v3Err(e))}
+}
+async function coAssignProgram(id){
+  const pid=$("coProg").value,start=mondayOf($("coStart").value||TODAY),weeks=+$("coWeeks").value||4,rest=$("coRest").checked;
+  const p=coPlans().find(([k])=>k===pid);if(!p)return alert("Make a plan in your Train tab first (Build my own).");
+  const rows=[];
+  for(let w=0;w<weeks;w++)for(let dw=0;dw<7;dw++){
+    const x=p[1].days[dw],date=addD(start,w*7+dw);
+    if(x&&x.ex&&x.ex.length)rows.push({coach_id:uidMe(),client_id:id,date,session:{name:x.name||"Workout",ex:x.ex.map((e,i,a)=>Object.assign({},e,{ss:!!e.ss&&i<a.length-1}))},note:"",updated_at:new Date().toISOString()});
+    else if(rest)rows.push({coach_id:uidMe(),client_id:id,date,session:{name:"Rest",ex:[]},note:"",updated_at:new Date().toISOString()});
+  }
+  if(!confirm(`Assign "${p[1].name}" for ${weeks} week${weeks>1?"s":""} from ${dateLabel(start)}? This replaces your assignments on those ${rows.length} days.`))return;
+  try{await sbUpsert("assignments",rows,"coach_id,client_id,date");await loadClients()}catch(e){alert(v3Err(e))}
+}
+function coClick(t){
+  const c=t.closest("[data-co]");if(c){CO.sel=c.dataset.co;CO.day="";CO.edit=null;CO.wk=0;renderCoach();window.scrollTo({top:0});return true}
+  const wkb=t.closest("[data-cowk]");if(wkb){const v=+wkb.dataset.cowk;CO.wk=v===0?0:CO.wk+v;CO.day="";CO.edit=null;renderCoach();return true}
+  const dy=t.closest("[data-coday]");if(dy){coSnap();CO.day=CO.day===dy.dataset.coday?"":dy.dataset.coday;CO.edit=null;renderCoach();return true}
+  const ce=t.closest("[data-coex]");if(ce&&CO.edit){coSnap();const [op,i]=ce.dataset.coex.split("|"),k=+i,a=CO.edit.ex;if(op==="del")a.splice(k,1);else{const j=op==="up"?k-1:k+1;if(j>=0&&j<a.length)[a[k],a[j]]=[a[j],a[k]]}a.forEach((x,n)=>{if(n===a.length-1)x.ss=false});renderCoach();return true}
+  const cg=t.closest("[data-cocmtgo]");if(cg){const d=cg.dataset.cocmtgo,inp=document.querySelector(`[data-cocmt="${d}"]`);sendMsg(uidMe(),CO.sel,inp&&inp.value,d,loadClients);return true}
+  const rg=t.closest("[data-coreplygo]");if(rg){const w=rg.dataset.coreplygo,inp=document.querySelector(`[data-coreply="${w}"]`);sbRpc("coach_checkin_reply",{client:CO.sel,wk:w,txt:inp.value}).then(loadClients).catch(e=>alert(v3Err(e)));return true}
+  const st=t.closest("[data-cxstop]");if(st){stopCoach(st.dataset.cxstop);return true}
+  switch(t.id){
+    case "coRefresh":loadClients();return true;
+    case "coBack":CO.sel="";CO.day="";CO.edit=null;renderCoach();return true;
+    case "coInvite":coInvite();return true;
+    case "coShare":coShare();return true;
+    case "coRestDay":if(CO.edit){coSnap();CO.edit.ex=[];CO.edit.name="Rest";renderCoach()}return true;
+    case "coAddEx":{coSnap();const q=($("coAddQ").value||"").trim().toLowerCase();if(!q)return true;const e=EX.find(x=>x.n.toLowerCase()===q)||EX.find(x=>x.n.toLowerCase().includes(q));if(e)CO.edit.ex.push(libToEx(e));else CO.edit.ex.push(mkEx({uid:"custom:"+q.replace(/[^a-z0-9]+/g,"-").slice(0,30),id:q.replace(/[^a-z0-9]+/g,"-").slice(0,30),slot:"custom",name:cleanName($("coAddQ").value),mu:"chest",sets:3,reps:"8–12",rest:90}));renderCoach();return true}
+    case "coSaveDay":coSaveDay(false);return true;
+    case "coClearDay":if(confirm("Remove this assignment? The client goes back to their own plan for this day."))coSaveDay(true);return true;
+    case "coCloseDay":CO.day="";CO.edit=null;renderCoach();return true;
+    case "coAssignProg":coAssignProgram(CO.sel);return true;
+    case "coHabSave":{const h=$("coHab").value.split(/\n+/).map(x=>x.trim().slice(0,80)).filter(Boolean).slice(0,10);sbRpc("coach_set_habits",{client:CO.sel,h}).then(loadClients).then(()=>alert("Habits saved")).catch(e=>alert(v3Err(e)));return true}
+    case "coMsgSend":sendMsg(uidMe(),CO.sel,$("coMsgIn").value,null,loadClients);return true;
+    case "coRemove":if(confirm("Remove this client? You lose access to their data."))sbDel(`coach_links?coach_id=eq.${uidMe()}&client_id=eq.${CO.sel}`).then(()=>{CO.sel="";return loadClients()}).catch(e=>alert(v3Err(e)));return true;
+    case "cxJoin":joinCoach();return true;
+    case "cmSend":{const to=$("cmTo")?$("cmTo").value:(myCoaches()[0]||{}).coach_id;sendMsg(to,uidMe(),$("cmIn").value,null,pullV3);return true}
+    case "ciSend":sendCheckin();return true;
+    case "htNew":healthKey(true);return true;
+    case "htOff":healthKey(false);return true;
+    case "htTest":healthTest();return true;
+    case "htCopy":{const v=lsGet(HTK);if(navigator.clipboard)navigator.clipboard.writeText(v).then(()=>alert("Key copied"));else prompt("Copy",v);return true}
+  }
+  return false;
+}
+document.addEventListener("click",e=>{const b=e.target.closest("button,[data-co],[data-coday]");if(b)coClick(b)});
+document.addEventListener("change",e=>{
+  const t=e.target;
+  if(t.id==="cxOn"){lsSet(CXK,t.checked?"1":"0");renderNavCoach();if(t.checked)loadClients();return}
+  if(t.id==="coFrom"&&t.value&&CO.edit){coSnap();const [pid,dw]=t.value.split("|"),p=coPlans().find(([k])=>k===pid),x=p&&p[1].days[dw];if(x){CO.edit.name=x.name||"Workout";CO.edit.ex=x.ex.map(e=>Object.assign({},e))}renderCoach();return}
+  const f=t.dataset&&t.dataset.coef;
+  if(f&&CO.edit){const [k,i]=f.split("|"),x=CO.edit.ex[+i];if(!x)return;
+    if(k==="ss")x.ss=t.checked;else if(k==="sets")x.sets=Math.max(1,Math.min(10,Math.round(+t.value)||3));else if(k==="rest")x.rest=Math.max(0,Math.min(600,Math.round(+t.value)||0));else if(k==="reps")x.reps=cleanReps(t.value)||x.reps;
+    if(k==="ss"){coSnap();renderCoach()}}
+});
+document.addEventListener("keydown",e=>{if(e.key!=="Enter")return;const id=e.target.id;if(id==="cmIn")$("cmSend").click();else if(id==="coMsgIn")$("coMsgSend").click();else if(id==="cxCode")joinCoach()});
+PLANX.push(renderCoachToday);
+PROGX.push(renderCoachCheckin,renderWlogComments,renderHealthSync);
+
+initTheme();regen();renderAll();restoreNav();initSync();initSys();renderNavCoach();
 
 </script>
 </body>

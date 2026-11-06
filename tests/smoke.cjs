@@ -19,7 +19,7 @@ async function page(browser, vp) {
 
 (async () => {
   const browser = await chromium.launch();
-  const TABS = ["plan", "train", "food:grocery", "food:kitchen", "progress", "overview", "profile"];
+  const TABS = ["plan", "train", "food:grocery", "food:kitchen", "progress", "overview", "profile", "coach"];
 
   console.log("Layout and errors");
   for (const width of [360, 1280]) {
@@ -90,6 +90,110 @@ async function page(browser, vp) {
   console.log("Sharing");
   const inv = await pg.evaluate(async () => { let got = null; const sh = navigator.share; navigator.share = async o => { got = o.url }; await inviteFriend(); navigator.share = sh; return got });
   ok(inv && !inv.includes("#") && !/[?&]s=/.test(inv), "Invite a friend shares the plain app link, never your data");
+
+  console.log("v3: superset groups");
+  const g = await pg.evaluate(() => {
+    const c = CP(); c.mode = "custom";
+    const ex = [0, 1, 2, 3].map(i => Object.assign(libToEx(EX[i * 7]), { sets: 2, rest: 75 }));
+    ex[0].ss = true; ex[1].ss = true;
+    const dow = (new Date().getDay() + 6) % 7;
+    PLN().days = { [dow]: { name: "SS test", mt: NOW(), ex } }; touch(); save(); S.weekOffset = 0; regen(); S.sel = TODAY; showTab("plan"); renderPlan();
+    const grp = document.querySelectorAll("#wList .ssg"), rows = grp[0] ? grp[0].querySelectorAll(".row").length : 0;
+    const lab = [...document.querySelectorAll("#wList .ssl")].map(x => x.textContent).join(",");
+    return { groups: grp.length, rows, lab, info: ssGroups(selDay().session.ex).map(x => x && x.g + x.k) };
+  });
+  ok(g.groups === 1 && g.rows === 3, `Today groups the tri-set into one block (${g.groups} group, ${g.rows} rows)`);
+  ok(g.lab === "A1,A2,A3" && g.info[3] === null, "superset labels A1, A2, A3; the next exercise stays ungrouped");
+  await pg.click("#wStart");
+  const seq = [];
+  const runs = [];
+  for (let k = 0; k < 6; k++) { seq.push(await pg.evaluate(() => WM.i)); await pg.evaluate(() => $("tStop").click()); await pg.fill("#wmR", "8"); await pg.click('[data-wm="log"]'); runs.push(await pg.evaluate(() => $("timer").className === "run" ? 1 : 0)) }
+  const after = await pg.evaluate(() => WM.i);
+  ok(seq.join("") === "012012" && after === 3, `tri-set rotates A1→A2→A3 each round, then moves on (${seq.join("")} → ${after})`);
+  ok(runs.join("") === "001001", `rest timer starts only after A3, once per round (${runs.join("")})`);
+  await pg.click('[data-wm="close"]');
+  await pg.evaluate(() => { CP().mode = "auto"; save(); regen(); renderAll() });
+
+  console.log("v3: coach assignment + health readiness");
+  const ov = await pg.evaluate(() => {
+    const d = W.days[2].date;
+    S.cx = { links: [], asg: { [d]: { name: "Coach Push", coach: "Sam", note: "Go heavy", ex: [Object.assign(libToEx(EX[0]), { sets: 5, reps: "5" })] } }, msgs: [], ci: {} };
+    regen(); const a = W.days[2];
+    S.cx.asg[d] = { name: "Rest", coach: "Sam", ex: [] }; regen(); const b = W.days[2];
+    S.cx = {}; regen();
+    return { label: a.label, sets: a.session && a.session.ex[0].sets, coach: a.session && a.session.coach, rest: b.label, restSess: b.session };
+  });
+  ok(ov.label === "Coach Push" && ov.sets === 5 && ov.coach === "Sam", "coach assignment replaces the client's session for that date");
+  ok(/Rest \(from Sam\)/.test(ov.rest) && !ov.restSess, "coach can set a rest day");
+  const rdh = await pg.evaluate(() => {
+    const d = TODAY; S.log[d] = { s: "8", e: "5", sr: "1" }; const before = readiness(d).score;
+    S.hd = {}; for (let i = 1; i <= 14; i++) S.hd[addD(d, -i)] = { hrv: 60, rhr: 55 };
+    S.hd[d] = { hrv: 40, rhr: 63 }; const after = readiness(d).score;
+    delete S.log[d]; S.hd = {}; return [before, after];
+  });
+  ok(rdh[0] > 0.95 && rdh[1] < rdh[0] - 0.2, `low HRV and high resting HR pull readiness down (${rdh[0].toFixed(2)} → ${rdh[1].toFixed(2)})`);
+  ok(pg.errors.length === 0, "no JS errors in v3 engine tests " + pg.errors.join(" | "));
+
+  console.log("v3: auth, sync, coach UI (mocked Supabase)");
+  const SB = "https://yimjcsyhvoviliupwayl.supabase.co";
+  const me = "11111111-1111-1111-1111-111111111111", cl = "22222222-2222-2222-2222-222222222222";
+  const mock = async (pgx, calls) => pgx.route(SB + "/**", async r => {
+    const u = new URL(r.request().url()), m = r.request().method(); calls.push(m + " " + u.pathname + u.search);
+    const J = (b, st) => r.fulfill({ status: st || 200, contentType: "application/json", body: JSON.stringify(b) });
+    if (u.pathname === "/auth/v1/recover") return J({});
+    if (u.pathname === "/auth/v1/user") return J({ id: me, email: "c@x.y" });
+    if (u.pathname === "/rest/v1/progress" && m === "GET" && u.search.includes("user_id=in.")) return J([{ user_id: cl, mtime: 1, data: { prof: { days: 3, units: "metric" }, wlog: { [new Date(Date.now() - 2 * 864e5).toISOString().slice(0, 10)]: { name: "Push", end: 1, sets: 12, reps: 90, mins: 50 } }, log: {}, sets: {}, hist: {}, checks: {}, steps: {} } }]);
+    if (u.pathname === "/rest/v1/progress" && m === "GET") return calls.fail400 ? J({ message: "bad" }, 400) : J([]);
+    if (u.pathname === "/rest/v1/coach_links") return J([{ coach_id: me, client_id: cl, coach_name: "Me", client_name: "Jordan", habits: ["10k steps"], created_at: "2026-11-01" }]);
+    if (u.pathname === "/rest/v1/checkins" && u.search.includes("client_id=in.")) return J([{ client_id: cl, week: "2026-11-02", data: { energy: 4, wins: "PR", auto: { workouts: 3, planned: 3 } }, reply: "" }]);
+    return J(m === "GET" ? [] : null, m === "GET" ? 200 : 204);
+  });
+  {
+    const p2 = await page(browser, { width: 390, height: 900 }), calls = [];
+    await mock(p2, calls);
+    await p2.evaluate(() => { showTab("profile") });
+    await p2.fill("#sbEmail", "c@x.y"); await p2.click("#btnSbForgot");
+    await p2.waitForFunction(() => /reset link/.test(document.getElementById("syncMsg").textContent));
+    ok(calls.some(c => c.startsWith("POST /auth/v1/recover?redirect_to=")), "Forgot password posts to /recover with a redirect back to the app");
+    calls.fail400 = true;
+    await p2.evaluate(() => { SY.sess = { at: "t", rt: "r", exp: Date.now() + 3600e3, uid: "11111111-1111-1111-1111-111111111111", email: "c@x.y" }; saveSY() });
+    await p2.evaluate(() => syncNow()); await p2.waitForFunction(() => !syncing);
+    ok(await p2.evaluate(() => !!SY.sess), "a 400 from the server no longer signs you out");
+    calls.fail400 = false;
+    await p2.evaluate(() => { lsSet("eliteCoachOn", "1"); renderNavCoach() });
+    ok(await p2.isVisible("#tabCoach"), "Clients tab appears when coach mode is on");
+    await p2.click("#tabCoach");
+    await p2.waitForSelector(".cocard");
+    const card = await p2.textContent(".cocard");
+    ok(/Jordan/.test(card) && /Check-in to review/.test(card), "client overview lists the client with a check-in flag");
+    await p2.click(".cocard");
+    ok(await p2.locator(".coday").count() === 7, "client calendar shows 7 days");
+    await p2.click(".coday >> nth=3");
+    ok(await p2.isVisible("#coSaveDay"), "tapping a day opens the assignment editor");
+    await p2.fill("#coAddQ", await p2.evaluate(() => EX[0].n)); await p2.click("#coAddEx");
+    await p2.click("#coSaveDay");
+    await p2.waitForFunction(() => !CO.loading);
+    ok(calls.some(c => c.startsWith("POST /rest/v1/assignments?on_conflict=coach_id,client_id,date")), "assignment is saved to the assignments table, not the client's data");
+    ok(!calls.some(c => c.startsWith("POST /rest/v1/progress") && c.includes(cl)), "coach never writes the client's progress row");
+    const over = await p2.evaluate(() => document.documentElement.scrollWidth > document.documentElement.clientWidth);
+    ok(!over, "390px client detail: no horizontal scroll");
+    ok(p2.errors.length === 0, "no JS errors in coach UI " + p2.errors.join(" | "));
+    await p2.close();
+  }
+  {
+    const p3 = await browser.newPage({ viewport: { width: 390, height: 900 } }), calls = [];
+    p3.errors = []; p3.on("pageerror", e => p3.errors.push(e.message)); p3.on("dialog", d => d.accept());
+    await p3.route("**/*", r => r.request().url().startsWith("file:") ? r.continue() : r.abort());
+    await mock(p3, calls);
+    await p3.goto(url + "#access_token=AT&expires_in=3600&refresh_token=RT&token_type=bearer&type=recovery");
+    await p3.waitForSelector("#pwModal");
+    ok(await p3.evaluate(() => location.hash === ""), "reset link: tokens are removed from the address bar");
+    await p3.fill("#pwNew", "newpass1"); await p3.fill("#pwNew2", "newpass1"); await p3.click("#pwSave");
+    await p3.waitForFunction(() => SY.sess && SY.sess.uid);
+    ok(calls.some(c => c === "PUT /auth/v1/user"), "reset link: new password is saved and you are signed in");
+    ok(p3.errors.length === 0, "no JS errors in reset flow " + p3.errors.join(" | "));
+    await p3.close();
+  }
 
   const vf = path.join(path.dirname(file), "version.json");
   if (fs.existsSync(vf)) {
