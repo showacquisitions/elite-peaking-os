@@ -231,6 +231,23 @@ async function page(browser, vp) {
     ok(toRows({ date: "2026-11-05", steps: 10 })[0].steps === 10 && toRows([{ date: "x" }]).length === 1, "Shortcut and list bodies pass straight through");
   }
 
+  console.log("v3: callouts across tabs");
+  {
+    const p5 = await page(browser, { width: 390, height: 900 });
+    const r = await p5.evaluate(() => {
+      const out = {};
+      showTab("profile"); out.profile = !!document.querySelector("#confirmBar .callout");
+      showTab("overview"); out.targets = !!document.querySelector("#pane-overview .callout");
+      for (let i = 0; i < 10; i++) S.log[addD(TODAY, -i * 2)] = { w: 80 + i * 0.15 };
+      showTab("progress"); renderProgress(); out.trend = !!document.querySelector("#trend .callout") && !!document.getElementById("btnApply");
+      CP().mode = "custom"; PLN().days = {}; renderTrain(); out.train = !!document.querySelector("#pane-train .callout.c-warn");
+      return out;
+    });
+    ok(r.profile && r.targets && r.trend && r.train, "Profile, Targets, Progress trend and Train use callouts " + JSON.stringify(r));
+    ok(p5.errors.length === 0, "no JS errors " + p5.errors.join(" | "));
+    await p5.close();
+  }
+
   const vf = path.join(path.dirname(file), "version.json");
   if (fs.existsSync(vf)) {
     const v = JSON.parse(fs.readFileSync(vf, "utf8")).v, av = await pg.evaluate(() => APP_VER);

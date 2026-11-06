@@ -2,6 +2,11 @@
 
 State of the app and the decisions behind it. Newest first.
 
+## v3 callouts everywhere — build 2026.11.06.3 (2026-11-06)
+
+- Callouts now also used for: Profile setup banner, Targets plan notes and a volume verdict (muscles under or over range), Progress weight trend + calorie auto-adjust (with Apply button), deload/retest week, peak-week phases, empty custom plan, coach replies and coach-tab errors. Plain explanatory text stays plain on purpose.
+- Coach overview and client detail show meals ticked off (7 d) and cardio minutes.
+
 ## v3 polish — build 2026.11.06.2 (2026-11-06)
 
 - **Callout system.** `callout(kind, icon, title, meta, body)` with kinds warm, cool, good/green, warn/yellow, red, info, coach. Used for warm-up, cool-down, readiness verdict, coach notes, rest-day recovery, cardio prescription and Health sync status. `.note` restyled to match.

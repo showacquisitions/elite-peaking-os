@@ -1394,7 +1394,7 @@ function numHTML(k,label,step){return `<div class="cg"><label id="lb_${k}">${lab
 function chkHTML(name,list){return `<div class="chips" data-m="${name}">${list.map(([v,l])=>`<label class="chip"><input type="checkbox" value="${v}"/>${l}</label>`).join("")}</div>`}
 function buildProfile(){
   $("pane-profile").innerHTML=`
-  <div class="note" id="confirmBar"></div>
+  <div id="confirmBar"></div>
   <div class="grid2">
    <div>
     <div class="card"><h2><span>Body</span><span class="badge">Updates everything instantly</span></h2>
@@ -1431,7 +1431,7 @@ function fillProfile(){
     box.querySelectorAll("input").forEach(i=>i.checked=arr.includes(i.value));
   });
   $("lb_cm").textContent=`Height (${lU()})`;$("lb_kg").textContent=`Bodyweight (${wU()})`;$("lb_bagKg").textContent=`Weighted bag load (${wU()})`;
-  $("confirmBar").innerHTML=S.confirmed?`Profile saved. Anything you change here rebuilds the plan, meals and groceries.`:`<b>Defaults loaded.</b> Enter your real stats and goal below, then <button class="btn" id="btnConfirm">Confirm profile</button>`;
+  $("confirmBar").innerHTML=S.confirmed?callout("good","✅","Profile saved","","Anything you change here rebuilds your plan, meals and groceries instantly."):callout("warn","👋","Set up your profile first","Step 1",`The plan is running on default numbers. Enter your real stats and goal below, then <button class="btn pri" id="btnConfirm" style="margin-left:4px">Confirm profile</button>`);
 }
 function onField(el){
   const k=el.dataset.p,p=S.prof;
@@ -1522,7 +1522,8 @@ function renderOverview(){
     return `<div class="vrow"><span>${l}</span><div class="vbar"><i style="width:${Math.min(100,v/24*100)}%;background:${col}"></i></div><b>${v}</b><small>${lo}–${hi}</small></div>`;
   }).join("");
   $("pane-overview").innerHTML=`
-   ${W.notes.map(n=>`<div class="note">${esc(n)}</div>`).join("")}
+   ${W.notes.map(n=>callout(/^Peak week/.test(n)?"warn":/clinician|aggravate/.test(n)?"red":"info",/^Peak week/.test(n)?"📅":/clinician|aggravate/.test(n)?"🩹":"📌",/^You are on your own/.test(n)?"Your own training plan":/^Peak week/.test(n)?"Peak week coming":/aggravate/.test(n)?"Injury filter on":"Note","",esc(n))).join("")}
+   ${(()=>{const lo=[],hi=[];MUSCLES.forEach(([k,l])=>{const v=W.vol[k]||0,[a,b]=bands[k];if(v<a)lo.push(l);else if(v>b)hi.push(l)});return !lo.length&&!hi.length?callout("good","🎯","Volume is on target","","Every muscle sits inside its weekly hard-set range."):callout("warn","⚖️","Volume needs attention","",`${lo.length?`<b>Under target:</b> ${esc(lo.join(", "))}. `:""}${hi.length?`<b>Over target:</b> ${esc(hi.join(", "))}. `:""}See the bars below.`)})()}
    <div class="kpis">
     <div class="kpi"><div class="l">Target calories</div><div class="v">${Math.round(T.kcal+0).toLocaleString()}</div><div class="s">${T.pct>0?"+":""}${(T.pct*100).toFixed(0)}% vs maintenance${p.kcalAdj?` · ${p.kcalAdj>0?"+":""}${p.kcalAdj} auto-adjust`:""}</div></div>
     <div class="kpi"><div class="l">Maintenance (TDEE)</div><div class="v">${Math.round(T.tdee).toLocaleString()}</div><div class="s">BMR ${Math.round(T.bmr)} · ${p.bf>0?"Katch-McArdle":"Mifflin-St Jeor"}</div></div>
@@ -1573,8 +1574,8 @@ function renderPlan(){
    <div class="kpi"><div class="l">Protein / Carbs / Fat target</div><div class="v" style="font-size:1.1rem">${Math.round(m.P)} / ${Math.round(m.C)} / ${Math.round(m.F)} g</div><div class="mbar"><div class="p" style="width:${m.P*4/m.kcal*100}%"></div><div class="c" style="width:${m.C*4/m.kcal*100}%"></div><div class="f" style="width:${m.F*9/m.kcal*100}%"></div></div></div>
    <div class="kpi"><div class="l">Eaten so far</div><div class="v" style="font-size:1.1rem">${Math.round(eat.kcal)} kcal · Protein ${Math.round(eat.P)}</div><div class="s">${Math.max(0,Math.round(m.kcal-eat.kcal))} kcal · ${Math.max(0,Math.round(m.P-eat.P))} g protein left<br>Carbs ${Math.round(eat.C)} g · Fat ${Math.round(eat.F)} g eaten</div></div>
    <div class="kpi"><div class="l">Hydration</div><div class="v" style="color:var(--accent)">${water} L</div><div class="s">Steady, to thirst. No cutting.</div></div>`;
-  const retest=W.wk===3&&!W.peak?`<div class="note"><b>Deload & retest week.</b> Do lighter sets, then test max strict reps and update them here. Every new number rebuilds your next block.<div class="fgrid" style="margin-top:8px;max-width:340px"><div class="cg"><label>Max pull-ups</label><input type="number" inputmode="numeric" data-p="pullMax" value="${p.pullMax}"/></div><div class="cg"><label>Max push-ups</label><input type="number" inputmode="numeric" data-p="pushMax" value="${p.pushMax}"/></div></div></div>`:"";
-  const note=retest+(d.phase?`<div class="note"><b>${esc(d.phase.l)}.</b> ${PEAKNOTE[d.phase.k]}</div>`:"");
+  const retest=W.wk===3&&!W.peak?`<div class="callout c-warn"><div class="c-h"><span class="c-i">🔄</span><b>Deload &amp; retest week</b><span class="c-m">Week 4</span></div><div class="c-b">Do lighter sets, then test max strict reps and update them here. Every new number rebuilds your next block.<div class="fgrid" style="margin-top:8px;max-width:340px"><div class="cg"><label>Max pull-ups</label><input type="number" inputmode="numeric" data-p="pullMax" value="${p.pullMax}"/></div><div class="cg"><label>Max push-ups</label><input type="number" inputmode="numeric" data-p="pushMax" value="${p.pushMax}"/></div></div></div></div>`:"";
+  const note=retest+(d.phase?callout("info","🏁",esc(d.phase.l),"Peak week",PEAKNOTE[d.phase.k]):"");
   $("peakNote").innerHTML=note;
   if(d.session){
     const s=d.session,rd=readiness(d.date);
@@ -1665,8 +1666,8 @@ function renderCheckin(){
 }
 function renderTrend(){
   const tr=weightTrend(S.log,TODAY),adv=advice(S.prof,tr);
-  $("trend").innerHTML=tr?`<div class="kpis"><div class="kpi"><div class="l">21-day trend</div><div class="v">${tr.perWeek>0?"+":""}${r1(metric()?tr.perWeek:tr.perWeek*LB)} ${wU()}/wk</div><div class="s">${tr.pct.toFixed(2)}% per week · ${tr.n} weigh-ins</div></div><div class="kpi"><div class="l">Auto-adjust</div><div class="s" style="font-size:.85rem;color:var(--text)">${esc(adv.msg)}</div>${adv.delta?`<button class="btn" id="btnUseWt" style="margin-top:6px">Set bodyweight to ${dW(tr.avg)} ${wU()}</button> <button class="btn" id="btnApply" data-delta="${adv.delta}" style="margin-top:6px">Apply ${adv.delta>0?"+":""}${adv.delta} kcal</button>`:""}${S.prof.kcalAdj?` <button class="btn" id="btnClearAdj" style="margin-top:6px">Clear adjustment (${S.prof.kcalAdj>0?"+":""}${S.prof.kcalAdj})</button>`:""}</div></div>`
-   :`<div class="d">Log at least 4 morning weigh-ins across 7+ days to unlock the weight trend and calorie auto-adjust.</div>`;
+  $("trend").innerHTML=tr?`<div class="kpis"><div class="kpi"><div class="l">21-day trend</div><div class="v">${tr.perWeek>0?"+":""}${r1(metric()?tr.perWeek:tr.perWeek*LB)} ${wU()}/wk</div><div class="s">${tr.pct.toFixed(2)}% per week · ${tr.n} weigh-ins</div></div></div>`+callout(adv.delta?"warn":"good",adv.delta?"🎛️":"✅",adv.delta?`Adjust calories: ${adv.delta>0?"+":""}${adv.delta} kcal/day`:"On track","Auto-adjust",`${esc(adv.msg)}${adv.delta||S.prof.kcalAdj?`<div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:8px">${adv.delta?`<button class="btn pri" id="btnApply" data-delta="${adv.delta}">Apply ${adv.delta>0?"+":""}${adv.delta} kcal</button><button class="btn" id="btnUseWt">Set bodyweight to ${dW(tr.avg)} ${wU()}</button>`:""}${S.prof.kcalAdj?`<button class="btn" id="btnClearAdj">Clear adjustment (${S.prof.kcalAdj>0?"+":""}${S.prof.kcalAdj})</button>`:""}</div>`:""}`)
+   :callout("info","⚖️","Unlock your weight trend","",`Log at least 4 morning weigh-ins across 7+ days. The app then shows your real rate of change and suggests calorie adjustments.`);
   $("logWt").innerHTML=weightChart();
 }
 function weightChart(){
@@ -1843,7 +1844,7 @@ function renderTrain(){
   if(custom){
     body+=`<div class="trgrid">${[0,1,2,3,4,5,6].map(trDayCard).join("")}</div>`;
     const n=Object.values(PD()).filter(x=>x&&x.ex&&x.ex.length).length;
-    if(!n)body+=`<div class="note">This plan has no exercises yet, so the Today tab is still showing the auto plan. Add an exercise to a day, or tap <b>Reset this plan to the auto plan</b> for a starting template.</div>`;
+    if(!n)body+=callout("warn","🧱","This plan is empty","","Today is still showing the auto plan. Add an exercise to a day, or tap <b>Reset this plan to the auto plan</b> for a starting template.");
   }else if(W){
     body+=`<div class="trgrid">${W.sessions.map(s=>`<div class="card"><h2><span>${DAYN[s.dow]}: ${esc(s.name)}</span><span class="badge">${s.ex.length} exercises</span></h2>${s.ex.map(x=>`<div class="row" style="cursor:default"><div class="body"><div class="t">${esc(x.name)}</div><div class="d">${x.sets} × ${esc(x.reps)} · rest ${x.rest}s</div></div></div>`).join("")}</div>`).join("")}</div>
      <div class="d">This is this week's auto plan. <b>Build my own</b> starts you from a copy of it, so you only change what you want.</div>`;
@@ -2127,7 +2128,7 @@ document.addEventListener("click",e=>{
 });
 
 /* ---------- APP VERSION, UPDATE PROMPT, INSTALL PROMPT ---------- */
-const APP_VER="2026.11.06.2",APP_MAJOR="3";
+const APP_VER="2026.11.06.3",APP_MAJOR="3";
 let UPD=false,BIP=null;
 const inFrame=()=>{try{return window.self!==window.top}catch(e){return true}};
 const isStandalone=()=>matchMedia("(display-mode: standalone)").matches||navigator.standalone===true;
@@ -3487,7 +3488,7 @@ function renderCoachCheckin(){
    <textarea data-ci="hard" placeholder="What was hard, any pain or injury" maxlength="600" style="margin-top:8px">${esc(dd.hard||"")}</textarea>
    <textarea data-ci="ask" placeholder="Question for your coach" maxlength="600" style="margin-top:8px">${esc(dd.ask||"")}</textarea>
    <div style="display:flex;gap:8px;align-items:center;margin-top:8px"><button class="btn pri" id="ciSend">${cur.week?"Update check-in":"Send check-in"}</button><span class="d" id="ciMsg">${cur.week?"Sent for the week of "+esc(dateLabel(wk)):""}</span></div>
-   ${cur.reply?`<div class="note" style="margin-top:8px"><b>Coach reply:</b> ${esc(cur.reply)}</div>`:""}`);
+   ${cur.reply?`<div style="margin-top:10px">${callout("coach","💬","Coach reply","",esc(cur.reply))}</div>`:""}`);
 }
 function ciAuto(){
   const days=[];for(let i=0;i<7;i++)days.push(addD(TODAY,-i));
@@ -3636,6 +3637,8 @@ function clientStats(id){
   const nh=3+((CO_link(id)||{}).habits||[]).length;
   let hk=0;d7.forEach(d=>Object.keys(st.checks||{}).forEach(k=>{if(k.startsWith(d+"|hab|")&&st.checks[k])hk++}));
   const habAdh=Math.min(1,hk/(7*nh));
+  let mk=0,mt=0;d7.forEach(d=>{const n=+st.prof.meals||4;mt+=n;for(let i=0;i<n;i++)if((st.checks||{})[`${d}|meal|${i}`])mk++});
+  const mealAdh=mt?mk/mt:0;
   const ci=(CO.ci[id]||[])[0],ciWeek=mondayOf(TODAY),ciThis=ci&&ci.week>=addD(ciWeek,-7);
   const prs=[];{const m={};Object.values(st.hist||{}).forEach(h=>(m[h.u]=m[h.u]||[]).push(h));Object.values(m).forEach(a=>{a.sort((x,y)=>x.d<y.d?-1:1);let b=0;a.forEach((h,i)=>{const v=valOf(h);if(v>b){if(i>0&&h.d>=addD(TODAY,-14))prs.push(h);b=v}})})}
   const lr=d7.map(d=>{const l=st.log[d]||{},s=parseFloat(l.s),e=parseFloat(l.e),sr=parseFloat(l.sr),p=[];if(s>0)p.push([.4,Math.max(0,Math.min(1,(s-5)/3))]);if(e>0)p.push([.35,(e-1)/4]);if(sr>0)p.push([.25,(5-sr)/4]);healthParts(st.log,hd,d).forEach(x=>p.push(x));if(!p.length)return null;const ws=p.reduce((a,x)=>a+x[0],0),sc=p.reduce((a,x)=>a+x[0]*x[1],0)/ws;return {d,sc,lv:sc>=.7?"green":sc>=.4?"yellow":"red"}}).find(Boolean);
@@ -3648,7 +3651,7 @@ function clientStats(id){
   if(lr&&lr.lv==="red")flags.push(["r","Readiness red"]);
   const lm=(CO.msgs[id]||[])[0];
   if(lm&&lm.author===id)flags.push(["b","Message waiting"]);
-  return {st,last,n7,n28,perWk,adh,habAdh,cardio7,wNow:wNow[wNow.length-1]||0,wDelta,wv:wv.filter(x=>x>0),steps,ci,ciThis,prs,lr,score,flags};
+  return {st,last,n7,n28,perWk,adh,habAdh,mealAdh,cardio7,wNow:wNow[wNow.length-1]||0,wDelta,wv:wv.filter(x=>x>0),steps,ci,ciThis,prs,lr,score,flags};
 }
 const CO_link=id=>cx().links.find(l=>l.coach_id===uidMe()&&l.client_id===id);
 const flagW=s=>s.flags.reduce((t,f)=>t+(f[0]==="r"?3:f[0]==="a"?2:1),0);
@@ -3661,7 +3664,7 @@ function renderCoach(){
   CO.sel="";
   const cl=myClients(),stats=cl.map(l=>[l,clientStats(l.client_id)]).sort((a,b)=>flagW(b[1])-flagW(a[1])||a[1].score-b[1].score);
   el.innerHTML=`<div class="card"><h2><span>Clients</span><span style="display:flex;gap:8px;align-items:center"><span class="badge">${cl.length}</span><button class="btn" id="coRefresh">↻ Refresh</button></span></h2>
-   ${CO.loading?'<div class="d">Loading…</div>':""}${CO.msg?`<div class="note">${esc(CO.msg)}</div>`:""}
+   ${CO.loading?'<div class="d">Loading…</div>':""}${CO.msg?callout("red","⚠️","Couldn't load clients","",esc(CO.msg)):""}
    ${stats.length?`<div class="cogrid">${stats.map(([l,s])=>`<button type="button" class="cocard" data-co="${esc(l.client_id)}">
      <div class="coh"><b>${esc(l.client_name||"Client")}</b><span class="coscore ${s.score>=80?"g":s.score>=55?"a":"r"}">${s.score}</span></div>
      <div class="cokv"><span>Workouts 7 d</span><b>${s.n7} / ${s.perWk}</b></div>
@@ -3669,6 +3672,7 @@ function renderCoach(){
      <div class="cokv"><span>Last workout</span><b>${s.last?esc(dateLabel(s.last,{month:"short",day:"numeric"})):"–"}</b></div>
      <div class="cokv"><span>Weight</span><b>${s.wNow?dW(s.wNow)+" "+wU():"–"}${s.wDelta?` <small style="color:var(--muted)">${s.wDelta>0?"+":""}${dW(s.wDelta)}/wk</small>`:""}</b></div>
      <div class="cokv"><span>Steps 7 d</span><b>${s.steps?s.steps.toLocaleString():"–"}</b></div>
+     <div class="cokv"><span>Meals ticked 7 d</span><b>${Math.round(s.mealAdh*100)}%</b></div>
      <div class="cokv"><span>Cardio 7 d</span><b>${s.cardio7?s.cardio7+" min":"–"}</b></div>
      <div class="cokv"><span>Readiness</span><b>${s.lr?`<span class="dot ${s.lr.lv}"></span>${s.lr.lv}`:"–"}</b></div>
      ${s.wv.length>1?sparkline(s.wv,220,30):""}
@@ -3703,6 +3707,7 @@ function renderClient(id){
     <div class="coflags">${s.flags.map(flagHTML).join("")}</div>
     <div class="kpis" style="margin-top:8px"><div class="kpi"><div class="l">Workouts 7 / 28 d</div><div class="v">${s.n7} / ${s.n28}</div><div class="s">Plans ${s.perWk}/week · ${Math.round(s.adh*100)}% adherence</div></div>
      <div class="kpi"><div class="l">Weight</div><div class="v">${s.wNow?dW(s.wNow)+" "+wU():"–"}</div><div class="s">${s.wDelta?(s.wDelta>0?"+":"")+dW(s.wDelta)+" "+wU()+"/week (4-week trend)":"Not enough weigh-ins"}</div>${s.wv.length>1?sparkline(s.wv,200,28):""}</div>
+     <div class="kpi"><div class="l">Meals 7 d</div><div class="v">${Math.round(s.mealAdh*100)}%</div><div class="s">Planned meals ticked off · cardio ${s.cardio7} min</div></div>
      <div class="kpi"><div class="l">Habits 7 d · steps</div><div class="v">${Math.round(s.habAdh*100)}%</div><div class="s">${s.steps?s.steps.toLocaleString()+" steps/day":"No steps"}</div></div>
      <div class="kpi"><div class="l">Goal · plan</div><div class="v" style="font-size:1rem">${esc(st.prof.goal)} · ${st.cplan.mode==="custom"?"own plan":"auto plan"}</div><div class="s">${esc(st.prof.exp)} · ${st.prof.days} days · ${st.prof.len} min</div></div></div></div>
 
