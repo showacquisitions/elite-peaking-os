@@ -26,5 +26,6 @@ Deno.serve(async req => {
     if (!r.ok) return out({ ok: false, error: (j && (j.message || j.msg)) || "HTTP " + r.status }, r.status === 400 && /token/i.test(JSON.stringify(j)) ? 401 : r.status);
     days += (j && j.days) || 0;
   }
-  return out({ ok: true, days });
+  // Echo what was understood, so a Shortcut's Show Result reveals empty or unreadable fields.
+  return out({ ok: true, days, got: rows.slice(0, 3).map((r: any) => { const o: any = {}; for (const k of ["date", "steps", "kcal", "rhr", "hrv", "weight", "unit", "sleep"]) if (r && r[k] != null) o[k] = r[k]; return o; }) });
 });

@@ -32,7 +32,8 @@ export function cleanDate(v) {
 export function cleanRow(r) {
   if (!r || typeof r !== "object" || Array.isArray(r)) return r;
   const o = {};
-  for (const [k, v] of Object.entries(r)) { const key = String(k).trim().toLowerCase().replace(/\s+/g, "_"); o[ALIAS[key] || key] = v; }
+  const un = v => (v && typeof v === "object" && !Array.isArray(v) ? (v.value ?? v.qty ?? v.amount ?? v.quantity ?? v) : v); // a Shortcuts variable can arrive as a small dictionary
+  for (const [k, v0] of Object.entries(r)) { const v = un(v0); const key = String(k).trim().toLowerCase().replace(/\s+/g, "_"); o[ALIAS[key] || key] = v; }
   if (o.date != null) o.date = cleanDate(o.date);
   for (const k of ["steps", "kcal", "rhr", "hrv", "weight"]) if (o[k] != null) o[k] = cleanNum(o[k]);
   if (o.sleep != null) o.sleep = cleanHours(o.sleep);
