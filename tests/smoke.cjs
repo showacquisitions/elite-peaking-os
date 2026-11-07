@@ -478,6 +478,8 @@ async function page(browser, vp) {
     const { toRows: tr } = await import(require("url").pathToFileURL(path.join(__dirname, "..", "supabase", "functions", "health", "parse.mjs")).href);
     const sh = tr({ Date: "11/6/2026", Steps: "8,421", Weight: "165,4", Sleep: "7 hr 12 min", HRV: "48.2", "Resting Heart Rate": "54" })[0];
     ok(sh.date === "2026-11-06" && sh.steps === "8421" && sh.weight === "165.4" && Math.abs(sh.sleep - 7.2) < 1e-9 && sh.rhr === "54", "Shortcut text values are cleaned (comma thousands and decimals, “7 hr 12 min”, US dates, key names)");
+    const ls = tr({ date: "2026-11-07", steps: "25\n4\n54", rhr: "", hrv: "40\n50", sleep: "1:30:00\n6:00:00" })[0];
+    ok(ls.steps === 83 && ls.rhr === "" && ls.hrv === 45 && ls.sleep === 7.5, "raw Health sample lists from a Shortcut are summed or averaged");
     ok(tr({ date: "2026-11-06 21:00:00 -0500", sleep: "7:30:00" })[0].date === "2026-11-06" && tr({ sleep: "7:30:00" })[0].sleep === 7.5, "ISO timestamps and h:mm:ss durations are understood");
     const hp = await page(browser, { width: 390, height: 900 }); let sent = null;
     await hp.route(/functions\/v1\/health/, r => { sent = r.request().postData(); return r.fulfill({ json: { ok: true, days: 1 } }) });

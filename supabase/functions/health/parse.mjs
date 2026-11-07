@@ -35,8 +35,15 @@ export function cleanRow(r) {
   const un = v => (v && typeof v === "object" && !Array.isArray(v) ? (v.value ?? v.qty ?? v.amount ?? v.quantity ?? v) : v); // a Shortcuts variable can arrive as a small dictionary
   for (const [k, v0] of Object.entries(r)) { const v = un(v0); const key = String(k).trim().toLowerCase().replace(/\s+/g, "_"); o[ALIAS[key] || key] = v; }
   if (o.date != null) o.date = cleanDate(o.date);
-  for (const k of ["steps", "kcal", "rhr", "hrv", "weight"]) if (o[k] != null) o[k] = cleanNum(o[k]);
-  if (o.sleep != null) o.sleep = cleanHours(o.sleep);
+  // A Shortcut that passes raw Health samples sends one value per line ("25\n4\n54"). Aggregate: totals for steps, energy and sleep; averages for heart metrics; newest for weight.
+  const list = (v, f) => (typeof v === "string" && /[\r\n]/.test(v) ? v.split(/\r?\n/).map(x => x.trim()).filter(Boolean).map(x => Number(f(x))).filter(isFinite) : null);
+  const agg = { steps: "sum", kcal: "sum", sleep: "sum", rhr: "avg", hrv: "avg", weight: "last" };
+  for (const k of ["steps", "kcal", "rhr", "hrv", "weight", "sleep"]) {
+    if (o[k] == null) continue;
+    const a = list(o[k], k === "sleep" ? cleanHours : cleanNum);
+    if (a) o[k] = !a.length ? "" : agg[k] === "sum" ? a.reduce((x, y) => x + y, 0) : agg[k] === "avg" ? a.reduce((x, y) => x + y, 0) / a.length : a[0];
+    else o[k] = k === "sleep" ? cleanHours(o[k]) : cleanNum(o[k]);
+  }
   return o;
 }
 export function toRows(body) {
