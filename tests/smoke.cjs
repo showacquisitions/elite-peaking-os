@@ -19,7 +19,7 @@ async function page(browser, vp) {
 
 (async () => {
   const browser = await chromium.launch();
-  const TABS = ["plan", "train", "food:grocery", "food:kitchen", "progress", "overview", "profile", "coach"];
+  const TABS = ["plan", "train", "food:grocery", "food:kitchen", "food:overview", "quality", "progress", "overview", "profile", "coach"];
 
   console.log("Layout and errors");
   for (const width of [360, 1280]) {
@@ -230,9 +230,9 @@ async function page(browser, vp) {
     const { toRows } = await import(require("url").pathToFileURL(path.join(__dirname, "..", "supabase", "functions", "health", "parse.mjs")).href);
     const rows = toRows({ data: { metrics: [{ name: "step_count", units: "count", data: [{ date: "2026-11-05 00:00:00 -0500", qty: 4000 }, { date: "2026-11-05 12:00:00 -0500", qty: 4421 }] }, { name: "weight_body_mass", units: "lb", data: [{ date: "2026-11-05 07:00:00 -0500", qty: 165.4 }] }, { name: "sleep_analysis", units: "hr", data: [{ date: "2026-11-05 00:00:00 -0500", totalSleep: 7.25 }] }, { name: "active_energy", units: "kJ", data: [{ date: "2026-11-05", qty: 2092 }] }], workouts: [{ name: "Outdoor Walk", start: "2026-11-05 18:00:00 -0500", duration: 2520, distance: { qty: 2.1, units: "mi" } }] } });
     const r0 = rows[0] || {};
-    ok(rows.length === 1 && r0.steps === 8421 && r0.weight === 165.4 && r0.unit === "lb" && r0.sleep === 7.25 && r0.kcal === 500, "Health Auto Export metrics become one day row (steps summed, kJ to kcal)");
+    ok(rows.length === 1 && r0.steps === 8421 && r0.weight === 75.02 && r0.unit === "kg" && r0.sleep === 7.25 && r0.kcal === 500, "Health Auto Export metrics become one day row (steps summed, kJ to kcal, weight to kg)");
     ok(r0.cardio && r0.cardio[0].min === 42 && Math.abs(r0.cardio[0].km - 3.38) < .01, "Health workouts become cardio entries");
-    ok(toRows({ date: "2026-11-05", steps: 10 })[0].steps === 10 && toRows([{ date: "x" }]).length === 1, "Shortcut and list bodies pass straight through");
+    ok(toRows({ date: "2026-11-05", steps: 10 })[0].steps === 10 && toRows([{ date: "x" }]).length === 0, "Shortcut bodies are read; a row with no usable value is dropped");
   }
 
   console.log("v3: callouts across tabs");
@@ -355,6 +355,163 @@ async function page(browser, vp) {
     ok(await p9.locator("#coPhotos img").count() === 2, "coach sees first and latest shared photos once the client opts in");
     ok(p9.errors.length === 0, "no JS errors in coach v3.2 " + p9.errors.join(" | "));
     await p9.close();
+  }
+
+  console.log("v4: Health payload normalizer");
+  {
+    const mod = await import(require("url").pathToFileURL(path.join(__dirname, "..", "supabase", "functions", "health", "parse.mjs")).href);
+    const N = x => mod.hxNormalize(x, { today: "2026-11-13", unit: "lb" }), one = x => N(x).rows[0] || {};
+    let r = one({ date: "", steps: "", weight: null, sleep: "NaN", hrv: "", rhr: "72 bpm", kcal: "0" });
+    ok(r.date === "2026-11-13" && r.rhr === 72 && Object.keys(r).length === 2, "blank, null, NaN and 0 fields are skipped; the valid field is kept; a missing date means today");
+    r = one({ steps: "4000\n4421", rhr: "58\n62", weight: "165.4 lb\n166 lb", sleep: "27000", hrv: "45,5 ms" });
+    ok(r.steps === 8421 && r.rhr === 60 && r.weight === 75.3 && r.sleep === 7.5 && r.hrv === 45.5, "one-sample-per-line lists: steps summed, heart rate averaged, latest weight, seconds to hours, decimal comma");
+    r = one({ steps: "8,421 steps", kcal: "1 850 kJ", sleep: "7 hr 30 min", weight: "75 kg", bf: "0.152" });
+    ok(r.steps === 8421 && r.kcal === 442 && r.sleep === 7.5 && r.weight === 75 && r.bf === 15.2, "unit suffixes and thousands separators are understood");
+    const br = N('{"date":"2026-11-12","steps":,"weight":"165,4","sleep":NaN,}');
+    ok(br.rows.length === 1 && br.rows[0].weight === 75.02 && br.rows[0].steps === undefined && br.issues.length === 1, "JSON with empty values from Shortcuts is repaired, not rejected");
+    r = one("sync&steps=8%2C421&weight=&sleep=7:30&hrv=&date=Nov 12, 2026 at 9:00 PM");
+    ok(r.date === "2026-11-12" && r.steps === 8421 && r.sleep === 7.5 && r.weight === undefined, "URL query bodies and Shortcuts date text are read");
+    ok(N("h=2026-11-03,165.4,8421;2026-11-02,165.0,9100&u=lb").rows.length === 2 && N("2026-11-03, 165.4, 8421").rows[0].steps === 8421, "legacy #h= links and CSV lines still import");
+    ok(one([{ date: "2026-11-13", steps: 5000 }, { date: "2026-11-13", steps: 8000, hrv: 50 }]).steps === 8000 && one({ steps_watch: "7000", steps_phone: "6500" }).steps === 7000, "iPhone + Watch duplicates are not added together");
+    const bad = N({ date: "2027-06-01", steps: 5 }), junk = N({ steps: "abc", rhr: 900, weight: "12 kg" });
+    ok(bad.rows.length === 0 && bad.issues.length === 1 && junk.rows.length === 0 && junk.issues.length === 3, "future dates and out-of-range values are reported, never stored");
+    ok(N(null).rows.length === 0 && N("hello").rows.length === 0 && N(undefined).issues.length === 0 && N([null, 5, "x"]).rows.length === 0, "garbage input never throws");
+    const m = mod.hxMerge({ date: "d", steps: 9000, hrv: 50 }, { date: "d", steps: 9500 }, false);
+    ok(m.steps === 9500 && m.hrv === 50, "a later sync updates what it carries and keeps the rest");
+    const html = fs.readFileSync(file, "utf8"), src = fs.readFileSync(path.join(__dirname, "..", "supabase", "functions", "health", "parse.mjs"), "utf8"), blk = t => t.slice(t.indexOf("/*HX-BEGIN*/"), t.indexOf("/*HX-END*/"));
+    ok(blk(html).length > 1000 && blk(html) === blk(src), "the app and the server run the identical normalizer (run tools/inline-hx.cjs after editing parse.mjs)");
+  }
+
+  console.log("v4: URL auto-ingest, partial upsert, sync status");
+  {
+    const p = await browser.newPage({ viewport: { width: 390, height: 900 } });
+    p.errors = []; p.on("pageerror", e => p.errors.push(e.message)); p.on("dialog", d => d.accept());
+    await p.route("**/*", r => r.request().url().startsWith("file:") ? r.continue() : r.abort());
+    await p.goto(url + "#sync&steps=8421&weight=&sleep=7:30&hrv=NaN&rhr=58%20bpm&kcal=");
+    await p.waitForFunction(() => typeof W !== "undefined" && W && W.days && document.querySelector(".toast.on"));
+    let r = await p.evaluate(() => ({ h: S.hd[TODAY], hash: location.hash, steps: S.steps[TODAY], sleep: (S.log[TODAY] || {}).s, toast: $("toast").textContent, pill: $("hxPill").textContent, log: hxLog()[0] }));
+    ok(r.h.steps === 8421 && r.h.sleep === 7.5 && r.h.rhr === 58 && r.h.hrv === undefined && r.h.w === undefined, "link sync stores the values that are present and nothing for the empty ones");
+    ok(r.hash === "" && /Health synced/.test(r.toast), "the address bar is cleaned and a confirmation toast shows");
+    ok(r.steps === 8421 && r.sleep === "7.5" && /3\/7/.test(r.pill) && r.log.src === "link" && r.log.days === 1, "synced values reach the step counter, the daily log, the status pill and the sync log");
+    r = await p.evaluate(async () => {
+      S.log[TODAY].w = 80; save();
+      location.hash = "#sync&steps=0&weight=165.4&u=lb&hrv=52"; await new Promise(r => setTimeout(r, 80));
+      const a = { steps: S.hd[TODAY].steps, sleep: S.hd[TODAY].sleep, hrv: S.hd[TODAY].hrv, hw: S.hd[TODAY].w, lw: S.log[TODAY].w, hash: location.hash };
+      location.hash = "#h=" + addD(TODAY, -2) + ",165.0,9100&u=lb"; await new Promise(r => setTimeout(r, 80));
+      a.legacy = S.steps[addD(TODAY, -2)]; a.lw2 = (S.log[addD(TODAY, -2)] || {}).w;
+      return a;
+    });
+    ok(r.steps === 8421 && r.sleep === 7.5 && r.hrv === 52 && r.hw === 75.02 && r.hash === "", "a second partial sync adds new fields and never zeroes earlier ones (hash change, app already open)");
+    ok(r.lw === 80, "a weight typed by hand is not overwritten by Health");
+    ok(r.legacy === 9100 && Math.abs(r.lw2 - 74.84) < .01, "old-style #h= links still work");
+    r = await p.evaluate(() => {
+      showTab("progress"); $("hxIn").value = HX_SAMPLE; hxCheck(false);
+      const dry = { tbl: !!document.querySelector("#hxOut table.tele"), hd: JSON.stringify(S.hd[TODAY]) };
+      S.hd = {}; hxUpsert([{ date: TODAY, hrv: 50, steps: 9000 }]); hxUpsert([{ date: TODAY, steps: 9500, hrv: null, rhr: NaN, sleep: 0 }]);
+      return { dry, merged: S.hd[TODAY], guide: /Is Opened/.test($("hxBox").textContent) && /Text/.test($("hxBox").textContent), over: document.documentElement.scrollWidth > document.documentElement.clientWidth };
+    });
+    ok(r.dry.tbl && r.merged.hrv === 50 && r.merged.steps === 9500 && r.merged.rhr === undefined && r.merged.sleep === undefined, "payload tester reads without saving; upsert ignores null, NaN and 0");
+    ok(r.guide && !r.over, "Shortcut setup and repair guide is shown and fits a phone");
+    ok(p.errors.length === 0, "no JS errors in Health sync " + p.errors.join(" | "));
+    await p.close();
+  }
+
+  console.log("v4: readiness, modes, command strip, fuel, quality, recipes, biometrics");
+  {
+    const p = await page(browser, { width: 1280, height: 900 });
+    let r = await p.evaluate(() => {
+      const d = TODAY, y = addD(d, -1), o = {};
+      o.none = readiness(d);
+      S.log[y] = { s: "8.5", e: "5" }; const est = readiness(d); o.est = est && est.est && isFinite(est.pct); o.estAdj = adjusted({ sets: 4, rir: 2 }, Object.assign({}, est, { level: "red" })).sets;
+      S.log[d] = { s: "abc", e: "NaN", sr: "" }; S.hd[d] = { hrv: NaN, rhr: 0 }; const junk = readiness(d); o.junk = junk === null || (junk.est && isFinite(junk.score));
+      S.log[d] = { s: "4.5" }; const one = readiness(d); o.one = one && !one.est && one.level === "red" && one.parts.length === 1 && one.missing.length === 4 && isFinite(one.pct);
+      S.water[y] = 3000; S.done[y] = 90; const more = readiness(d); o.ctx = more.parts.length === 3 && more.pct > one.pct;
+      renderPlan(); o.badge = $("rdBadge").textContent; o.rdx = !!document.querySelector("#readyBox .rdx");
+      return o;
+    });
+    ok(r.none === null && r.one && r.junk, "readiness: no data gives no score, one signal gives a real score, junk never gives NaN");
+    ok(r.est && r.estAdj === 4, "a day with no data shows a carried-forward estimate that does not change the prescription");
+    ok(r.ctx && r.rdx && /RED · \d+/.test(r.badge), "context signals re-weight the score and the breakdown is shown");
+    r = await p.evaluate(() => {
+      const tabs = [...document.querySelectorAll(".tab:not([hidden])")].map(t => t.dataset.tab), nav = getComputedStyle(document.querySelector(".tabs"));
+      showTab("overview"); const legacy = TAB === "food" && $("pane-overview").classList.contains("active") && !!document.querySelector("#pane-overview .foodseg .on");
+      showTab("quality"); const q = $("pane-quality").classList.contains("active") && !!document.querySelector("#pane-quality .empty");
+      return { tabs, side: nav.position === "fixed" && parseInt(nav.width) < 260, legacy, q };
+    });
+    ok(r.tabs.join() === "plan,train,food,quality,progress" && r.side, "five pillars, shown as a left sidebar on desktop");
+    ok(r.legacy && r.q, "Targets lives under Fuel (old links still land there); Quality opens with a starter state");
+    r = await p.evaluate(() => {
+      showTab("plan"); setMode("guided"); const g = { mode: document.documentElement.dataset.mode, micro: getComputedStyle($("microBox").closest(".card")).display, kpis: getComputedStyle($("kpis")).display };
+      const cb = document.querySelector('#hList input[type=checkbox]'); cb.click(); const still = S.ux.mode;
+      setMode("pro"); const pr = { micro: getComputedStyle($("microBox").closest(".card")).display, saved: JSON.parse(localStorage.getItem(KEY)).ux.mode };
+      return { g, still, pr, rings: document.querySelectorAll("#cmdBox .cring").length, nba: !!document.querySelector("#cmdBox .nba1 b").textContent, card: !!$("modeCard") };
+    });
+    ok(r.g.mode === "guided" && r.g.micro === "none" && r.g.kpis === "none" && r.pr.micro !== "none" && r.pr.saved === "pro" && r.card, "Guided hides the dense cards, Elite Pro shows them, the choice is saved");
+    ok(r.still === "guided", "ordinary clicks do not change the mode");
+    ok(r.rings === 4 && r.nba, "Today shows four rings and a next best action");
+    r = await p.evaluate(() => {
+      S.sel = TODAY; renderPlan(); setPlanSeg("m");
+      $("exN").value = "Burrito"; $("exP").value = "40"; $("exC").value = "60"; $("exF").value = "20"; $("btnAddEx").click();
+      const e = S.flog[TODAY].slice(-1)[0], kc = e.kcal;
+      document.querySelector(`[data-fsfav="${e.id}"]`).click(); const fav = S.favs.length;
+      document.querySelector("#foodBox [data-qa]").click(); const n = S.flog[TODAY].length;
+      document.querySelector("[data-supp]").click(); const sup = Object.keys(S.supp[TODAY] || {}).length;
+      renderPlan(); const nut = S.nut[TODAY];
+      return { kc, fav, n, sup, nut, name: e.n };
+    });
+    ok(r.kc === 580 && r.name === "Burrito" && r.fav === 1 && r.n === 2 && r.nut && r.nut.k === 1160, "quick add works out calories from macros, favorites re-log in one tap, the day's intake is recorded");
+    ok(r.sup === 1, "supplements are ticked per day");
+    r = await p.evaluate(() => {
+      const whole = qScore({ kcal: 60, p: 10, sugar: 3, sat: .2, sodium: 40, fiber: 0 }, { nova: 1, add: 0 }), junk = qScore({ kcal: 480, p: 5, sugar: 32, sat: 9, sodium: 700, fiber: 1 }, { nova: 4, add: 6 }), part = qScore({ kcal: 300, p: 8 }, {}), none = qScore({}, {});
+      const it = offNorm({ product_name: "Choco Bar", nutriments: { "energy-kcal_100g": 480, proteins_100g: 5, sugars_100g: 32, "saturated-fat_100g": 9, sodium_100g: .7 }, nova_group: 4, additives_n: 6 });
+      FS.res = [it]; FS.msg = ""; showTab("quality"); renderQuality();
+      const card = $("pane-quality").querySelector(".qcard"), txt = card ? card.textContent : "";
+      document.querySelector("[data-qadd]").click(); const e = S.flog[S.sel].slice(-1)[0];
+      return { w: whole.score, j: junk.score, flags: junk.fl.map(f => f[1]).join("|"), part: part.est && isFinite(part.score), none: isFinite(none.score), swap: /Cleaner swap/.test(txt), up: /Ultra-processed/.test(txt), q: e.q, qx: qScore(it.per, it.meta).score, day: qDay(selDay()).score };
+    });
+    ok(r.w >= 85 && r.j <= 25 && /Ultra-processed/.test(r.flags) && /High sugar/.test(r.flags) && /High sodium/.test(r.flags) && /additives/.test(r.flags), `quality score separates whole food (${r.w}) from ultra-processed (${r.j}) and flags why`);
+    ok(r.part && r.none && r.swap && r.up && r.q === r.qx && r.q <= 25 && isFinite(r.day), "missing label data is re-weighted and marked as an estimate; a product card shows flags, a swap and logs with its score");
+    r = await p.evaluate(() => {
+      S.recipes = [{ id: "r1", name: "Chicken rice", slots: ["M"], time: "20 min", kcal: 500, P: 45, C: 50, F: 10, ing: ["200 g chicken breast", "1 1/2 cups rice", "salt"], steps: ["Cook rice", "Grill chicken"], use: true, fav: false }];
+      S.groc = []; save(); regen(); renderAll(true); showTab("food", "kitchen");
+      const sc = [scaleLine("1 1/2 cups rice", 2), scaleLine("200 g chicken breast", 3), scaleLine("salt", 4), scaleLine("1/2 tsp salt", 3)];
+      document.querySelector('[data-rsc="r1|1"]').click(); document.querySelector('[data-rsc="r1|1"]').click();
+      const before = (S.flog[S.sel] || []).length; document.querySelector('#kRecipes [data-rlog="r1"]').click(); const e = S.flog[S.sel].slice(-1)[0];
+      document.querySelector('[data-rgl2="r1"]').click(); document.querySelector('[data-rgl2="r1"]').click();
+      const g = S.groc.map(x => x.t);
+      document.querySelector('[data-rck="r1"]').click(); const cook = { open: !$("cook").hidden, batch: $("cook").querySelectorAll(".ck-mult [data-ckact]").length, ing: $("cook").querySelector(".ck-list").textContent };
+      cookAct("m10"); const ten = $("cook").querySelector(".ck-list").textContent; cookAct("close");
+      return { sc, added: S.flog[S.sel].length - before, kcal: e.kcal, g, cook, ten };
+    });
+    ok(r.sc.join("|") === "3 cups rice|600 g chicken breast|salt|1.5 tsp salt", "recipe scaler multiplies whole numbers, fractions and mixed numbers");
+    ok(r.added === 1 && r.kcal === 1500, "one tap logs the scaled servings to the food log");
+    ok(r.g.length === 3 && r.g.includes("1200 g chicken breast") && r.g.includes("9 cups rice"), "adding a recipe to groceries twice combines matching lines instead of duplicating them");
+    ok(r.cook.open && r.cook.batch === 8 && /600 g chicken/.test(r.cook.ing) && /2000 g chicken/.test(r.ten), "cook mode opens from a recipe and rescales up to 10×");
+    r = await p.evaluate(() => {
+      S.hd = {}; S.nut = {}; S.wlog = {};
+      for (let i = 0; i < 20; i++) { const d = addD(TODAY, -i); if (i % 3) { S.hd[d] = { sleep: 6 + (i % 4) * .5, hrv: 45 + i % 9, steps: 6000 + i * 150 }; hxProject(d) } if (i % 2) S.wlog[d] = { name: "A", start: 1, end: 2, mins: 50, sets: 15, reps: 120, vol: 4000 + (i % 4) * 400 }; if (i % 4 === 0) (S.log[d] = S.log[d] || {}).w = 75 - i * .05 }
+      showTab("progress"); renderProgress();
+      const txt = $("bioBox").textContent, tiles = document.querySelectorAll("#bioBox .btile").length;
+      document.querySelector('[data-bior="90"]').click(); const rng = BIO.range; document.querySelector('[data-biom="hrv"]').click();
+      const chart = !!document.querySelector("#bioBox svg.biochart circle"), empty = (() => { BIO.metric = "bf"; renderBio(); return !!document.querySelector("#bioBox .card.bio .empty") })();
+      const csv = bioCSV().split("\n"), roll = rolling([{ d: "a", v: 2 }, { d: "b", v: null }, { d: "c", v: 4 }], 7);
+      BIO.metric = "weight"; BIO.range = 30; renderBio();
+      return { nan: /NaN|undefined|Infinity/.test(txt), tiles, rng, chart, empty, head: csv[0].split(",").length, rows: csv.length, roll, pr: pearson([1, 2, 3, 4, 5], [2, 4, 6, 8, 10]), corr: bioCorr(30).filter(c => c.r != null).length, over: document.documentElement.scrollWidth > document.documentElement.clientWidth };
+    });
+    ok(!r.nan && r.tiles === 9 && r.rng === 90 && r.chart && r.empty, "biometrics: sparse data never prints NaN, range and metric selectors work, an empty metric shows a starter state");
+    ok(r.roll[1].est === true && r.roll[1].v === 2 && r.roll[2].v === 3 && Math.abs(r.pr - 1) < 1e-9 && r.corr >= 1, "rolling average marks gap days as estimates; correlations appear once 5 paired days exist");
+    ok(r.head === 20 && r.rows > 5 && !r.over, "daily CSV export has one row per day");
+    ok(p.errors.length === 0, "no JS errors in v4 " + p.errors.join(" | "));
+    await p.close();
+
+    const o = await browser.newPage({ viewport: { width: 390, height: 900 } });
+    o.errors = []; o.on("pageerror", e => o.errors.push(e.message));
+    await o.route("**/*", r => r.request().url().startsWith("file:") ? r.continue() : r.abort());
+    await o.addInitScript(() => { if (!localStorage.getItem("elitePeakingState_v3")) localStorage.setItem("elitePeakingState_v3", JSON.stringify({ prof: { kg: 80, goal: "cut" }, log: { "2026-11-01": { w: 80 } }, checks: {}, perf: {}, extra: { "2026-11-01": { kcal: 300, p: 20 } }, hist: { a: { u: "x", d: "2026-11-01", w: 50, r: 5 } }, done: {}, flog: {}, sets: {}, steps: {}, hd: { "2026-11-01": { steps: 0, sleep: 0, hrv: 0, rhr: 0, w: 0, kcal: 0, cardio: [] } } })) });
+    await o.goto(url); await o.waitForFunction(() => typeof W !== "undefined" && W && W.days);
+    const mg = await o.evaluate(() => { showTab("progress"); showTab("quality"); showTab("plan"); return { kg: S.prof.kg, extra: S.extra["2026-11-01"].kcal, hist: Object.keys(S.hist).length, mode: S.ux.mode, supp: typeof S.supp, favs: Array.isArray(S.favs), pill: $("hxPill").textContent } });
+    ok(mg.kg === 80 && mg.extra === 300 && mg.hist === 1 && mg.mode === "pro" && mg.supp === "object" && mg.favs && /Connect Health/.test(mg.pill) && o.errors.length === 0, "a v3 backup loads unchanged: data kept, new fields added, existing users stay in Elite Pro " + o.errors.join(" | "));
+    await o.close();
   }
 
   const vf = path.join(path.dirname(file), "version.json");

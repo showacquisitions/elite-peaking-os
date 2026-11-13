@@ -2,6 +2,43 @@
 
 State of the app and the decisions behind it. Newest first.
 
+## v4.0 — full audit and upgrade, build 2026.11.13.1 (2026-11-13)
+
+**Owner approved 2026-11-13: SQL applied, edge function deployed (v6), app merged to `main`.**
+
+### Health sync (the main fix)
+- **Root causes found.** (1) `_hnum` stripped non-digits, so a Shortcuts list `"58\n62"` became 5862 and was dropped, and `"165,4"` became 1654. (2) `0` passed the range check and overwrote real steps and energy; the app's own "Send a test" sent `steps: 0`. (3) A missing date fell back to the server's UTC date, so a 9 PM Pacific sync was filed under tomorrow. (4) A non-ISO date ("Nov 13, 2026 at 9:00 PM") made the row vanish while the response still said ok. (5) Any body that was not strict JSON returned 400, and Shortcuts emits `"steps":,` when a value is empty. (6) The client pull replaced the whole day with the server row, zeros included. (7) `#h=` links only ran on first load, only carried weight and steps, and overwrote hand-typed weights. (8) iOS blocks Health reads while the phone is locked, so the documented 9 PM Time of Day trigger fails (verified from Apple Support Communities and Automators threads).
+- **One normalizer, two homes.** `supabase/functions/health/parse.mjs` holds the `HX` block; `index.html` carries a byte-identical copy (no build step). `tools/inline-hx.cjs` re-copies it and a test fails on drift.
+- **Rules.** Blank, null, "NaN", 0 and out-of-range values are "not sent". Lists: sum for steps/energy/sleep, mean for HRV/RHR, last for weight. Same-day duplicates inside one payload keep the larger total. Separate `steps_watch` / `steps_phone` keep the larger one. Weight is normalized to kg. Issues are returned (`ignored`) and logged, never fatal.
+- **Client.** `hxIngest` → `hxNormalize` → `hxUpsert` (date-keyed merge into `S.hd`) → `hxProject` (fills `S.steps` / `S.log` only where nothing was typed by hand). Sources: link (`#sync&…`, `#health=…`, legacy `#h=…`, also `?`), paste, file, cloud pull, custom feed URL. Runs on load, hashchange, pageshow, focus, visibilitychange.
+- **Server.** Edge function accepts POST/GET/PUT, JSON, form or text bodies and query params; `tz` and `u` ride in the link. `supabase/v4-health.sql` adds `body_fat` and makes `health_ingest` treat 0 as null. The app selects `body_fat` and falls back to the old column list on HTTP 400, so it works against either server version.
+- **UI.** Header pill (state, last sync, today's n/7), Health sync card in Biometrics: status, today's fields, Sync now, setup guides, repair list, payload tester (Check = dry run, Import = commit), sync log.
+
+### Everything else
+- **Navigation.** Five pillars: Today, Train, Fuel & Recipes, Quality, Biometrics. Targets moved under Fuel (`showTab("overview")` still works). Desktop ≥1100 px uses a left sidebar.
+- **Experience mode.** `S.ux.mode` guided | pro; `html[data-mode]` hides `.pro-only` / `.guided-only`. New users start Guided; anyone with history stays Pro.
+- **Command strip.** Four rings (readiness, fuel, train, move) and a Next best action list. It replaces the old "Start here" card.
+- **Readiness engine.** 0–100, per-signal breakdown, re-weights around missing signals, three optional context signals, and a carried-forward estimate that never changes sets (`adjusted` ignores `rd.est`).
+- **Fuel.** Quick add with full macros goes to the food log; favorites and recents re-log in one tap; supplements per day (`S.supp`); `S.nut` snapshots what was eaten per day so trends work for past weeks.
+- **Recipes.** 1–10× scaler, cook mode from a recipe, one-tap log of scaled servings, groceries that combine matching lines and group by aisle.
+- **Quality.** `qScore`: 60% nutrients, 25% NOVA, 15% additives, re-weighted when label data is missing (marked ~). Flags and whole-food swaps. Open Food Facts fields added: `nova_group`, `additives_n`, `labels_tags`, sugars, saturated fat.
+- **Biometrics.** 9 tiles with 7/30/90-day range, chart with rolling average, correlations (Pearson, ≥5 paired days), daily table (Pro), CSV export.
+- **Design.** Type-scale and radius tokens, tabular numerals everywhere, focus rings, toasts, skeletons, empty states.
+
+### Decisions
+- **No module split yet.** One file is still the deploy unit; v4 adds ~1,100 lines in marked blocks. The split stays on the backlog and is now due.
+- **Quality score is ours.** It is described in-app as an Elite OS estimate, not as any other app's rating.
+- **Hand-typed values beat Health.** Import no longer replaces a weight you typed.
+
+### Verified
+- `node tests/smoke.cjs` → 145 passed, 0 failed (100 old + 45 new).
+- A click-anywhere bug (`closest("[data-mode]")` matched `<html>`) was caught by the old suite and fixed.
+- Live: `health_ingest` checked in a rolled-back transaction; the deployed function checked through pg_net (200 with `ignored` for a blank body, 401 for a wrong key).
+- Not verified: a real iPhone Shortcut run.
+
+### Owner actions
+See `docs/Backlog.md` → "Blocking v4".
+
 ## v3.2 — closes the v3 gap list, build 2026.11.06.5 (2026-11-06)
 
 - **Unread badges.** `coach_links.coach_read_at / client_read_at`, set by `msg_read(coach, client)`. Red count on the Today tab (client) and Clients tab (coach); per-client "N new messages" flag. Client marks read after 2.5 s on Today; coach marks read on opening the client.
