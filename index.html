@@ -516,22 +516,152 @@
   .cdadd{display:grid;grid-template-columns:1.3fr .8fr .9fr auto;gap:8px;margin-top:10px}
   .cdadd input,.cdadd select{min-width:0}
   @media(max-width:400px){.stepwrap{gap:12px}.stepring{width:88px;height:88px}.stepring svg{width:88px;height:88px}}
+
+  /* ===================== V4 DESIGN SYSTEM ===================== */
+  :root{--fs-xs:.72rem;--fs-sm:.82rem;--fs-md:.92rem;--fs-lg:1.15rem;--fs-xl:1.55rem;--fs-2xl:2.1rem;--r-sm:10px;--r-md:14px;--r-lg:18px;--side:216px}
+  body{font-variant-numeric:tabular-nums;font-feature-settings:"tnum" 1,"cv11" 1;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
+  :focus-visible{outline:2px solid var(--accent2,var(--accent));outline-offset:2px;border-radius:6px}
+  html[data-mode=guided] .pro-only{display:none!important}
+  html[data-mode=pro] .guided-only{display:none!important}
+  .btn,.rest,.tab,.fchip,.day,.btile,.modeb{transition:background .15s,border-color .15s,color .15s,transform .12s,box-shadow .15s}
+  .btn:active,.rest:active,.fchip:active,.btile:active{transform:scale(.97)}
+  /* header controls */
+  .hact{display:flex;gap:8px;align-items:center;flex-wrap:wrap;justify-content:flex-end}
+  .hxpill{display:inline-flex;align-items:center;gap:7px;min-height:36px;padding:6px 11px;border-radius:999px;border:1px solid var(--border);background:var(--panel2);color:var(--text);font-size:var(--fs-xs);font-weight:700;cursor:pointer;white-space:nowrap}
+  .hxpill:hover{border-color:var(--accent)}
+  .hxdot{width:8px;height:8px;border-radius:50%;background:var(--muted);flex:none}
+  .hxpill.s-ok .hxdot{background:var(--green);box-shadow:0 0 0 3px rgba(16,185,129,.18)}
+  .hxpill.s-stale .hxdot{background:var(--amber);box-shadow:0 0 0 3px rgba(245,158,11,.2)}
+  .hxpill .hxn{color:var(--muted);font-weight:600}
+  #btnMode{display:inline-flex;align-items:center;gap:6px;min-height:36px;padding:6px 11px;border-radius:999px;border:1px solid var(--border);background:transparent;color:var(--text);font-size:var(--fs-xs);font-weight:700;cursor:pointer}
+  #btnMode:hover{border-color:var(--accent)}
+  @media(max-width:700px){.hxpill .hxl{max-width:92px;overflow:hidden;text-overflow:ellipsis}#btnMode .hpl{display:none}h1{font-size:1.02rem}}
+  .h1s{display:none}
+  @media(max-width:700px){.h1f{display:none}.h1s{display:inline}header .sub{display:-webkit-box;-webkit-line-clamp:1;-webkit-box-orient:vertical;overflow:hidden}.hero .hside{display:none}}
+  html[data-mode=guided] #kpis{display:none}
+  @media(max-width:700px){header{flex-wrap:wrap}h1{white-space:nowrap}}
+  /* toast */
+  .toast{position:fixed;left:50%;bottom:calc(84px + env(safe-area-inset-bottom));transform:translate(-50%,16px);max-width:min(92vw,520px);padding:11px 16px;border-radius:var(--r-md);background:var(--panel);border:1px solid var(--border);box-shadow:var(--shadow,0 10px 30px rgba(0,0,0,.35));color:var(--text);font-size:var(--fs-sm);font-weight:600;opacity:0;pointer-events:none;transition:opacity .2s,transform .2s;z-index:300;text-align:center}
+  .toast.on{opacity:1;transform:translate(-50%,0)}
+  .toast.t-good{border-color:rgba(16,185,129,.55)}.toast.t-warn{border-color:rgba(245,158,11,.6)}
+  @media(min-width:701px){.toast{bottom:28px}}
+  /* skeleton + empty states */
+  @keyframes skel{0%{background-position:200% 0}100%{background-position:-200% 0}}
+  .skelw{display:grid;gap:10px;margin-top:12px}
+  .skel{height:62px;border-radius:var(--r-sm);background:linear-gradient(90deg,var(--panel2) 25%,var(--border) 50%,var(--panel2) 75%);background-size:200% 100%;animation:skel 1.3s linear infinite}
+  .empty{text-align:center;padding:22px 12px;border:1px dashed var(--border);border-radius:var(--r-md);margin-top:12px}
+  .empty-i{font-size:1.8rem;line-height:1}.empty b{display:block;margin-top:6px;font-size:var(--fs-md)}
+  .empty p{color:var(--muted);font-size:var(--fs-sm);margin:4px 0 10px}.empty .fchips{justify-content:center}
+  /* command strip */
+  .cmd{display:grid;grid-template-columns:auto 1fr;gap:22px;align-items:center}
+  .crings{display:grid;grid-template-columns:repeat(4,minmax(74px,1fr));gap:10px}
+  .cring{display:flex;flex-direction:column;align-items:center;text-align:center;gap:2px;min-width:0}
+  .cring-g{position:relative;width:76px;height:76px}
+  .cring-g b{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:.95rem;font-weight:800;letter-spacing:-.02em}
+  .cring span{font-size:var(--fs-xs);font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--muted)}
+  .cring small{font-size:.68rem;color:var(--muted);line-height:1.25}
+  .nba{min-width:0}
+  .nba1{display:flex;align-items:center;gap:12px;padding:12px 14px;border-radius:var(--r-md);background:var(--panel2);border:1px solid var(--border);margin-top:6px}
+  .nba-i{font-size:1.5rem;flex:none}.nba-b{flex:1;min-width:0}.nba-b b{display:block;font-size:var(--fs-md)}
+  .nba-b p{color:var(--muted);font-size:var(--fs-sm);margin-top:2px}
+  .nba1 .btn{flex:none;white-space:nowrap}
+  .nbaq{display:grid;gap:6px;margin-top:8px}
+  .nba2{display:flex;align-items:center;gap:8px;font-size:var(--fs-sm);color:var(--muted)}
+  .nba2 span:nth-child(2){flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:var(--text)}
+  .nba2 .btn{padding:3px 9px;font-size:.72rem;flex:none}
+  @media(max-width:960px){.cmd{grid-template-columns:1fr;gap:14px}}
+  @media(max-width:400px){.crings{gap:4px}.cring-g{transform:scale(.88)}}
+  /* readiness breakdown */
+  .rdx{margin-top:10px;padding-top:10px;border-top:1px solid var(--border)}
+  .rdx-h{display:flex;gap:12px;align-items:center}.rdx-h b{font-size:var(--fs-xl);font-weight:800;letter-spacing:-.03em;flex:none}
+  .rdx-h b small{font-size:var(--fs-xs);color:var(--muted);font-weight:600}.rdx-h span{font-size:var(--fs-sm);color:var(--muted)}
+  .rdx-t{margin-top:8px;display:grid;gap:5px}
+  .rdx-r{display:grid;grid-template-columns:minmax(90px,1.1fr) 1.2fr minmax(70px,1.2fr) auto;gap:8px;align-items:center;font-size:var(--fs-xs)}
+  .rdx-r small{color:var(--muted)}.rdx-r em{font-style:normal;color:var(--muted);font-size:.66rem;text-transform:uppercase;letter-spacing:.05em}
+  /* health sync */
+  .hxtoday{margin:10px 0}.hxfs{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px}
+  .hxf{font-size:var(--fs-xs);font-weight:600;padding:4px 9px;border-radius:999px;border:1px dashed var(--border);color:var(--muted)}
+  .hxf.on{border-style:solid;border-color:rgba(16,185,129,.5);color:var(--text);background:rgba(16,185,129,.1)}
+  .hurlbtns{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}
+  .hurlrow{display:flex;gap:8px}.hurlrow input{flex:1;min-width:0}
+  code{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:.82em;background:var(--panel2);padding:1px 5px;border-radius:5px;word-break:break-word}
+  .tblw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin-top:8px;border:1px solid var(--border);border-radius:var(--r-sm)}
+  table.tele{border-collapse:collapse;width:100%;font-size:var(--fs-xs);white-space:nowrap}
+  table.tele th{position:sticky;top:0;text-align:right;padding:7px 10px;color:var(--muted);font-weight:700;text-transform:uppercase;letter-spacing:.05em;font-size:.64rem;background:var(--panel2)}
+  table.tele td{text-align:right;padding:6px 10px;border-top:1px solid var(--border)}
+  table.tele th:first-child,table.tele td:first-child{text-align:left}
+  table.tele .na{color:var(--muted);opacity:.6}table.tele i{color:var(--muted)}
+  /* supplements, quick add, recipes */
+  .suppbar{margin-top:12px;padding-top:10px;border-top:1px solid var(--border)}
+  .sechl .rest{margin-left:8px}
+  .qadd{margin-bottom:12px}.fchip small{opacity:.65;font-weight:600;margin-left:3px}
+  .rtools{margin-top:8px;display:grid;gap:8px}
+  .rscale{display:flex;align-items:center;gap:8px;flex-wrap:wrap}.rscale b{min-width:30px;text-align:center}.rscale small{color:var(--muted)}
+  .rbtns{display:flex;gap:6px;flex-wrap:wrap}
+  /* quality */
+  .qpill{display:inline-flex;align-items:center;justify-content:center;min-width:34px;height:22px;padding:0 7px;border-radius:999px;font-size:.72rem;font-weight:800;background:var(--panel2);color:var(--text);border:1px solid var(--border);vertical-align:middle;margin-right:4px}
+  .qpill.q-good{background:rgba(16,185,129,.16);border-color:rgba(16,185,129,.55)}
+  .qpill.q-info{background:rgba(59,130,246,.16);border-color:rgba(59,130,246,.55)}
+  .qpill.q-warn{background:rgba(245,158,11,.16);border-color:rgba(245,158,11,.6)}
+  .qpill.q-red{background:rgba(239,68,68,.16);border-color:rgba(239,68,68,.6)}
+  .qflags{display:flex;flex-wrap:wrap;gap:5px;margin:6px 0}
+  .qf{font-size:.7rem;font-weight:600;padding:2px 8px;border-radius:999px;border:1px solid var(--border);color:var(--text)}
+  .qf.q-good{border-color:rgba(16,185,129,.5)}.qf.q-warn{border-color:rgba(245,158,11,.6)}.qf.q-red{border-color:rgba(239,68,68,.6)}
+  .qf.q-good::before{content:"＋ "}.qf.q-warn::before,.qf.q-red::before{content:"! "}
+  .qcard{border:1px solid var(--border);border-radius:var(--r-md);padding:12px;margin-top:10px;background:var(--panel2)}
+  .qc-h{display:flex;gap:8px;align-items:center}.qc-h b{display:block;font-size:var(--fs-sm)}.qc-h small{color:var(--muted);font-size:var(--fs-xs)}
+  .qc-h .qpill{min-width:44px;height:30px;font-size:.9rem;flex:none}
+  .qswap{font-size:var(--fs-sm);margin:8px 0;padding:8px 10px;border-radius:var(--r-sm);background:rgba(16,185,129,.09);border:1px solid rgba(16,185,129,.3)}
+  .qtop{display:flex;gap:16px;align-items:center;flex-wrap:wrap}.qtop-t{flex:1;min-width:220px}
+  .qg{position:relative;width:150px;flex:none}.qg-n{position:absolute;left:0;right:0;bottom:2px;text-align:center}
+  .qg-n b{display:block;font-size:var(--fs-2xl);font-weight:800;letter-spacing:-.04em;line-height:1}.qg-n small{color:var(--muted);font-size:var(--fs-xs);font-weight:700;text-transform:uppercase;letter-spacing:.06em}
+  /* biometrics */
+  .bioseg{margin:0}.bioseg button{padding:5px 12px;font-size:var(--fs-xs);white-space:nowrap;flex:none}
+  .btiles{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px}
+  .btile{position:relative;text-align:left;background:var(--panel2);border:1px solid var(--border);border-radius:var(--r-md);padding:11px 12px;color:var(--text);cursor:pointer;display:flex;flex-direction:column;gap:1px;min-width:0;font:inherit}
+  .btile:hover{border-color:var(--accent)}.btile.on{border-color:var(--accent);box-shadow:0 0 0 1px var(--accent) inset}
+  .btile .l{font-size:.66rem;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--muted)}
+  .btile b{font-size:var(--fs-xl);font-weight:800;letter-spacing:-.03em;line-height:1.15}.btile b small{font-size:var(--fs-xs);color:var(--muted);font-weight:600;letter-spacing:0}
+  .btile .s,.btile .dlt{font-size:.68rem;color:var(--muted)}
+  .btile .dlt.up{color:var(--green)}.btile .dlt.dn{color:var(--amber)}
+  .btile .spark{display:block;margin-top:6px;opacity:.9}
+  .biochart{display:block;margin-top:6px}
+  .crow{padding:9px 0;border-top:1px solid var(--border)}.crow:first-of-type{border-top:none}
+  .crow-h{display:flex;justify-content:space-between;gap:8px;align-items:center;font-size:var(--fs-sm)}
+  /* modes */
+  .modes{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+  .modeb{text-align:left;padding:12px 14px;border-radius:var(--r-md);border:1px solid var(--border);background:var(--panel2);color:var(--text);cursor:pointer;font:inherit}
+  .modeb b{display:block;font-size:var(--fs-md)}.modeb span{display:block;color:var(--muted);font-size:var(--fs-sm);margin-top:3px}
+  .modeb.on{border-color:var(--accent);box-shadow:0 0 0 1px var(--accent) inset}
+  @media(max-width:560px){.modes{grid-template-columns:1fr}}
+  html[data-theme=light] .qcard,html[data-theme=light] .btile,html[data-theme=light] .nba1,html[data-theme=light] .modeb{background:#f7f9fc}
+  /* desktop: navigation becomes a left sidebar */
+  @media(min-width:1100px){
+    body{max-width:calc(1280px + var(--side));padding-left:calc(var(--side) + 28px)}
+    .tabs{position:fixed;left:0;top:0;bottom:0;width:var(--side);margin:0;padding:76px 12px 18px;flex-direction:column;flex-wrap:nowrap;align-items:stretch;gap:4px;background:var(--panel);border-right:1px solid var(--border);backdrop-filter:none;z-index:15;overflow-y:auto}
+    .tabs::before{content:"ELITE OS";position:absolute;top:26px;left:22px;font-weight:800;letter-spacing:.14em;font-size:.82rem;color:var(--text)}
+    .tab{display:flex;align-items:center;text-align:left;border:1px solid transparent;background:transparent;border-radius:var(--r-sm);padding:11px 12px;font-size:var(--fs-md)}
+    .tab .ic{width:26px;margin-right:6px;text-align:center}
+    .tab.active,.tab:hover{box-shadow:none}
+    .tab:hover:not(.active){background:var(--panel2);color:var(--text);border-color:transparent}
+    .tab .tbadge{top:50%;right:10px;transform:translateY(-50%)}
+  }
 </style>
 </head>
 <body>
 <header style="display:flex;justify-content:space-between;align-items:flex-start;gap:10px">
-  <div><h1>ELITE AESTHETIC TRAINING & NUTRITION OS</h1>
+  <div><h1><span class="h1f">ELITE AESTHETIC TRAINING &amp; NUTRITION OS</span><span class="h1s">ELITE OS</span></h1>
   <p class="sub" id="sub"></p></div>
-  <div class="hact"><button type="button" class="hprof" data-goto="profile" aria-label="Profile and settings"><span class="hpi">👤</span><span class="hpl">Profile</span></button><button type="button" class="hthm" id="btnTheme" aria-label="Switch theme" title="Switch theme">☀</button></div>
+  <div class="hact"><button type="button" class="hxpill s-off" id="hxPill" aria-label="Health sync status"></button><button type="button" id="btnMode" aria-label="Experience mode"></button><button type="button" class="hprof" data-goto="profile" aria-label="Profile and settings"><span class="hpi">👤</span><span class="hpl">Profile</span></button><button type="button" class="hthm" id="btnTheme" aria-label="Switch theme" title="Switch theme">☀</button></div>
 </header>
 <div id="updBar"></div><div id="installBox"></div>
 <div class="overall"><span class="sub">This week</span><div class="bar"><div id="overallFill" style="width:0"></div></div><b id="overallTxt"></b></div>
 <nav class="tabs" aria-label="Sections">
   <button class="tab active" data-tab="plan"><span class="ic">🏠</span><span class="full">Today</span><span class="short">Today</span></button>
   <button class="tab" data-tab="train"><span class="ic">🏋️</span><span class="full">Train</span><span class="short">Train</span></button>
-  <button class="tab" data-tab="food"><span class="ic">🍽️</span><span class="full">Food</span><span class="short">Food</span></button>
-  <button class="tab" data-tab="overview"><span class="ic">📊</span><span class="full">Targets</span><span class="short">Targets</span></button>
-  <button class="tab" data-tab="progress"><span class="ic">📈</span><span class="full">Progress</span><span class="short">Progress</span></button>
+  <button class="tab" data-tab="food"><span class="ic">🍽️</span><span class="full">Fuel &amp; Recipes</span><span class="short">Fuel</span></button>
+  <button class="tab" data-tab="quality"><span class="ic">🔬</span><span class="full">Quality</span><span class="short">Quality</span></button>
+  <button class="tab" data-tab="progress"><span class="ic">📈</span><span class="full">Biometrics</span><span class="short">Trends</span></button>
   <button class="tab" data-tab="coach" id="tabCoach" hidden><span class="ic">🧑‍🏫</span><span class="full">Clients</span><span class="short">Clients</span></button>
   </nav>
 
@@ -539,10 +669,12 @@
 <section id="pane-profile" class="pane"></section>
 <section id="pane-overview" class="pane"></section>
 <section id="pane-coach" class="pane"></section>
+<section id="pane-quality" class="pane"></section>
 
 <section id="pane-plan" class="pane active" data-seg="w">
   <div class="wknav" id="weekNav"></div>
   <div class="days" id="days"></div>
+  <div id="cmdBox"></div>
   <div id="hero"></div>
   <div class="kpis" id="kpis"></div>
   <div id="peakNote"></div>
@@ -554,24 +686,24 @@
     <div>
       <div class="card" data-s="m"><h2><span>Meals</span><span class="badge" id="mBadge"></span></h2><div id="mList"></div></div>
       <div class="card" data-s="m"><h2><span>Daily habits</span></h2><div id="hList"></div></div>
-      <div class="card" data-s="m"><h2><span>Ate something else?</span></h2><div id="exBox"></div></div>
+      <div class="card" data-s="m"><h2><span>Quick add</span></h2><div id="exBox"></div></div>
       <div class="card" data-s="m"><h2><span>Log food</span></h2><div id="foodBox"></div></div>
-      <div class="card" data-s="m"><h2><span>Micronutrients</span></h2><div id="microBox"></div></div>
+      <div class="card pro-only" data-s="m"><h2><span>Micronutrients</span></h2><div id="microBox"></div></div>
       <div class="card" data-s="w"><h2><span>🏃 Cardio &amp; steps</span><span class="badge" id="cdBadge"></span></h2><div id="cardioBox"></div></div>
-      <div class="card" data-s="w"><h2><span>Plate calculator</span></h2><div id="plateBox"></div></div>
+      <div class="card pro-only" data-s="w"><h2><span>Plate calculator</span></h2><div id="plateBox"></div></div>
     </div>
   </div>
 </section>
 
 <section id="pane-grocery" class="pane">
-  <div class="seg foodseg"><button data-food="grocery">🛒 Groceries</button><button data-food="kitchen">🍳 Kitchen</button></div>
+  <div class="seg foodseg"><button data-food="grocery">🛒 Groceries</button><button data-food="kitchen">🍳 Recipes</button><button data-food="overview">🎯 Targets</button></div>
   <div class="card"><h2><span>Shopping list for the displayed week</span><span style="display:flex;gap:8px;align-items:center"><span class="badge" id="gBadge"></span><button class="btn" id="gShare">Share / copy</button></span></h2><div id="gList"></div></div>
   <div class="card"><h2><span>Your items</span><button class="btn" id="btnGcClear">Clear checked</button></h2><div style="display:flex;gap:8px;margin-top:4px"><input id="gcIn" placeholder="Add an item, e.g. 2 lb ground turkey" style="flex:1"/><button class="btn" id="btnGcAdd">Add</button></div><div id="gCustom"></div><div id="gRecipes"></div></div>
   <div class="card"><h2><span>Batch cook plan</span><span class="badge">Meal prep</span></h2><div id="prepList"></div></div>
 </section>
 
 <section id="pane-kitchen" class="pane">
-  <div class="seg foodseg"><button data-food="grocery">🛒 Groceries</button><button data-food="kitchen">🍳 Kitchen</button></div>
+  <div class="seg foodseg"><button data-food="grocery">🛒 Groceries</button><button data-food="kitchen">🍳 Recipes</button><button data-food="overview">🎯 Targets</button></div>
   <div class="grid2">
     <div>
       <div class="card"><h2><span>Foods I like and dislike</span><span class="badge" id="kfBadge"></span></h2><div class="d">Tap a food to cycle: neutral, liked 👍, disliked 🚫. Disliked foods leave your plan right away. Liked foods show up more often.</div><input id="kq" placeholder="Search foods" style="width:100%;margin:8px 0"/><div id="kFoods"></div></div>
@@ -585,6 +717,7 @@
 </section>
 
 <section id="pane-progress" class="pane">
+  <div id="bioBox"></div>
   <div class="pgsec"><span>📏</span> Body &amp; check-in</div>
   <div class="grid2">
     <div class="card"><h2><span>Daily log</span><input type="date" id="logDate"/></h2>
@@ -607,7 +740,8 @@
   <div id="chartBox"></div>
   <div id="progExtra"></div>
   <div class="pgsec"><span>⌚</span> Health &amp; photos</div>
-  <div class="card"><h2><span>Steps and health import</span></h2><div id="healthBox"></div></div>
+  <div class="card" id="hxCard"><h2><span>Health sync</span><span class="badge">Apple Health · Shortcuts</span></h2><div id="hxBox"></div></div>
+  <div class="card"><h2><span>Steps</span></h2><div id="healthBox"></div></div>
   <div class="card"><h2><span>Progress photos</span></h2><div id="photoBox"></div></div>
   <div class="pgsec"><span>🔒</span> Privacy</div>
   <div class="card"><h2><span>Privacy and data</span></h2>
@@ -1356,13 +1490,240 @@ function advice(p,tr){
   return {delta,target,msg:`Trend ${tr.pct.toFixed(2)}%/wk vs target ${target.toFixed(2)}%/wk. ${delta>0?"Add":"Remove"} ${Math.abs(delta)} kcal/day.`};
 }
 
+
+/*HX-BEGIN*/
+/* Turns anything a phone automation sends (Health Auto Export JSON, an iPhone Shortcut body, a URL query, CSV lines,
+   half-broken JSON) into clean day rows {date, steps, kcal, rhr, hrv, sleep (h), weight (kg), bf (%), cardio[]}.
+   A row only carries the values that were really there: blanks, 0, "NaN" and out-of-range numbers are dropped and
+   reported in `issues`, never stored. One bad field never rejects the rest of the row. */
+const HX_FIELDS = ["steps", "kcal", "rhr", "hrv", "sleep", "weight", "bf"];
+const HX_LABEL = { steps: "Steps", kcal: "Active energy", rhr: "Resting HR", hrv: "HRV", sleep: "Sleep", weight: "Weight", bf: "Body fat" };
+const HX_SUM = { steps: 1, kcal: 1, sleep: 1 };
+const HX_RANGE = { steps: [1, 150000], kcal: [1, 15000], rhr: [25, 220], hrv: [1, 400], sleep: [0.1, 24], weight: [20, 320], bf: [2, 70] };
+const HX_ALIAS = {
+  date: "date", d: "date", day: "date", datetime: "date", timestamp: "date",
+  unit: "unit", u: "unit", units: "unit", weightunit: "unit",
+  steps: "steps", step: "steps", stepcount: "steps", s: "steps", stepswatch: "steps_a", stepsphone: "steps_b", stepsiphone: "steps_b",
+  kcal: "kcal", activeenergy: "kcal", activeenergyburned: "kcal", activecalories: "kcal", activekcal: "kcal", energy: "kcal", calories: "kcal",
+  rhr: "rhr", restingheartrate: "rhr", restinghr: "rhr", resthr: "rhr",
+  hrv: "hrv", heartratevariability: "hrv", hrvsdnn: "hrv", heartratevariabilitysdnn: "hrv",
+  sleep: "sleep", sleeph: "sleep", sleephours: "sleep", sleepanalysis: "sleep", asleep: "sleep", timeasleep: "sleep", sleepduration: "sleep",
+  weight: "weight", w: "weight", bodymass: "weight", weightbodymass: "weight", bodyweight: "weight", weightkg: "weight_kg", weightlb: "weight_lb", weightlbs: "weight_lb",
+  bf: "bf", bodyfat: "bf", bodyfatpercentage: "bf", bodyfatpercent: "bf", bodyfatpct: "bf",
+  cardio: "cardio"
+};
+const HX_EMPTY = /^(|nan|null|nil|none|undefined|n\/a|na|-+|—|no data|not set|\(null\))$/i;
+const hxPad = n => String(n).padStart(2, "0");
+const hxISO = d => d.getFullYear() + "-" + hxPad(d.getMonth() + 1) + "-" + hxPad(d.getDate());
+const hxShift = (iso, n) => { const p = iso.split("-").map(Number), d = new Date(p[0], p[1] - 1, p[2] + n); return hxISO(d) };
+
+/* "8,421", "8.421", "165,4", "1,234.5" -> number. Whole-number fields read a 3-digit group as thousands. */
+function hxNumStr(s, whole) {
+  s = s.replace(/[\s'  ]/g, "");
+  const c = s.lastIndexOf(","), p = s.lastIndexOf(".");
+  if (c >= 0 && p >= 0) s = c > p ? s.replace(/\./g, "").replace(",", ".") : s.replace(/,/g, "");
+  else if (c >= 0) s = /^-?\d{1,3}(,\d{3})+$/.test(s) && (whole || s.split(",").length > 2) ? s.replace(/,/g, "") : s.replace(/,/g, ".");
+  else if (p >= 0 && whole && /^-?\d{1,3}(\.\d{3})+$/.test(s)) s = s.replace(/\./g, "");
+  const n = parseFloat(s);
+  return isFinite(n) ? n : null;
+}
+/* One sample -> {v, u}. Understands numbers, {qty}/{value} objects, "72 bpm", "150 lb", "7:30", "7 hr 30 min". */
+function hxOne(t, whole) {
+  if (typeof t === "number") return isFinite(t) ? { v: t, u: "" } : null;
+  if (t && typeof t === "object") return hxOne(t.qty ?? t.value ?? t.Value ?? t.quantity ?? t.avg ?? t.Avg, whole);
+  let s = String(t ?? "").trim();
+  if (HX_EMPTY.test(s)) return null;
+  if (whole) s = s.replace(/^(\d{1,3})((?: \d{3})+)(?!\d)/, (a, h, g) => h + g.replace(/ /g, "")); /* "1 850" */
+  let m = s.match(/^(\d{1,3}):(\d{2})(?::(\d{2}))?$/);
+  if (m) return { v: +m[1] + m[2] / 60 + (m[3] || 0) / 3600, u: "h" };
+  m = s.match(/(\d+(?:[.,]\d+)?)\s*(?:h|hr|hrs|hours?)\b\.?\s*(?:(\d+(?:[.,]\d+)?)\s*(?:m|min|mins|minutes?)\b)?/i);
+  if (m) return { v: hxNumStr(m[1]) + (m[2] ? hxNumStr(m[2]) / 60 : 0), u: "h" };
+  m = s.match(/(-?\d[\d.,'  ]*)\s*([a-zµ%/]*)/i);
+  if (!m) return null;
+  const v = hxNumStr(m[1].replace(/[.,]+$/, ""), whole);
+  return v === null ? null : { v, u: (m[2] || "").toLowerCase() };
+}
+/* A field value -> one number. Lists (JSON arrays, or one sample per line as Shortcuts sends them) are summed
+   for steps / energy / sleep, averaged for heart metrics, and the last one wins for weight. 0 means "no sample". */
+function hxVal(raw, f) {
+  const list = Array.isArray(raw) ? raw : typeof raw === "string" ? raw.split(/[\r\n;]+/) : [raw];
+  const xs = list.map(t => hxOne(t, f === "steps" || f === "kcal")).filter(x => x && x.v > 0);
+  if (!xs.length) return null;
+  const vs = xs.map(x => x.v), sum = vs.reduce((a, b) => a + b, 0);
+  return { v: HX_SUM[f] ? sum : f === "weight" ? vs[vs.length - 1] : sum / vs.length, u: (xs.find(x => x.u) || {}).u || "", n: xs.length };
+}
+function hxDate(v, today) {
+  const s = String(v ?? "").trim();
+  let m = s.match(/(\d{4})-(\d{1,2})-(\d{1,2})/) || s.match(/^(\d{4})(\d{2})(\d{2})$/);
+  if (m && +m[2] >= 1 && +m[2] <= 12 && +m[3] >= 1 && +m[3] <= 31) return { d: m[1] + "-" + hxPad(+m[2]) + "-" + hxPad(+m[3]) };
+  if (!HX_EMPTY.test(s)) {
+    const d = new Date(s.replace(/\bat\b/i, " ").replace(/[  ]/g, " "));
+    if (!isNaN(d) && d.getFullYear() > 2000) return { d: hxISO(d) };
+    return { d: today || null, bad: 1 };
+  }
+  return { d: today || null };
+}
+const hxIsEmpty = v => v == null || (typeof v === "string" && HX_EMPTY.test(v.trim())) || (Array.isArray(v) && !v.length);
+/* One loose object -> one clean row, or null when nothing in it is usable. */
+function hxRow(o, opt, issues) {
+  if (!o || typeof o !== "object") return null;
+  const c = {};
+  for (const k in o) { const a = HX_ALIAS[String(k).toLowerCase().replace(/[^a-z]/g, "")]; if (a && c[a] === undefined) c[a] = o[k] }
+  const today = opt.today || hxISO(new Date()), dt = hxDate(c.date, today), date = dt.d;
+  const bad = (field, raw, why) => issues.push({ date, field, raw: String(typeof raw === "object" ? JSON.stringify(raw) : raw).slice(0, 60), why });
+  if (!date) return null;
+  if (dt.bad) bad("date", c.date, "date not understood, used today");
+  if (date > hxShift(today, 1)) { bad("date", c.date, "date is in the future, row skipped"); return null }
+  if (c.weight === undefined && c.weight_kg !== undefined) { c.weight = c.weight_kg; c.unit = "kg" }
+  if (c.weight === undefined && c.weight_lb !== undefined) { c.weight = c.weight_lb; c.unit = "lb" }
+  const r = { date }, unit = String(c.unit || opt.unit || "kg").toLowerCase();
+  for (const f of HX_FIELDS) {
+    let raw = c[f];
+    if (f === "steps" && (c.steps_a !== undefined || c.steps_b !== undefined)) {
+      /* watch and phone sent separately: Health's merged total is at least the larger one, and adding them double counts */
+      const best = [raw, c.steps_a, c.steps_b].map(x => hxVal(x, f)).filter(Boolean).sort((a, b) => b.v - a.v)[0];
+      raw = best ? best.v : raw;
+    }
+    if (hxIsEmpty(raw)) continue;
+    const x = hxVal(raw, f);
+    if (!x) { if (!/^[\s0.,]*$/.test(String(raw))) bad(f, raw, "not a number"); continue }
+    let v = x.v;
+    if (f === "kcal" && /kj/.test(x.u)) v /= 4.184;
+    if (f === "sleep") v = /^(m|min|mins|minutes?)$/.test(x.u) ? v / 60 : /^(s|sec|secs|seconds?)$/.test(x.u) ? v / 3600 : x.u === "h" || /^(hr|hrs|hours?)$/.test(x.u) ? v : v > 1440 ? v / 3600 : v > 24 ? v / 60 : v;
+    if (f === "weight") { const u = /lb|pound/.test(x.u) ? "lb" : /kg/.test(x.u) ? "kg" : /^st/.test(x.u) ? "st" : unit; v = u.startsWith("lb") ? v / 2.20462 : u === "st" ? v * 6.35029 : v }
+    if (f === "bf" && v <= 1) v *= 100;
+    const [lo, hi] = HX_RANGE[f];
+    if (!(v >= lo && v <= hi)) { bad(f, raw, "outside the plausible range, ignored"); continue }
+    r[f] = f === "steps" || f === "kcal" ? Math.round(v) : f === "bf" ? Math.round(v * 10) / 10 : Math.round(v * 100) / 100;
+  }
+  if (Array.isArray(c.cardio)) {
+    const cd = c.cardio.slice(0, 20).map(w => {
+      if (!w || typeof w !== "object") return null;
+      const n = (k, lo, hi) => { const x = hxVal(w[k], k); return x && x.v >= lo && x.v <= hi ? x.v : undefined };
+      const min = n("min", 1, 1440); if (!min) return null;
+      const e = { type: String(w.type || w.name || "Workout").slice(0, 40), min: Math.round(min) }, kc = n("kcal", 1, 10000), hr = n("hr", 30, 230), km = n("km", 0.01, 500);
+      if (kc) e.kcal = Math.round(kc); if (hr) e.hr = Math.round(hr); if (km) e.km = Math.round(km * 100) / 100;
+      return e;
+    }).filter(Boolean);
+    if (cd.length) r.cardio = cd;
+  }
+  return Object.keys(r).length > 1 ? r : null;
+}
+/* Two rows for the same day. Within one payload (iPhone + Watch duplicates) totals keep the larger value;
+   across syncs the newer value replaces the older one. A missing value never replaces a present one. */
+function hxMerge(a, b, same) {
+  if (!a) return b;
+  const o = Object.assign({}, a);
+  for (const f of HX_FIELDS) if (b[f] != null) o[f] = same && HX_SUM[f] && a[f] != null ? Math.max(a[f], b[f]) : b[f];
+  if (b.cardio && b.cardio.length) { const seen = new Set(), k = x => x.type + "|" + x.min; o.cardio = (same ? (a.cardio || []).concat(b.cardio) : b.cardio).filter(x => !seen.has(k(x)) && seen.add(k(x))) }
+  return o;
+}
+/* Health Auto Export {data:{metrics:[], workouts:[]}} -> loose day objects. */
+function hxHAE(data) {
+  const day = v => String(v || "").slice(0, 10), num = v => { const x = hxOne(v); return x ? x.v : NaN };
+  const D = {}, at = d => (D[d] = D[d] || { date: d, _n: {} });
+  const add = (d, k, v, mode) => {
+    if (!/^\d{4}-\d{2}-\d{2}$/.test(d) || !isFinite(v)) return;
+    const r = at(d);
+    if (mode === "sum") r[k] = (r[k] || 0) + v;
+    else if (mode === "avg") { r._n[k] = (r._n[k] || 0) + 1; r[k] = ((r[k] || 0) * (r._n[k] - 1) + v) / r._n[k] }
+    else r[k] = v;
+  };
+  for (const m of data.metrics || []) {
+    if (!m) continue;
+    const name = String(m.name || "").toLowerCase(), units = String(m.units || "").toLowerCase(), pts = Array.isArray(m.data) ? m.data : [];
+    for (const p of pts) {
+      if (!p) continue;
+      const d = day(p.date || p.startDate || p.sleepStart), q = num(p.qty ?? p.Avg ?? p.avg);
+      if (name === "step_count") add(d, "steps", q, "sum");
+      else if (name === "active_energy") add(d, "kcal", /kj/.test(units) ? q / 4.184 : q, "sum");
+      else if (name === "resting_heart_rate") add(d, "rhr", q, "avg");
+      else if (name === "heart_rate_variability") add(d, "hrv", q, "avg");
+      else if (name === "body_fat_percentage") add(d, "bf", q, "last");
+      else if (name === "weight_body_mass") { add(d, "weight", q, "last"); if (isFinite(q)) at(d).unit = /lb/.test(units) ? "lb" : "kg" }
+      else if (name === "sleep_analysis") {
+        let h = num(p.totalSleep ?? p.asleep);
+        if (!isFinite(h)) h = ["core", "deep", "rem"].reduce((a, k) => a + (num(p[k]) || 0), 0) || q;
+        if (/min/.test(units)) h = h / 60;
+        add(day(p.sleepEnd || p.date), "sleep", h, "sum");
+      }
+    }
+  }
+  const T = s => new Date(String(s).replace(" ", "T").replace(/ ([+-]\d\d)(\d\d)$/, "$1:$2"));
+  for (const w of data.workouts || []) {
+    if (!w) continue;
+    const d = day(w.start || w.startDate || w.date);
+    let dur = num(w.duration);
+    if (!isFinite(dur) && w.start && w.end) dur = (T(w.end) - T(w.start)) / 1000;
+    const min = dur > 300 ? dur / 60 : dur;
+    if (!/^\d{4}-\d{2}-\d{2}$/.test(d) || !(min > 0)) continue;
+    const e = w.activeEnergyBurned || w.activeEnergy, dist = w.distance;
+    const kcal = e ? (/kj/i.test(e.units || "") ? num(e) / 4.184 : num(e)) : undefined;
+    const km = dist ? (/mi/i.test(dist.units || "") ? num(dist) * 1.60934 : /^m$/i.test(dist.units || "") ? num(dist) / 1000 : num(dist)) : undefined;
+    (at(d).cardio = at(d).cardio || []).push({ type: w.name || "Workout", min, kcal, hr: num(w.avgHeartRate ?? (w.heartRate && w.heartRate.avg)), km });
+  }
+  return Object.values(D).map(r => { delete r._n; return r });
+}
+/* Text -> object. Tries JSON, then repaired JSON (Shortcuts leaves `"steps":,` when a value is empty),
+   then a URL query, then CSV lines "date, weight, steps[, sleep, rhr, hrv, kcal]". */
+function hxText(txt, issues) {
+  let s = String(txt ?? "").replace(/^﻿/, "").trim();
+  if (!s) return null;
+  if (s[0] === "{" || s[0] === "[") {
+    try { return JSON.parse(s) } catch (e) { /* try to repair below */ }
+    const fixed = s.replace(/:\s*(?=[,}\]])/g, ":null").replace(/:\s*(NaN|nan|undefined|-?Infinity)\s*(?=[,}\]])/g, ":null").replace(/,\s*(?=[}\]])/g, "").replace(/[“”]/g, '"');
+    try { const j = JSON.parse(fixed); issues.push({ field: "body", raw: "", why: "JSON had empty values; repaired" }); return j } catch (e) { issues.push({ field: "body", raw: s.slice(0, 60), why: "not valid JSON" }); return null }
+  }
+  if (/^[#?]?[^\s=,]*=/.test(s) && !/\n/.test(s)) {
+    const o = {};
+    new URLSearchParams(s.replace(/^[#?]/, "")).forEach((v, k) => { if (o[k] === undefined) o[k] = v });
+    for (const k of ["health", "payload", "json", "data"]) if (typeof o[k] === "string" && /^\s*[{[]/.test(o[k])) return hxText(o[k], issues);
+    if (typeof o.h === "string") return hxCSV(o.h, o.u);
+    return o;
+  }
+  return hxCSV(s);
+}
+function hxCSV(s, unit) {
+  const lines = String(s).split(/[\r\n;]+/).map(l => l.split(/[,\t]/).map(x => x.trim())).filter(c => c.length >= 2);
+  if (!lines.length) return null;
+  let cols = ["date", "weight", "steps", "sleep", "rhr", "hrv", "kcal"];
+  if (!/\d{4}/.test(lines[0][0]) && lines[0].some(x => HX_ALIAS[x.toLowerCase().replace(/[^a-z]/g, "")])) cols = lines.shift().map(x => x.toLowerCase());
+  return lines.filter(c => /\d/.test(c[0])).map(c => { const o = unit ? { unit } : {}; cols.forEach((k, i) => { if (c[i] !== undefined) o[k] = c[i] }); return o });
+}
+/* Any supported shape -> list of loose day objects. */
+function hxExpand(b) {
+  if (typeof b === "string") return [];
+  if (!b || typeof b !== "object") return [];
+  if (Array.isArray(b)) return b.flatMap(x => (x && typeof x === "object" && !Array.isArray(x) && (Array.isArray(x.metrics) || Array.isArray(x.rows) || x.data) ? hxExpand(x) : [x]));
+  const inherit = rows => rows.map(r => (r && typeof r === "object" && b.unit && r.unit === undefined ? Object.assign({ unit: b.unit }, r) : r));
+  if (Array.isArray(b.rows)) return inherit(b.rows);
+  const data = b.data && typeof b.data === "object" && !Array.isArray(b.data) ? b.data : b;
+  if (Array.isArray(data.metrics) || Array.isArray(data.workouts)) return hxHAE(data);
+  if (Array.isArray(b.data)) return inherit(b.data);
+  if (b.payload && typeof b.payload === "object") return inherit(hxExpand(b.payload));
+  const keys = Object.keys(b);
+  if (keys.length && keys.every(k => /^\d{4}-\d{1,2}-\d{1,2}/.test(k))) return keys.map(k => (b[k] && typeof b[k] === "object" ? Object.assign({ date: k }, b[k]) : null));
+  return [b];
+}
+/* The one entry point. input: string or object. opt: {today:"YYYY-MM-DD", unit:"kg"|"lb"}.
+   Returns {rows, issues}. Never throws. */
+function hxNormalize(input, opt) {
+  opt = opt || {};
+  const issues = [], out = {};
+  try {
+    const body = typeof input === "string" ? hxText(input, issues) : input;
+    for (const o of hxExpand(body)) { const r = hxRow(o, opt, issues); if (r) out[r.date] = hxMerge(out[r.date], r, true) }
+  } catch (e) { issues.push({ field: "body", raw: "", why: "could not read the payload: " + (e && e.message) }) }
+  return { rows: Object.values(out).sort((a, b) => (a.date < b.date ? -1 : 1)), issues };
+}
+/*HX-END*/
 </script>
 <script>
 /* ===================== UI ===================== */
 const KEY="elitePeakingState_v3";
 const TODAY=iso(new Date());
 const DEFP={sex:"m",age:30,cm:175,kg:75,bf:0,units:"imperial",goal:"recomp",rate:"cons",act:"mod",exp:"int",days:4,len:60,style:"cal",pullMax:5,pushMax:15,bagKg:0,eq:["pullbar","bands"],pri:[],diet:"omni",excl:[],meals:4,event:"",kcalAdj:0,inj:[],budget:"std",priceF:1,wtime:"17:30",mealRem:"no",autoSS:"off"};
-function freshState(){return {prof:JSON.parse(JSON.stringify(DEFP)),log:{},checks:{},perf:{},extra:{},hist:{},done:{},prefs:{foods:{},meals:{}},recipes:[],groc:[],water:{},swaps:{},mswaps:{},blockStart:mondayOf(TODAY),blockOffset:0,weekOffset:0,sel:TODAY,confirmed:false,flog:{},sets:{},steps:{},wlog:{},cardio:{},cplan:{mode:"auto",deload:true,active:"p1",mt:0,plans:{p1:{name:"My plan",mt:0,days:{}}}}}}
+function freshState(){return {prof:JSON.parse(JSON.stringify(DEFP)),log:{},checks:{},perf:{},extra:{},hist:{},done:{},prefs:{foods:{},meals:{}},recipes:[],groc:[],water:{},swaps:{},mswaps:{},blockStart:mondayOf(TODAY),blockOffset:0,weekOffset:0,sel:TODAY,confirmed:false,flog:{},sets:{},steps:{},wlog:{},cardio:{},supp:{},nut:{},favs:[],ux:{},cplan:{mode:"auto",deload:true,active:"p1",mt:0,plans:{p1:{name:"My plan",mt:0,days:{}}}}}}
 function loadState(){
   try{const v=JSON.parse(localStorage.getItem(KEY)||"null");if(v&&v.prof){const f=freshState();return Object.assign(f,v,{prof:Object.assign(f.prof,v.prof)})}}catch(e){console.warn("state load failed",e)}
   return freshState();
@@ -1628,7 +1989,7 @@ function renderPlan(){
       mm.custom?"":`<button type="button" class="rest" data-mswap="${d.date}|${i}">↻ new meal</button><button type="button" class="rest ${(S.prefs.meals||{})[mm.tid]===1?"on":""}" data-mp="1|${mm.tid}">👍</button><button type="button" class="rest" data-mp="-1|${mm.tid}">👎</button>`);
   }).join("");
   renderReady();
-  $("exBox").innerHTML=`<div class="d">Add food that was not in the plan. It counts toward "Eaten so far".</div><div class="fgrid" style="margin-top:8px"><div class="cg"><label>Calories</label><input type="number" inputmode="numeric" id="exK"/></div><div class="cg"><label>Protein (g)</label><input type="number" inputmode="numeric" id="exP"/></div></div><div style="display:flex;gap:8px;margin-top:8px"><button class="btn" id="btnAddEx">Add</button><button class="btn danger" id="btnClrEx">Clear</button></div>${xt.kcal||xt.p?`<div class="d" style="margin-top:6px">Added so far: ${xt.kcal||0} kcal, ${xt.p||0} g protein</div>`:""}`;
+  $("exBox").innerHTML=`<div class="d">Ate something off-plan? Enter what you know. Leave calories empty and they are worked out from the macros.</div><div class="fgrid" style="margin-top:8px"><div class="cg"><label>What (optional)</label><input id="exN" maxlength="60" placeholder="Restaurant burrito"/></div><div class="cg"><label>Calories</label><input type="number" inputmode="numeric" id="exK"/></div><div class="cg"><label>Protein (g)</label><input type="number" inputmode="numeric" id="exP"/></div><div class="cg"><label>Carbs (g)</label><input type="number" inputmode="numeric" id="exC"/></div><div class="cg"><label>Fat (g)</label><input type="number" inputmode="numeric" id="exF"/></div></div><div style="display:flex;gap:8px;margin-top:8px"><button class="btn pri" id="btnAddEx">Add to food log</button>${xt.kcal||xt.p?'<button class="btn danger" id="btnClrEx">Clear older quick adds</button>':""}</div>${xt.kcal||xt.p?`<div class="d" style="margin-top:6px">Older quick adds on this day: ${xt.kcal||0} kcal, ${xt.p||0} g protein</div>`:""}`;
   const steps=T.goal==="cut"?"9–11k":"7–9k";
   $("hList").innerHTML=[
    ["water",`Water ${waterAmt(d.date)} / ${water} L`,"Mostly before the evening. Tap + as you drink."],
@@ -1737,7 +2098,7 @@ function setPlanSeg(k){
 function restoreNav(){
   try{
     const v=JSON.parse(localStorage.getItem(TABK)||"null");
-    if(v&&["plan","train","food","progress","overview","profile"].concat(lsGet("eliteCoachOn")==="1"?["coach"]:[]).includes(v[0]))showTab(v[0],["grocery","kitchen"].includes(v[1])?v[1]:"grocery");
+    if(v&&["plan","train","food","quality","progress","overview","profile"].concat(lsGet("eliteCoachOn")==="1"?["coach"]:[]).includes(v[0]))showTab(v[0],["grocery","kitchen","overview"].includes(v[1])?v[1]:"grocery");
     else showTab("plan");
     const sg=localStorage.getItem(TABK+"Seg");if(sg==="w"||sg==="m")setPlanSeg(sg);
   }catch(e){showTab("plan")}
@@ -2136,7 +2497,7 @@ function renderHero(d){
   }
   const mi=d.meals.findIndex((m,i)=>!S.checks[`${d.date}|meal|${i}`]);
   const meal=mi>=0?`<div class="hnext"><span>Next meal</span><b>${esc(d.meals[mi].name)}</b><small>${d.meals[mi].kcal} kcal · ${d.meals[mi].P} g protein</small></div>`:`<div class="hnext"><span>Meals</span><b>All logged ✓</b></div>`;
-  el.innerHTML=welcomeHTML()+`<div class="card hero"><div class="hmain">${main}</div><div class="hside">${meal}${heroStats()}</div></div>`;
+  el.innerHTML=`<div class="card hero"><div class="hmain">${main}</div><div class="hside">${meal}${heroStats()}</div></div>`;
 }
 function uiClick(t){
   const b=t.closest("[data-ui]");if(!b)return false;
@@ -2153,7 +2514,7 @@ document.addEventListener("click",e=>{
 });
 
 /* ---------- APP VERSION, UPDATE PROMPT, INSTALL PROMPT ---------- */
-const APP_VER="2026.11.06.5",APP_MAJOR="3.2";
+const APP_VER="2026.11.13.1",APP_MAJOR="4.0";
 let UPD=false,BIP=null;
 const inFrame=()=>{try{return window.self!==window.top}catch(e){return true}};
 const isStandalone=()=>matchMedia("(display-mode: standalone)").matches||navigator.standalone===true;
@@ -2331,7 +2692,7 @@ document.addEventListener("click",e=>{
   switch(t.id){
     case "btnWake":toggleWake();break;
     case "btnCopyRep":{const r=weekReport(),txt="Last 7 days\n"+r.lines.join("\n")+"\n\nNext week\n"+r.focus.join("\n");if(navigator.clipboard)navigator.clipboard.writeText(txt).then(()=>alert("Report copied")).catch(()=>alert(txt));else alert(txt);break}
-    case "btnAddEx":{const k=parseFloat($("exK").value)||0,p=parseFloat($("exP").value)||0;if(!k&&!p)break;const o=S.extra[S.sel]||{kcal:0,p:0};S.extra[S.sel]={kcal:o.kcal+k,p:o.p+p};save();renderPlan();break}
+    case "btnAddEx":{const g=id=>Math.max(0,parseFloat($(id).value)||0),k=g("exK"),p=g("exP"),c=g("exC"),f=g("exF");if(!k&&!p&&!c&&!f){$("exK").focus();break}flogAdd({n:($("exN").value||"").trim().slice(0,60)||"Quick add",g:0,kcal:Math.round(k||4*p+4*c+9*f),p,c,f,m:{}});toast("Added to the food log","good");break}
     case "btnClrEx":delete S.extra[S.sel];save();renderPlan();break;
     case "btnSbIn":case "btnSbUp":signIn(t.id==="btnSbUp");break;
     case "btnSbDel":delAccount();break;
@@ -2380,7 +2741,7 @@ const MAPK=["log","checks","perf","extra","hist","done","water","swaps","mswaps"
 function mergeData(older,newer){
   const o=JSON.parse(JSON.stringify(newer));
   MAPK.forEach(k=>{o[k]=Object.assign({},older[k],newer[k])});
-  ["recipes","groc"].forEach(k=>{const ids=new Set((newer[k]||[]).map(x=>x.id));o[k]=(newer[k]||[]).concat((older[k]||[]).filter(x=>!ids.has(x.id)))});
+  ["recipes","groc","favs"].forEach(k=>{const ids=new Set((newer[k]||[]).map(x=>x.id));o[k]=(newer[k]||[]).concat((older[k]||[]).filter(x=>!ids.has(x.id)))});
   {const a=older.flog||{},b=newer.flog||{},m={};new Set([...Object.keys(a),...Object.keys(b)]).forEach(d=>{const ids=new Set((b[d]||[]).map(x=>x.id));m[d]=(b[d]||[]).concat((a[d]||[]).filter(x=>!ids.has(x.id)))});o.flog=m}
   if(older.cplan||newer.cplan)o.cplan=mergeCP(older.cplan,newer.cplan);
   const po=older.prefs||{},pn=newer.prefs||{};
@@ -2602,18 +2963,9 @@ const NM={};
 
 /* ---------- readiness ---------- */
 const SLEEP_OPT=[[4.5,"Under 5 h"],[5.5,"5–6 h"],[6.5,"6–7 h"],[7.5,"7–8 h"],[8.5,"8+ h"]];
-function readiness(date){
-  const l=S.log[date]||{},s=parseFloat(l.s),e=parseFloat(l.e),sr=parseFloat(l.sr),parts=[];
-  if(s>0)parts.push([.4,Math.max(0,Math.min(1,(s-5)/3))]);
-  if(e>0)parts.push([.35,(e-1)/4]);
-  if(sr>0)parts.push([.25,(5-sr)/4]);
-  if(typeof healthParts==="function")healthParts(S.log,S.hd||{},date).forEach(x=>parts.push(x));
-  if(!parts.length)return null;
-  const wsum=parts.reduce((a,p)=>a+p[0],0),score=parts.reduce((a,p)=>a+p[0]*p[1],0)/wsum;
-  return {score,level:score>=.7?"green":score>=.4?"yellow":"red",off:!!l.ro};
-}
+/* readiness(date) is defined in the V4 block (READINESS ENGINE). An estimated score never changes the prescription. */
 function adjusted(e,rd){
-  if(!rd||rd.off||rd.level==="green")return {sets:e.sets,rir:e.rir};
+  if(!rd||rd.off||rd.est||rd.level==="green")return {sets:e.sets,rir:e.rir};
   if(rd.level==="yellow")return {sets:Math.max(2,e.sets-1),rir:e.rir+1};
   return {sets:Math.max(2,Math.ceil(e.sets*.6)),rir:e.rir+2};
 }
@@ -3082,21 +3434,23 @@ var PLANX=[],PROGX=[];
 })();
 
 /* ===== FOOD SEARCH, BARCODE, MICRONUTRIENTS (Open Food Facts) ===== */
-const FSF="code,product_name,brands,nutriments,serving_quantity";
+const FSF="code,product_name,brands,nutriments,serving_quantity,nova_group,additives_n,labels_tags";
 let FS={q:"",bc:"",cc:"united-states",res:[],msg:""};
 const nz=v=>{v=parseFloat(v);return isFinite(v)?v:0};
 function offNorm(p){
   const n=p.nutriments||{},kcal=nz(n["energy-kcal_100g"])||nz(n.energy_100g)/4.184;
   if(!p.product_name||!(kcal>0))return null;
+  const opt=k=>n[k]!=null&&n[k]!==""&&isFinite(+n[k])?+n[k]:undefined,nova=+p.nova_group,add=p.additives_n;
   return {n:p.product_name+(p.brands?" ("+p.brands.split(",")[0].trim()+")":""),srv:Math.round(nz(p.serving_quantity))||100,
-    per:{kcal,p:nz(n.proteins_100g),c:nz(n.carbohydrates_100g),f:nz(n.fat_100g),fiber:nz(n.fiber_100g),
-      sodium:nz(n.sodium_100g)*1000,iron:nz(n.iron_100g)*1000,ca:nz(n.calcium_100g)*1000,mg:nz(n.magnesium_100g)*1000,
+    meta:{nova:nova>=1&&nova<=4?nova:undefined,add:add!=null&&add!==""&&isFinite(+add)?+add:undefined,org:Array.isArray(p.labels_tags)&&p.labels_tags.some(t=>/organic/.test(t))},
+    per:{kcal,p:nz(n.proteins_100g),c:nz(n.carbohydrates_100g),f:nz(n.fat_100g),fiber:nz(n.fiber_100g),sugar:opt("sugars_100g"),sat:opt("saturated-fat_100g"),
+      sodium:n.sodium_100g!=null?nz(n.sodium_100g)*1000:n.salt_100g!=null?nz(n.salt_100g)*400:0,iron:nz(n.iron_100g)*1000,ca:nz(n.calcium_100g)*1000,mg:nz(n.magnesium_100g)*1000,
       k:nz(n.potassium_100g)*1000,vd:nz(n["vitamin-d_100g"])*1e6,vc:nz(n["vitamin-c_100g"])*1000}};
 }
 async function fsSearch(){
   const q=FS.q.trim();
   if(q.length<2){FS.msg="Type at least 2 letters";return renderFood()}
-  FS.msg="Searching…";renderFood();
+  FS.msg="Searching…";FS.res=[];renderFood();
   try{
     const url="https://world.openfoodfacts.org/cgi/search.pl?search_simple=1&action=process&json=1&page_size=15&fields="+FSF+"&search_terms="+encodeURIComponent(q)+(FS.cc?"&tagtype_0=countries&tag_contains_0=contains&tag_0="+FS.cc:"");
     let r;
@@ -3123,6 +3477,7 @@ function fsAdd(i,g){
   const it=FS.res[i];g=nz(g);if(!it||g<=0)return;
   const k=g/100,s=x=>Math.round(x*k*10)/10,e={id:Date.now().toString(36)+i,n:it.n,g:Math.round(g),kcal:Math.round(it.per.kcal*k),p:s(it.per.p),c:s(it.per.c),f:s(it.per.f),m:{}};
   ["fiber","sodium","iron","ca","mg","k","vd","vc"].forEach(x=>{e.m[x]=s(it.per[x])});
+  {const q=qScore(it.per,it.meta);e.q=q.score;e.fl=q.fl.filter(f=>f[0]!=="good").slice(0,3)}
   (S.flog[S.sel]=S.flog[S.sel]||[]).push(e);save();renderPlan();
 }
 async function fsScan(){
@@ -3148,9 +3503,9 @@ function renderFood(){
   <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:10px"><input id="fsQ" placeholder="Search foods, e.g. greek yogurt" value="${esc(FS.q)}" style="flex:1;min-width:180px"/><select id="fsCc" style="min-width:120px">${[["united-states","United States"],["canada","Canada"],["united-kingdom","United Kingdom"],["australia","Australia"],["","Anywhere"]].map(([v,l])=>`<option value="${v}"${FS.cc===v?" selected":""}>${l}</option>`).join("")}</select><button class="btn pri" id="fsGo">Search</button></div>
   <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:8px"><input id="fsBc" inputmode="numeric" placeholder="Barcode number" value="${esc(FS.bc)}" style="flex:1;min-width:140px"/><button class="btn" id="fsBcGo">Look up</button>${"BarcodeDetector" in window?'<button class="btn" id="fsScan">Scan</button>':""}</div>
   ${FS.msg?`<div class="d" style="margin-top:8px">${esc(FS.msg)}</div>`:""}
-  ${FS.res.map((it,i)=>`<div class="row"><div class="body"><div class="t">${esc(it.n)}</div><div class="d">per 100 g: ${Math.round(it.per.kcal)} kcal · Protein ${r1(it.per.p)} g · Carbs ${r1(it.per.c)} g · Fat ${r1(it.per.f)} g</div><div class="perfrow"><input class="perf" type="number" inputmode="decimal" id="fsG${i}" value="${it.srv}"/><span>g</span><button class="btn pri" data-fsadd="${i}">Add</button></div></div></div>`).join("")}
+  ${FS.res.map((it,i)=>`<div class="row"><div class="body"><div class="t">${qPill(qScore(it.per,it.meta))}${esc(it.n)}</div><div class="d">per 100 g: ${Math.round(it.per.kcal)} kcal · Protein ${r1(it.per.p)} g · Carbs ${r1(it.per.c)} g · Fat ${r1(it.per.f)} g</div><div class="perfrow"><input class="perf" type="number" inputmode="decimal" id="fsG${i}" value="${it.srv}"/><span>g</span><button class="btn pri" data-fsadd="${i}">Add</button></div></div></div>`).join("")}
   <h3>Logged ${S.sel===TODAY?"today":esc(S.sel)}</h3>
-  ${list.length?list.map(x=>`<div class="irow"><span>${esc(x.n)} · ${x.g} g</span><span class="ims">${x.kcal} kcal · Protein ${x.p} · Carbs ${x.c} · Fat ${x.f} <button class="rest" data-fsdel="${esc(x.id)}">Remove</button></span></div>`).join("")+`<div class="irow itot"><span>Total</span><span class="ims">${Math.round(t("kcal"))} kcal · Protein ${Math.round(t("p"))} · Carbs ${Math.round(t("c"))} · Fat ${Math.round(t("f"))}</span></div>`:'<div class="d">Nothing logged yet.</div>'}`;
+  ${list.length?list.map(x=>`<div class="irow"><span>${qPill(qEntry(x))}${esc(x.n)}${x.g?` · ${x.g} g`:""}</span><span class="ims">${x.kcal} kcal · Protein ${x.p} · Carbs ${x.c} · Fat ${x.f} <button class="rest ${S.favs.some(f=>f.n===x.n)?"on":""}" data-fsfav="${esc(x.id)}" aria-label="Favorite" title="Favorite: keep as a one-tap button">${S.favs.some(f=>f.n===x.n)?"★":"☆"}</button><button class="rest" data-fsdel="${esc(x.id)}">Remove</button></span></div>`).join("")+`<div class="irow itot"><span>Total</span><span class="ims">${Math.round(t("kcal"))} kcal · Protein ${Math.round(t("p"))} · Carbs ${Math.round(t("c"))} · Fat ${Math.round(t("f"))}</span></div>`:'<div class="d">Nothing logged yet.</div>'}`;
 }
 function renderMicro(){
   const b=$("microBox");if(!b)return;
@@ -3275,48 +3630,14 @@ document.addEventListener("click",async e=>{
 
 /* ===== HEALTH IMPORT: weight and steps from CSV, JSON or a link ===== */
 const HS={unit:"",msg:""};
-function hDate(v){
-  const m=String(v||"").match(/(\d{4})-(\d{1,2})-(\d{1,2})/);
-  if(m)return m[1]+"-"+m[2].padStart(2,"0")+"-"+m[3].padStart(2,"0");
-  const d=new Date(v);return isNaN(d)?null:iso(d);
-}
-function hRow(date,w,steps,unit){
-  const d=hDate(date);if(!d)return null;
-  w=nz(w);steps=Math.round(nz(steps));
-  return {d,w:w>0?(unit==="lb"?w/2.20462:w):0,steps:steps>0?steps:0};
-}
-function parseHealth(txt,unit){
-  txt=String(txt||"").trim();if(!txt)return [];
-  if(txt[0]==="{"||txt[0]==="["){
-    const j=JSON.parse(txt),arr=Array.isArray(j)?j:Object.entries(j).map(([d,v])=>Object.assign({date:d},v));
-    return arr.map(x=>hRow(x.date||x.d,x.weight??x.w,x.steps??x.s,unit)).filter(Boolean);
-  }
-  return txt.split(/[\r\n;]+/).map(l=>{const c=l.split(/[,\t]/).map(x=>x.trim());return c.length>=2&&/\d{4}/.test(c[0])?hRow(c[0],c[1],c[2],unit):null}).filter(Boolean);
-}
-function importHealth(txt,unit){
-  let rows;
-  try{rows=parseHealth(txt,unit||HS.unit||(metric()?"kg":"lb"))}catch(e){HS.msg="Could not read that: "+e.message;return renderHealth()}
-  let w=0,st=0;
-  rows.forEach(r=>{if(r.w){(S.log[r.d]=S.log[r.d]||{}).w=r.w;w++}if(r.steps){S.steps[r.d]=r.steps;st++}});
-  HS.msg=w||st?`Imported ${w} weigh-ins and ${st} days of steps.`:"No rows found. Use one line per day: date, weight, steps.";
-  if(w||st){save();regen();renderAll()}else renderHealth();
-}
 function renderHealth(){
   const b=$("healthBox");if(!b)return;
   const days=[];for(let i=13;i>=0;i--)days.push(addD(TODAY,-i));
   const v=days.map(d=>S.steps[d]||0),last7=v.slice(7).filter(x=>x>0),avg=last7.length?Math.round(last7.reduce((a,c)=>a+c,0)/last7.length):0,mx=Math.max(1,...v);
-  const u=HS.unit||(metric()?"kg":"lb");
   b.innerHTML=`<div class="kpis"><div class="kpi"><div class="l">Steps, 7-day average</div><div class="v">${avg?avg.toLocaleString():"–"}</div><div class="s">${S.steps[logDate]?S.steps[logDate].toLocaleString()+" on "+esc(logDate):"None logged for "+esc(logDate)}</div></div></div>
   <div style="display:flex;align-items:flex-end;gap:3px;height:56px;margin:8px 0">${v.map((x,i)=>`<div title="${esc(days[i])}: ${x}" style="flex:1;height:${Math.max(3,x/mx*100)}%;background:${x?"var(--accent)":"var(--border)"};border-radius:3px"></div>`).join("")}</div>
-  <div class="d">Last 14 days.</div>
-  <div class="fgrid" style="margin-top:10px"><div class="cg"><label>Steps on ${esc(logDate)}</label><input type="number" inputmode="numeric" id="hsSteps" value="${S.steps[logDate]||""}"/></div></div>
-  <h3>Import weight and steps</h3>
-  <div class="d">One line per day: <b>date, weight, steps</b> (for example 2026-11-03, 165.4, 8421). CSV or JSON from Apple Health exporters, Garmin, Google Fit or a spreadsheet works. Existing weights for those dates are replaced.</div>
-  <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:8px"><select id="hsUnit"><option value="lb"${u==="lb"?" selected":""}>Weights are in lb</option><option value="kg"${u==="kg"?" selected":""}>Weights are in kg</option></select><button class="btn" id="hsPick">Choose file</button></div>
-  <textarea id="hsTxt" placeholder="2026-11-03, 165.4, 8421&#10;2026-11-02, 165.0, 9100" style="margin-top:8px"></textarea>
-  <div style="display:flex;gap:8px;margin-top:8px"><button class="btn pri" id="hsGo">Import</button></div>
-  ${HS.msg?`<div class="d" style="margin-top:8px">${esc(HS.msg)}</div>`:""}
-  <details class="rec"><summary>Import from a link (for an iPhone Shortcut)</summary><div class="d" style="margin-top:6px">Open this page with the data after a # sign and it imports on load: <code>${esc(location.origin+location.pathname)}#h=2026-11-03,165.4,8421;2026-11-02,165.0,9100&amp;u=lb</code>. A Shortcut can build that text from your Health data and use its Open URL action.</div></details>`;
+  <div class="d">Last 14 days. Steps arrive from Health sync above, or type them here.</div>
+  <div class="fgrid" style="margin-top:10px"><div class="cg"><label>Steps on ${esc(logDate)}</label><input type="number" inputmode="numeric" id="hsSteps" value="${S.steps[logDate]||""}"/></div></div>`;
 }
 PROGX.push(renderHealth);
 document.addEventListener("input",e=>{
@@ -3326,20 +3647,14 @@ document.addEventListener("input",e=>{
 });
 document.addEventListener("click",e=>{
   const t=e.target.closest("button");if(!t)return;
-  if(t.id==="hsGo")importHealth($("hsTxt").value,$("hsUnit").value);
-  else if(t.id==="hsPick")$("hsFile").click();
+  if(t.id==="hsPick")$("hsFile").click();
 });
 document.addEventListener("change",e=>{
   if(e.target.id!=="hsFile")return;
   const f=e.target.files[0];if(!f)return;
   f.text().then(x=>importHealth(x,($("hsUnit")||{}).value)).finally(()=>{e.target.value=""});
 });
-function healthHash(){
-  if(!location.hash.startsWith("#h="))return;
-  const p=new URLSearchParams(location.hash.slice(1));
-  history.replaceState(null,"",location.pathname+location.search);
-  importHealth(p.get("h"),p.get("u")||(metric()?"kg":"lb"));
-}
+/* #h=, #health= and #sync links are handled by hxFromURL in the V4 block */
 setTimeout(healthHash,0);
 
 /* ===================== V3: CALLOUTS, WARM-UP / COOL-DOWN, CARDIO ===================== */
@@ -3448,7 +3763,7 @@ async function pullV3(){
       sbGet(`/rest/v1/assignments?select=coach_id,date,session,note,updated_at&client_id=eq.${me}&date=gte.${from}`),
       sbGet(`/rest/v1/messages?select=id,coach_id,client_id,author,date,body,created_at&client_id=eq.${me}&order=created_at.desc&limit=60`),
       sbGet(`/rest/v1/checkins?select=week,data,reply,replied_at&client_id=eq.${me}&week=gte.${addD(TODAY,-70)}`),
-      sbGet(`/rest/v1/health_daily?select=date,steps,weight_kg,sleep_h,rhr,hrv,kcal,cardio&user_id=eq.${me}&date=gte.${addD(TODAY,-90)}`)
+      (q=>sbGet(q("date,steps,weight_kg,sleep_h,rhr,hrv,kcal,cardio,updated_at,body_fat")).catch(e=>e&&e.status===400?sbGet(q("date,steps,weight_kg,sleep_h,rhr,hrv,kcal,cardio,updated_at")):Promise.reject(e)))(c=>`/rest/v1/health_daily?select=${c}&user_id=eq.${me}&date=gte.${addD(TODAY,-90)}`)
     ]);
     const c=cx(),before=JSON.stringify([c.links,c.asg,c.msgs,c.ci,S.hd]);
     c.links=links||[];
@@ -3458,14 +3773,10 @@ async function pullV3(){
     c.asg=A;c.msgs=msgs||[];
     const C={};(ci||[]).forEach(r=>C[r.week]=r);c.ci=C;
     let dataChanged=false;
-    (hd||[]).forEach(r=>{
-      const d=r.date;S.hd[d]={rhr:r.rhr!=null?+r.rhr:0,hrv:r.hrv!=null?+r.hrv:0,kcal:r.kcal||0,sleep:r.sleep_h!=null?+r.sleep_h:0,steps:r.steps||0,w:r.weight_kg!=null?+r.weight_kg:0,cardio:Array.isArray(r.cardio)?r.cardio:[]};
-      if(r.steps>0&&S.steps[d]!==r.steps){S.steps[d]=r.steps;dataChanged=true}
-      const l=S.log[d]=S.log[d]||{};
-      if(r.weight_kg>0&&(!l.w||l.wh)&&Math.abs((+l.w||0)-r.weight_kg)>.01){l.w=+r.weight_kg;l.wh=1;dataChanged=true}
-      if(r.sleep_h>0&&(!l.s||l.sh)&&String(l.s)!==String(+r.sleep_h)){l.s=String(+r.sleep_h);l.sh=1;dataChanged=true}
-      if(!Object.keys(l).length)delete S.log[d];
-    });
+    /* only values the server really has are merged in; a null never clears what this device already holds */
+    {let newest=0;const rows=(hd||[]).map(r=>{const o={date:r.date};[["steps","steps"],["kcal","kcal"],["rhr","rhr"],["hrv","hrv"],["sleep_h","sleep"],["weight_kg","weight"],["body_fat","bf"]].forEach(([a,b])=>{if(r[a]!=null&&+r[a]>0)o[b]=+r[a]});if(Array.isArray(r.cardio)&&r.cardio.length)o.cardio=r.cardio;const t=Date.parse(r.updated_at||"");if(t>newest)newest=t;return o});
+     if(hxUpsert(rows).changed)dataChanged=true;
+     if(newest>(+lsGet(HXATK)||0))lsSet(HXATK,String(newest))}
     const changed=dataChanged||before!==JSON.stringify([c.links,c.asg,c.msgs,c.ci,S.hd]);
     if(changed){save();regen();renderAll(TAB==="profile"&&document.activeElement&&document.activeElement.closest&&document.activeElement.closest("#pane-profile"));if(TAB!=="profile")renderCoachProf()}
     renderNavCoach();
@@ -3567,45 +3878,13 @@ async function stopCoach(coach){
 }
 
 /* ---------- Health auto-sync card ---------- */
-const hookURL=t=>SB_URL+"/functions/v1/health?t="+encodeURIComponent(t||"");
-function renderHealthSync(){
-  const b=$("healthBox");if(!b)return;
-  const tok=lsGet(HTK),last=Object.keys(S.hd||{}).sort().pop(),age=last?diffD(last,TODAY):null;
-  const status=!tok?"":age===null?callout("warn","⏳","Waiting for the first sync","","Finish one of the setups below, then run it once."):age<=1?callout("good","✅","Health sync is working",`Last data ${esc(dateLabel(last,{month:"short",day:"numeric"}))}`,"Steps, weight, sleep, HRV, resting heart rate and workouts fill in by themselves."):callout("warn","⚠️","Health sync has stopped",`Last data ${esc(dateLabel(last,{month:"short",day:"numeric"}))}`,"Open the exporter app or Shortcut and run it once. iPhone only sends Health data while the phone is unlocked.");
-  b.insertAdjacentHTML("afterbegin",`<div class="sechl">Automatic daily sync</div>
-   ${!SY.sess?callout("info","🔐","Sign in first","","Create an account in Profile → Sync, then come back here to connect Apple Health."):
-   `${status}
-   ${tok?`<div class="hurl"><label>Your personal sync link · treat it like a password</label><div class="hurlrow"><input readonly id="htUrl" value="${esc(hookURL(tok))}" onclick="this.select()"/><button class="btn pri" id="htCopy">Copy</button></div>
-     <div class="hurlbtns"><button class="btn" id="htTest">Send a test</button><button class="btn" id="htNew">New link</button><button class="btn danger" id="htOff">Turn off</button></div></div>
-   <details class="rec" open><summary>⭐ Easiest: Health Auto Export app (iPhone, set up once, fully automatic)</summary><ol class="hsteps">
-    <li>Install <b>Health Auto Export – JSON+CSV</b> from the App Store. Background automations need its paid tier.</li>
-    <li>Automations → <b>+</b> → <b>REST API</b>. Paste your link above into <b>URL</b>. Format <b>JSON</b>.</li>
-    <li>Data type <b>Health Metrics</b>. Pick Step Count, Weight &amp; Body Mass, Sleep Analysis, Resting Heart Rate, Heart Rate Variability and Active Energy. Aggregate by <b>Day</b>.</li>
-    <li>Add a second automation the same way with data type <b>Workouts</b>. Your walks, runs and rides then show up in Cardio.</li>
-    <li>Set the sync to <b>hourly</b> or <b>daily</b>. To backfill, run a manual export of the last 30 days once.</li></ol></details>
-   <details class="rec"><summary>Free option: Apple Shortcuts</summary><ol class="hsteps">
-    <li>Shortcuts → <b>Automation</b> → <b>+</b> → <b>Time of Day</b>: 9:00 PM, Daily, <b>Run Immediately</b>.</li>
-    <li>For each value add <b>Find Health Samples</b> (today), then <b>Calculate Statistics</b>: Steps (Sum), Active Energy (Sum), Resting Heart Rate (Average), Heart Rate Variability (Average), Weight (latest), Sleep Analysis "Asleep" (Sum of duration).</li>
-    <li>Add <b>Get Contents of URL</b>: paste your link, Method <b>POST</b>, Request Body <b>JSON</b> with fields <code>date</code> (Current Date as yyyy-MM-dd), <code>steps</code>, <code>kcal</code>, <code>rhr</code>, <code>hrv</code>, <code>weight</code>, <code>unit</code> = ${metric()?"kg":"lb"}, <code>sleep</code>.</li>
-    <li>Run it once with ▶ to check.</li></ol></details>
-   <details class="rec"><summary>🤖 Android</summary><div class="d" style="margin-top:6px">Android doesn't let web apps read Health Connect. Any automation app that can send a web request (Tasker, or a Health Connect export app) can POST the same JSON to your link. Otherwise use the import below.</div></details>`
-   :`<div class="d">Connect once and your phone sends steps, weight, sleep, HRV, resting heart rate and workouts every day, even with the app closed. Sleep and HRV feed your readiness check, steps fill the step counter, and workouts land in Cardio.</div><button class="btn pri" id="htNew" style="margin-top:10px">Connect Apple Health</button>`}
-   <div class="d" id="htMsg" style="margin-top:6px"></div>`}
-   <div class="sechl" style="margin-top:16px">Manual entry and import</div>`);
-}
+/* renderHealthSync, healthTest and hookURL are defined in the V4 block (HEALTH SYNC ENGINE) */
 async function healthKey(on){
   try{
     if(on){if(lsGet(HTK)&&!confirm("Make a new link? The old one stops working, so paste the new one into your exporter app or Shortcut."))return;const t=await sbRpc("health_token_new");lsSet(HTK,t)}
     else{if(!confirm("Turn off automatic Health sync? Your Shortcut will stop working. Data already synced stays."))return;await sbRpc("health_token_revoke");try{localStorage.removeItem(HTK)}catch(e){}}
     renderProgress();
   }catch(e){const m=$("htMsg");if(m)m.textContent=v3Err(e)}
-}
-async function healthTest(){
-  const m=$("htMsg");m.textContent="Sending a test with today's steps…";
-  try{
-    const r=await fetch(hookURL(lsGet(HTK)),{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({date:TODAY,steps:S.steps[TODAY]||0})}),j=await r.json().catch(()=>null);
-    m.textContent=r.ok&&j&&j.ok?"✅ Your link works. The server accepted the test.":"Test failed: "+((j&&j.error)||"HTTP "+r.status);
-  }catch(e){m.textContent="Test failed: "+v3Err(e)}
 }
 
 /* ===================== COACH: CLIENTS TAB ===================== */
@@ -3844,7 +4123,7 @@ function coClick(t){
     case "htNew":healthKey(true);return true;
     case "htOff":healthKey(false);return true;
     case "htTest":healthTest();return true;
-    case "htCopy":{const v=hookURL(lsGet(HTK));if(navigator.clipboard)navigator.clipboard.writeText(v).then(()=>alert("Key copied"));else prompt("Copy",v);return true}
+    case "htCopy":{const v=hookURL(lsGet(HTK));if(navigator.clipboard)navigator.clipboard.writeText(v).then(()=>toast("Sync link copied","good"));else prompt("Copy",v);return true}
   }
   return false;
 }
@@ -4052,6 +4331,749 @@ async function coPhotos(id){
     for(const img of box.querySelectorAll("img[data-cop]")){const p=list.find(x=>x.name===img.dataset.cop);url(p).then(u=>img.src=u).catch(()=>img.alt="Could not load")}
   }catch(e){box.innerHTML=callout("red","⚠️","Couldn't load photos","",esc(v3Err(e)))}
 }
+
+/* ===================== V4: ONE DAY MODEL, HEALTH SYNC ENGINE, READINESS, QUALITY, BIOMETRICS, MODES ===================== */
+/* New synced keys: supp (supplements per day), nut (what was eaten per day), favs (favorite foods), ux (mode, supplement list).
+   All are optional: an older backup or cloud copy without them loads unchanged. */
+["supp","nut","favs","ux"].forEach(k=>{if(!SYNCKEYS.includes(k))SYNCKEYS.push(k)});
+["supp","nut"].forEach(k=>{if(!MAPK.includes(k))MAPK.push(k)});
+const obj4=v=>v&&typeof v==="object"&&!Array.isArray(v)?v:{};
+function v4Norm(){
+  S.supp=obj4(S.supp);S.nut=obj4(S.nut);S.ux=obj4(S.ux);S.hd=obj4(S.hd);S.favs=Array.isArray(S.favs)?S.favs:[];
+  if(S.ux.mode!=="guided"&&S.ux.mode!=="pro")S.ux.mode=Object.keys(S.hist||{}).length||Object.keys(S.wlog||{}).length?"pro":"guided"; /* people with a training history keep the full view they had */
+  if(!Array.isArray(S.ux.supps))S.ux.supps=["Creatine 5 g","Protein shake","Electrolytes"];
+  return S.ux;
+}
+v4Norm();lastSnap=snapOf();
+const UX=()=>S.ux&&S.ux.mode?S.ux:v4Norm();
+const clamp01=x=>Math.max(0,Math.min(1,x));
+const posNum=v=>{v=parseFloat(v);return isFinite(v)&&v>0?v:null};
+const avgOf=a=>a.length?a.reduce((x,y)=>x+y,0)/a.length:null;
+
+/* ---------- toast ---------- */
+let toastT=null;
+function toast(msg,kind){
+  let el=$("toast");
+  if(!el){el=document.createElement("div");el.id="toast";el.setAttribute("role","status");el.setAttribute("aria-live","polite");document.body.appendChild(el)}
+  el.className="toast t-"+(kind||"info")+" on";el.textContent=msg;
+  clearTimeout(toastT);toastT=setTimeout(()=>el.classList.remove("on"),4200);
+}
+
+/* ---------- one read model per day: every screen below reads a day through this ---------- */
+function eatenOn(d){
+  const xt=S.extra[d.date]||{},fl=(S.flog&&S.flog[d.date])||[],fs=k=>fl.reduce((a,x)=>a+(+x[k]||0),0);
+  return d.meals.reduce((q,mm,i)=>S.checks[`${d.date}|meal|${i}`]?{kcal:q.kcal+mm.kcal,P:q.P+mm.P,C:q.C+mm.C,F:q.F+mm.F}:q,{kcal:(+xt.kcal||0)+fs("kcal"),P:(+xt.p||0)+fs("p"),C:fs("c"),F:fs("f")});
+}
+/* keep a small per-day record of what was eaten, so trends work for weeks that are no longer on screen */
+function snapNut(){
+  if(!W)return;v4Norm();let ch=false;
+  W.days.forEach(d=>{
+    if(d.date>TODAY)return;
+    const e=eatenOn(d),v=e.kcal>0?{k:Math.round(e.kcal),p:Math.round(e.P),c:Math.round(e.C),f:Math.round(e.F),t:Math.round(d.macros.kcal),tp:Math.round(d.macros.P)}:null;
+    if(JSON.stringify(S.nut[d.date]||null)!==JSON.stringify(v)){if(v)S.nut[d.date]=v;else delete S.nut[d.date];ch=true}
+  });
+  if(ch)save();
+}
+function dayModel(date){
+  const l=S.log[date]||{},h=(S.hd||{})[date]||{},n=(S.nut||{})[date],wl=(S.wlog||{})[date],cm=cardioOn(date).reduce((a,c)=>a+(+c.min||0),0);
+  return {date,weight:posNum(l.w),bf:posNum(h.bf),sleep:posNum(l.s)||posNum(h.sleep),rhr:posNum(h.rhr),hrv:posNum(h.hrv),
+    steps:posNum(S.steps[date])||posNum(h.steps),akcal:posNum(h.kcal),energy:posNum(l.e),sore:posNum(l.sr),
+    water:posNum((S.water||{})[date]),kcal:n?n.k:null,protein:n?n.p:null,kcalT:n?n.t:null,
+    adh:S.done[date]!=null?+S.done[date]:null,vol:wl&&wl.end&&wl.vol>0?wl.vol:null,sets:wl&&wl.end?wl.sets:null,cardio:cm||null};
+}
+
+/* ===================== READINESS ENGINE ===================== */
+/* Signals are weighted; a missing signal is left out and the rest are re-weighted, so the score is never NaN.
+   Core signals (sleep, energy, soreness, HRV, resting HR) can each produce a score alone. Context signals
+   (hydration, adherence, training load) only nudge a score that already exists. */
+function rdSignals(date){
+  const l=S.log[date]||{},out=[],s=parseFloat(l.s),e=parseFloat(l.e),sr=parseFloat(l.sr);
+  if(s>0)out.push({k:"sleep",label:"Sleep",w:.4,v:clamp01((s-5)/3),core:1,src:l.sh?"Health":"You",txt:r1(s)+" h"});
+  if(e>0)out.push({k:"energy",label:"Energy",w:.35,v:clamp01((e-1)/4),core:1,src:"You",txt:e+" / 5"});
+  if(sr>0)out.push({k:"sore",label:"Soreness",w:.25,v:clamp01((5-sr)/4),core:1,src:"You",txt:sr+" / 5"});
+  const hd=S.hd||{},h=hd[date];
+  if(h){
+    const base=k=>{const v=[];for(let i=1;i<=14;i++){const x=hd[addD(date,-i)];if(x&&+x[k]>0)v.push(+x[k])}return v.length>=3?avgOf(v):0};
+    const bh=base("hrv"),br=base("rhr");
+    if(+h.hrv>0&&bh)out.push({k:"hrv",label:"HRV",w:.3,v:clamp01((h.hrv/bh-.85)/.25),core:1,src:"Health",txt:Math.round(h.hrv)+" ms (usual "+Math.round(bh)+")"});
+    if(+h.rhr>0&&br)out.push({k:"rhr",label:"Resting HR",w:.15,v:clamp01(1-(h.rhr-br)/7),core:1,src:"Health",txt:Math.round(h.rhr)+" bpm (usual "+Math.round(br)+")"});
+  }
+  const y=addD(date,-1),wy=(S.water||{})[y],wt=W&&W.T?W.T.water*1000:3000;
+  if(wy>0)out.push({k:"water",label:"Hydration yesterday",w:.1,v:clamp01(wy/wt),src:"You",txt:r1(wy/1000)+" L"});
+  const dn=[1,2,3].map(i=>S.done[addD(date,-i)]).filter(x=>x!=null);
+  if(dn.length)out.push({k:"adh",label:"Plan adherence, 3 days",w:.1,v:clamp01(avgOf(dn)/100),src:"App",txt:Math.round(avgOf(dn))+"%"});
+  const wl=S.wlog||{},recent=[1,2].reduce((a,i)=>{const x=wl[addD(date,-i)];return a+(x&&x.end?+x.sets||0:0)},0);
+  const hist=Object.keys(wl).filter(d=>d<date&&diffD(d,date)<=28&&wl[d]&&wl[d].end);
+  if(hist.length>=3){const per2=hist.reduce((a,d)=>a+(+wl[d].sets||0),0)/14;if(per2>0)out.push({k:"load",label:"Training load, 2 days",w:.1,v:clamp01(1-(recent/per2-1)),src:"App",txt:recent+" sets (usual "+Math.round(per2)+")"})}
+  return out;
+}
+const RD_CORE=["sleep","energy","sore","hrv","rhr"],RD_NAME={sleep:"Sleep",energy:"Energy",sore:"Soreness",hrv:"HRV",rhr:"Resting HR"};
+function rdScore(parts){
+  const ws=parts.reduce((a,p)=>a+p.w,0);
+  return ws>0?clamp01(parts.reduce((a,p)=>a+p.w*p.v,0)/ws):null;
+}
+function readiness(date){
+  const l=S.log[date]||{};let parts=rdSignals(date),est=false,from=null;
+  if(!parts.some(p=>p.core)){
+    /* nothing measured for this day: carry the most recent measured day forward, pulled toward neutral, and say so */
+    for(let i=1;i<=3&&!from;i++){const pp=rdSignals(addD(date,-i));if(pp.some(p=>p.core)){const sc=rdScore(pp);if(sc!==null){from=addD(date,-i);parts=[{k:"carry",label:"Carried from "+dateLabel(from,{weekday:"short"}),w:1,v:sc*.7+.18,core:1,src:"Estimate",txt:"no data today"}]}}}
+    if(!from)return null;
+    est=true;
+  }
+  const score=rdScore(parts);if(score===null||!isFinite(score))return null;
+  const have=parts.filter(p=>p.core).map(p=>p.k);
+  return {score,pct:Math.round(score*100),level:score>=.7?"green":score>=.4?"yellow":"red",off:!!l.ro,est,from,parts,missing:est?RD_CORE.slice():RD_CORE.filter(k=>!have.includes(k))};
+}
+(function(){
+  const rr=renderReady;
+  renderReady=function(){
+    rr.apply(this,arguments);
+    const d=selDay(),rd=readiness(d.date),box=$("readyBox"),bd=$("rdBadge");
+    if(!box||!rd)return;
+    if(bd)bd.textContent=`${rd.level.toUpperCase()} · ${rd.pct}${rd.est?" · estimate":""}`;
+    const miss=rd.missing.map(k=>RD_NAME[k]);
+    box.insertAdjacentHTML("beforeend",`<div class="rdx">
+      <div class="rdx-h"><b>${rd.pct}<small>/100</small></b><span>${rd.est?"Estimated: nothing logged for this day, so the last measured day is carried forward. It does not change your sets.":`Built from ${rd.parts.length} signal${rd.parts.length===1?"":"s"}${miss.length?`. Not available: ${esc(miss.join(", "))}. The score re-weights around what is there.`:"."}`}</span></div>
+      <div class="rdx-t pro-only">${rd.parts.map(p=>`<div class="rdx-r"><span>${esc(p.label)}</span><div class="vbar"><i style="width:${Math.round(p.v*100)}%;background:${p.v>=.7?"var(--green)":p.v>=.4?"var(--amber)":"var(--red)"}"></i></div><small>${esc(p.txt)}</small><em>${esc(p.src)}</em></div>`).join("")}</div></div>`);
+  };
+})();
+
+/* ===================== HEALTH SYNC ENGINE (client) ===================== */
+const HXLOGK="eliteHealthLog",HXATK="eliteHealthAt",HXFEEDK="eliteHealthFeed";
+function hxLog(){try{const a=JSON.parse(lsGet(HXLOGK)||"[]");return Array.isArray(a)?a:[]}catch(e){return []}}
+function hxLogAdd(e){const a=hxLog();a.unshift(Object.assign({t:Date.now()},e));lsSet(HXLOGK,JSON.stringify(a.slice(0,25)))}
+/* Health values fill the manual log only where you have not typed your own number. */
+function hxProject(d){
+  const h=S.hd[d];if(!h)return false;let ch=false;
+  if(h.steps>0&&S.steps[d]!==h.steps){S.steps[d]=h.steps;ch=true}
+  const l=S.log[d]=S.log[d]||{};
+  if(h.w>0&&(!l.w||l.wh)&&Math.abs((+l.w||0)-h.w)>.01){l.w=+h.w;l.wh=1;ch=true}
+  if(h.sleep>0&&(!l.s||l.sh)&&String(l.s)!==String(+h.sleep)){l.s=String(+h.sleep);l.sh=1;ch=true}
+  if(!Object.keys(l).length)delete S.log[d];
+  return ch;
+}
+/* Date-keyed merge: only valid incoming values are written; everything already stored for that day stays. */
+function hxUpsert(rows){
+  v4Norm();let changed=0;const fields=new Set();
+  (rows||[]).forEach(r=>{
+    if(!r||!/^\d{4}-\d{2}-\d{2}$/.test(r.date))return;
+    const nx=Object.assign({},S.hd[r.date]);
+    HX_FIELDS.forEach(f=>{const k=f==="weight"?"w":f,v=+r[f];if(isFinite(v)&&v>0){fields.add(f);if(nx[k]!==v){nx[k]=v;changed++}}});
+    if(Array.isArray(r.cardio)&&r.cardio.length){fields.add("cardio");if(JSON.stringify(nx.cardio||[])!==JSON.stringify(r.cardio)){nx.cardio=r.cardio;changed++}}
+    if(Object.keys(nx).length){S.hd[r.date]=nx;if(hxProject(r.date))changed++}
+  });
+  return {changed,fields:[...fields]};
+}
+function hxForward(rows){
+  if(!SY.sess||!lsGet(HTK)||!location.protocol.startsWith("http"))return;
+  fetch(hookURL(lsGet(HTK)),{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(rows.map(r=>r.weight!=null?Object.assign({unit:"kg"},r):r))}).catch(()=>{});
+}
+function hxIngest(input,src,opt){
+  opt=opt||{};
+  const res=hxNormalize(input,{today:TODAY,unit:opt.unit||(metric()?"kg":"lb")});
+  if(!res.rows.length&&!res.issues.length&&String(typeof input==="string"?input:JSON.stringify(input||"")).trim().length>2)res.issues.push({field:"body",raw:"",why:"no health values recognised"});
+  const up=res.rows.length?hxUpsert(res.rows):{changed:0,fields:[]};
+  if(res.rows.length)lsSet(HXATK,String(Date.now()));
+  hxLogAdd({src,days:res.rows.length,fields:up.fields,changed:up.changed,issues:res.issues.slice(0,6),dates:res.rows.map(r=>r.date).slice(-3)});
+  if(up.changed){save();regen();renderAll(true)}else{renderHX();renderPill()}
+  if(res.rows.length&&opt.forward!==false)hxForward(res.rows);
+  return {rows:res.rows,issues:res.issues,up};
+}
+function hxSummary(r){
+  if(!r.rows.length)return r.issues.length?"Health sync: nothing usable ("+r.issues[0].why+"). Nothing was changed.":"Health sync: no data in that link.";
+  const names=r.up.fields.filter(f=>HX_LABEL[f]).map(f=>HX_LABEL[f].toLowerCase());
+  return `Health synced · ${r.rows.length} day${r.rows.length===1?"":"s"}${names.length?" · "+names.join(", "):""}${r.up.changed?"":" · already up to date"}${r.issues.length?` · ${r.issues.length} value${r.issues.length===1?"":"s"} skipped`:""}`;
+}
+/* Zero-backend path: the Shortcut opens the app with the data after # (or ?). Runs on load, on focus and on hash change. */
+const HX_URL=/^(h=|health=|sync(&|$)|hs(&|$))/;
+function hxFromURL(){
+  let raw="",at="";
+  const h=location.hash.slice(1),q=location.search.slice(1);
+  if(h&&HX_URL.test(h)){raw=h;at="h"}else if(q&&HX_URL.test(q)){raw=q;at="q"}else return false;
+  try{history.replaceState(null,"",location.pathname+(at==="h"?location.search:"")+(at==="q"?location.hash:""))}catch(e){console.warn(e)}
+  const r=hxIngest(raw.replace(/^(sync|hs)(&|$)/,""),"link");
+  toast(hxSummary(r),r.rows.length?"good":"warn");
+  return true;
+}
+function healthHash(){return hxFromURL()}
+/* Optional pull adapter: any URL that returns health JSON or CSV (a secret Gist raw link, a KV store, your own endpoint). */
+let hxFeedAt=0;
+async function hxFeedPull(force){
+  const u=lsGet(HXFEEDK);if(!u||!/^https:\/\//.test(u))return null;
+  if(!force&&Date.now()-hxFeedAt<6e5)return null;
+  hxFeedAt=Date.now();
+  try{const r=await fetch(u,{cache:"no-store"});if(!r.ok)throw new Error("HTTP "+r.status);return hxIngest(await r.text(),"feed",{forward:false})}
+  catch(e){hxLogAdd({src:"feed",days:0,fields:[],changed:0,issues:[{field:"feed",raw:"",why:"could not load: "+e.message}]});renderHX();return null}
+}
+function hxAuto(){hxFromURL();hxFeedPull(false)}
+window.addEventListener("hashchange",hxFromURL);
+window.addEventListener("pageshow",hxAuto);
+window.addEventListener("focus",hxAuto);
+document.addEventListener("visibilitychange",()=>{if(document.visibilityState==="visible")hxAuto()});
+async function hxSyncNow(){
+  toast("Syncing Health…");
+  hxFromURL();
+  const before=JSON.stringify(S.hd);
+  try{if(SY.sess)await pullV3()}catch(e){console.warn(e)}
+  await hxFeedPull(true);
+  const ch=before!==JSON.stringify(S.hd);
+  toast(!SY.sess&&!lsGet(HXFEEDK)?"Nothing to pull yet. Connect Health below, or paste data into the tester.":ch?"Health synced · new data":"Health checked · already up to date",!SY.sess&&!lsGet(HXFEEDK)?"warn":"good");
+  renderHX();renderPill();
+}
+function hxState(){
+  const hd=S.hd||{},days=Object.keys(hd).filter(d=>HX_FIELDS.some(f=>hd[d][f==="weight"?"w":f]>0)).sort(),last=days[days.length-1]||null;
+  const t=hd[TODAY]||{},have=HX_FIELDS.filter(f=>t[f==="weight"?"w":f]>0),miss=HX_FIELDS.filter(f=>!have.includes(f));
+  const at=+lsGet(HXATK)||0,age=last?diffD(last,TODAY):null;
+  return {last,age,at,have,miss,state:!last?"off":age<=1?"ok":"stale"};
+}
+const agoTxt=t=>{if(!t)return "";const m=Math.max(0,Math.round((Date.now()-t)/6e4));return m<1?"just now":m<60?m+" min ago":m<1440?Math.round(m/60)+" h ago":Math.round(m/1440)+" d ago"};
+function renderPill(){
+  const b=$("hxPill");if(!b)return;
+  const s=hxState();
+  b.className="hxpill s-"+s.state;
+  b.title=b.ariaLabel=s.state==="off"?"Health sync is not connected. Tap to set it up.":`Health sync. Last data ${s.last}. Today: ${s.have.length} of ${HX_FIELDS.length} values. Tap for details.`;
+  b.innerHTML=`<span class="hxdot" aria-hidden="true"></span><span class="hxl">${s.state==="off"?"Connect Health":s.state==="stale"?"Health · "+s.age+" d old":"Health · "+(s.at?agoTxt(s.at):"synced")}</span>${s.state==="off"?"":`<span class="hxn">${s.have.length}/${HX_FIELDS.length}</span>`}`;
+}
+const HX_SAMPLE='{"date":"","steps":"4,210\\n4,211","weight":"165.4 lb","sleep":"7 hr 30 min","rhr":"58 bpm","hrv":"","kcal":"NaN","bf":null}';
+const HXT={out:"",open:false};
+function hookURL(t){
+  let tz="";try{tz=Intl.DateTimeFormat().resolvedOptions().timeZone||""}catch(e){console.warn(e)}
+  return SB_URL+"/functions/v1/health?t="+encodeURIComponent(t||"")+(tz?"&tz="+encodeURIComponent(tz):"")+"&u="+(metric()?"kg":"lb");
+}
+function hxRowsTable(rows){
+  return `<div class="tblw"><table class="tele"><thead><tr><th>Date</th>${HX_FIELDS.map(f=>`<th>${HX_LABEL[f]}</th>`).join("")}</tr></thead><tbody>${rows.map(r=>`<tr><td>${esc(r.date)}</td>${HX_FIELDS.map(f=>`<td>${r[f]!=null?(f==="weight"?dW(r[f])+" "+wU():f==="sleep"?r[f]+" h":f==="bf"?r[f]+"%":Number(r[f]).toLocaleString()):'<span class="na">–</span>'}</td>`).join("")}</tr>`).join("")}</tbody></table></div>`;
+}
+function hxCheck(commit){
+  const txt=($("hxIn")||{}).value||"";
+  if(!txt.trim()){HXT.out=callout("info","✍️","Paste something first","","A Shortcut body, a link, Health Auto Export JSON or CSV lines all work.");return renderHX()}
+  const res=commit?hxIngest(txt.replace(/^[^#?]*[#?](?=(h=|health=|sync|hs))/,"").replace(/^(sync|hs)(&|$)/,""),"paste"):hxNormalize(txt.replace(/^[^#?]*[#?](?=(h=|health=|sync|hs))/,"").replace(/^(sync|hs)(&|$)/,""),{today:TODAY,unit:metric()?"kg":"lb"});
+  const iss=res.issues.map(i=>`<li><b>${esc(i.field)}</b>${i.raw?` <code>${esc(i.raw)}</code>`:""} · ${esc(i.why)}</li>`).join("");
+  HXT.out=(res.rows.length?callout("good","✅",commit?`Imported ${res.rows.length} day${res.rows.length===1?"":"s"}`:`Readable: ${res.rows.length} day${res.rows.length===1?"":"s"}`,commit?(res.up.changed?res.up.changed+" value(s) updated":"already up to date"):"nothing saved yet",hxRowsTable(res.rows)+'<div class="d" style="margin-top:6px">A dash means that value was not in the payload. It is left alone, and anything already saved for that day stays.</div>')
+    :callout("warn","⚠️","Nothing usable in that payload","","No valid health value was found, so nothing would change."))+(iss?callout("info","🧹","Skipped values","",`<ul class="cl">${iss}</ul>`):"");
+  renderHX();
+}
+function renderHX(){
+  const b=$("hxBox");if(!b)return;
+  const s=hxState(),tok=lsGet(HTK),log=hxLog(),u=metric()?"kg":"lb",keep=$("hxIn")?$("hxIn").value:"",feed=lsGet(HXFEEDK)||"";
+  const openSet=new Set([...b.querySelectorAll("details[open][data-hk]")].map(d=>d.dataset.hk)),op=k=>openSet.has(k)?" open":"";
+  const chip=(f,on)=>`<span class="hxf ${on?"on":""}">${on?"✓":"○"} ${HX_LABEL[f]}</span>`;
+  const status=s.state==="off"?callout("info","⌚","Health is not connected yet","","Pick one of the two setups below. Until then everything still works from what you type in.")
+    :s.state==="ok"?callout("good","✅","Health sync is working",`Last data ${esc(dateLabel(s.last,{month:"short",day:"numeric"}))}${s.at?" · "+agoTxt(s.at):""}`,"Missing values are fine: the app keeps what it has and scores around the gaps.")
+    :callout("warn","⚠️","Health sync has gone quiet",`Last data ${esc(dateLabel(s.last,{month:"short",day:"numeric"}))}`,"Open Repair below. The usual cause is the automation running while the iPhone is locked: iOS blocks Health data until you unlock.");
+  const link=`${appURL()}#sync&steps=…&weight=…&sleep=…&rhr=…&hrv=…&kcal=…&u=${u}`;
+  b.innerHTML=`${status}
+   <div class="hxtoday"><div class="sechl">Today from Health <b>${s.have.length} of ${HX_FIELDS.length}</b></div><div class="hxfs">${HX_FIELDS.map(f=>chip(f,s.have.includes(f))).join("")}</div></div>
+   <div class="hurlbtns"><button class="btn pri" data-hx="sync">↻ Sync now</button><button class="btn" data-hx="focus">Paste data</button></div>
+
+   <div class="sechl" style="margin-top:18px">Set up automatic sync</div>
+   <details class="rec" data-hk="bg"${op("bg")||(tok&&s.state!=="ok"?" open":"")}><summary>⭐ Background sync · phone sends data with the app closed (needs an account)</summary>
+    ${!SY.sess?callout("info","🔐","Sign in first","",'Create an account in Profile → Sync. Then a personal sync link appears here. <button class="btn" data-goto="profile" style="margin-left:6px">Open Profile</button>')
+    :tok?`<div class="hurl"><label>Your personal sync link · treat it like a password</label><div class="hurlrow"><input readonly id="htUrl" value="${esc(hookURL(tok))}" onclick="this.select()"/><button class="btn pri" id="htCopy">Copy</button></div>
+      <div class="hurlbtns"><button class="btn" id="htTest">Send a test</button><button class="btn" id="htNew">New link</button><button class="btn danger" id="htOff">Turn off</button></div><div class="d" id="htMsg" style="margin-top:6px"></div></div>
+      <div class="d">The link already carries your time zone and weight unit, so the automation does not have to send a date.</div>
+      <h3>Option A · Health Auto Export app (most reliable)</h3><ol class="hsteps">
+       <li>Install <b>Health Auto Export – JSON+CSV</b>. Background automations need its paid tier.</li>
+       <li>Automations → <b>+</b> → <b>REST API</b>. Paste the link into <b>URL</b>. Format <b>JSON</b>.</li>
+       <li>Data type <b>Health Metrics</b>: Step Count, Weight &amp; Body Mass, Body Fat Percentage, Sleep Analysis, Resting Heart Rate, Heart Rate Variability, Active Energy. Aggregate by <b>Day</b>.</li>
+       <li>Add a second automation with data type <b>Workouts</b>.</li>
+       <li>Sync cadence hourly. Run one manual export of the last 30 days to backfill.</li></ol>
+      <h3>Option B · Apple Shortcuts (free)</h3><ol class="hsteps">
+       <li>Shortcuts → <b>+</b>. Add <b>Find Health Samples</b> six times, one per type, each with <b>Start Date is today</b>: Steps, Active Energy, Resting Heart Rate, Heart Rate Variability, Weight, Body Fat Percentage. For sleep add a seventh: Sleep, <b>End Date is today</b>.</li>
+       <li>If you wear an Apple Watch, add the filter <b>Source is</b> your Watch to the Steps and Active Energy actions. Without it the phone and the watch are both counted.</li>
+       <li>After each one add <b>Calculate Statistics</b>: Sum for Steps, Active Energy and Sleep (duration); Average for Resting Heart Rate and HRV; for Weight and Body Fat sort the Find action by Start Date, latest first, limit 1.</li>
+       <li>Add <b>Get Contents of URL</b>. URL: your link. Method <b>POST</b>. Request Body <b>JSON</b>. Add one field per value and set every field's type to <b>Text</b>: <code>steps</code>, <code>kcal</code>, <code>rhr</code>, <code>hrv</code>, <code>weight</code>, <code>bf</code>, <code>sleep</code>. Put the matching result in each. Add one more Text field, <code>unit</code>, with the value <b>${u}</b>.</li>
+       <li>No <b>If</b> blocks are needed for empty values: a blank, 0 or "NaN" field is skipped by the server and the rest of the day is still saved. If you prefer guards, wrap a field in <b>If [result] has any value</b> and set it to empty text in Otherwise.</li>
+       <li>Automation tab → <b>+</b> → trigger <b>App: Is Opened</b> (pick an app you open every morning, or this one) → <b>Run Immediately</b> → run the shortcut. An app-open trigger means the phone is unlocked, which Health requires.</li>
+       <li>Run it once with ▶. Then tap <b>Send a test</b> above and <b>Sync now</b>.</li></ol>`
+    :`<div class="d">Your phone sends steps, weight, body fat, sleep, HRV, resting heart rate and workouts every day, even with the app closed. This app picks them up whenever it opens.</div><button class="btn pri" id="htNew" style="margin-top:10px">Create my sync link</button><div class="d" id="htMsg" style="margin-top:6px"></div>`}</details>
+   <details class="rec" data-hk="url"${op("url")}><summary>No account · the Shortcut opens the app with today's numbers</summary>
+    <div class="d" style="margin-top:6px">Build the same Find Health Samples and Calculate Statistics steps as Option B, then finish with a <b>Text</b> action holding this link (put each result where the … is) and an <b>Open URLs</b> action:</div>
+    <div class="hurlrow" style="margin-top:8px"><input readonly id="hxLink" value="${esc(link)}" onclick="this.select()"/><button class="btn" data-hx="copylink">Copy</button></div>
+    <div class="d" style="margin-top:6px">The app reads the numbers, saves them, and removes them from the address bar. Empty values are fine. Limit: on iPhone, a link opens in Safari, and Safari keeps its own copy of your data, separate from the Home Screen app. If you use the Home Screen app, choose background sync instead.</div></details>
+   <details class="rec" data-hk="fix"${op("fix")||(s.state==="stale"?" open":"")}><summary>🛠 Repair: the automation stopped or values are missing</summary><ol class="hsteps">
+    <li><b>Nothing arrives at night.</b> iOS locks Health data while the iPhone is locked, so a Time of Day automation at 9 PM fails silently. Change the trigger to <b>App: Is Opened</b> or <b>Alarm: Is Stopped</b>.</li>
+    <li><b>"Ask Before Running" is on.</b> Open the automation and switch to <b>Run Immediately</b>.</li>
+    <li><b>One empty value used to stop everything.</b> It no longer does. Set every JSON field type to <b>Text</b>, never Number: an empty Number field can stop the request inside Shortcuts before it is sent.</li>
+    <li><b>Steps look doubled.</b> Add the <b>Source is</b> Apple Watch filter (step 2 of Option B).</li>
+    <li><b>Sleep is missing.</b> Filter sleep by <b>End Date is today</b>, not Start Date: last night's sleep started yesterday.</li>
+    <li><b>Wrong day.</b> Leave the date field out. The link knows your time zone and files the data under today.</li>
+    <li><b>Still stuck?</b> Run the Shortcut by hand, copy what it sends (add a <b>Quick Look</b> before Get Contents of URL), paste it into the tester below and press Check. It shows what was read and what was skipped, and why.</li></ol></details>
+   <details class="rec" data-hk="and"${op("and")}><summary>🤖 Android and other trackers</summary><div class="d" style="margin-top:6px">Android does not let web apps read Health Connect. Any automation app that can send a web request (Tasker, MacroDroid, a Health Connect exporter) can POST the same JSON to your sync link. Garmin, Fitbit, Oura and Whoop exports can be pasted or uploaded in the tester as CSV with a header row: <code>date, weight, steps, sleep, rhr, hrv, kcal</code>.</div></details>
+   <details class="rec" data-hk="feed"${op("feed")}><summary>Advanced · pull from your own URL (Gist, KV store, home server)</summary><div class="d" style="margin-top:6px">If something already writes your health data to a private https address as JSON or CSV, paste that address here. The app reads it each time it opens. Leave empty to turn off.</div><div class="hurlrow" style="margin-top:8px"><input id="hxFeed" placeholder="https://…" value="${esc(feed)}"/><button class="btn" data-hx="feedsave">Save</button></div></details>
+
+   <div class="sechl" style="margin-top:18px">Payload tester</div>
+   <div class="d">Paste exactly what your Shortcut or exporter sends: JSON, a link, <code>steps=8421&amp;weight=165.4</code>, or CSV lines. <b>Check</b> only reads it. <b>Import</b> saves it.</div>
+   <textarea id="hxIn" spellcheck="false" placeholder='{"steps":"8421","weight":"165.4 lb","sleep":"","hrv":"NaN"}' style="margin-top:8px;font-family:ui-monospace,Menlo,monospace;font-size:.8rem">${esc(keep)}</textarea>
+   <div class="hurlbtns"><button class="btn pri" data-hx="check">Check</button><button class="btn" data-hx="import">Import</button><button class="btn" data-hx="sample">Load a messy sample</button><button class="btn" id="hsPick">Upload file</button></div>
+   <div id="hxOut" style="margin-top:10px">${HXT.out}</div>
+
+   <div class="sechl" style="margin-top:18px">Sync log</div>
+   ${log.length?`<div class="itab">${log.slice(0,8).map(e=>`<div class="irow"><span>${esc(fmtTime(e.t))} · ${esc(({link:"Link",paste:"Pasted",file:"File",feed:"Your URL",cloud:"Cloud",test:"Test"})[e.src]||e.src)}</span><span class="ims">${e.days?`${e.days} day${e.days===1?"":"s"} · ${e.changed||0} updated${(e.fields||[]).length?" · "+esc(e.fields.map(f=>HX_LABEL[f]||f).join(", ")):""}`:"nothing usable"}${(e.issues||[]).length?` · ${e.issues.length} skipped`:""}</span></div>`).join("")}</div>`:'<div class="d">No syncs recorded on this device yet.</div>'}`;
+}
+/* legacy entry points now go through the same engine */
+function importHealth(txt,unit){
+  const r=hxIngest(txt,"file",{unit:unit||HS.unit||undefined});
+  HS.msg=hxSummary(r);
+  toast(HS.msg,r.rows.length?"good":"warn");
+}
+function renderHealthSync(){renderHX();renderPill()}
+async function healthTest(){
+  const m=$("htMsg");if(m)m.textContent="Sending a test…";
+  try{
+    const body={date:TODAY,test:1};if(S.steps[TODAY]>0)body.steps=S.steps[TODAY];
+    const r=await fetch(hookURL(lsGet(HTK)),{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(body)}),j=await r.json().catch(()=>null);
+    const ok=r.ok&&j&&j.ok;
+    hxLogAdd({src:"test",days:ok?(j.days||0):0,fields:[],changed:0,issues:ok?[]:[{field:"link",raw:"",why:(j&&j.error)||"HTTP "+r.status}]});
+    if($("htMsg"))$("htMsg").textContent=ok?"✅ Your link works. The server accepted the test.":"Test failed: "+((j&&j.error)||"HTTP "+r.status);
+  }catch(e){if($("htMsg"))$("htMsg").textContent="Test failed: "+v3Err(e)}
+}
+document.addEventListener("click",e=>{
+  const p=e.target.closest("#hxPill");
+  if(p){showTab("progress");setTimeout(()=>{const x=$("hxCard");if(x)x.scrollIntoView({behavior:"smooth",block:"start"})},60);return}
+  const t=e.target.closest("[data-hx]");if(!t)return;
+  const a=t.dataset.hx;
+  if(a==="sync")hxSyncNow();
+  else if(a==="focus"){const i=$("hxIn");if(i){i.scrollIntoView({behavior:"smooth",block:"center"});i.focus()}}
+  else if(a==="check")hxCheck(false);
+  else if(a==="import")hxCheck(true);
+  else if(a==="sample"){$("hxIn").value=HX_SAMPLE;hxCheck(false)}
+  else if(a==="copylink"){const v=$("hxLink").value;if(navigator.clipboard)navigator.clipboard.writeText(v).then(()=>toast("Link copied","good")).catch(()=>prompt("Copy",v));else prompt("Copy",v)}
+  else if(a==="feedsave"){const v=$("hxFeed").value.trim();if(v&&!/^https:\/\//.test(v)){toast("The address must start with https://","warn");return}if(v)lsSet(HXFEEDK,v);else{try{localStorage.removeItem(HXFEEDK)}catch(x){console.warn(x)}}toast(v?"Saved. Pulling now…":"Turned off","good");if(v)hxFeedPull(true)}
+});
+
+/* ===================== EXPERIENCE MODE ===================== */
+function applyMode(){
+  const m=UX().mode;document.documentElement.dataset.mode=m;
+  const b=$("btnMode");if(b){b.innerHTML=m==="guided"?'<span aria-hidden="true">🧭</span><span class="hpl">Guided</span>':'<span aria-hidden="true">⚡</span><span class="hpl">Pro</span>';b.title=b.ariaLabel=m==="guided"?"Guided mode is on. Tap for Elite Pro mode: full data and tables.":"Elite Pro mode is on. Tap for Guided mode: simpler screens and next steps."}
+}
+function setMode(m){UX().mode=m==="guided"?"guided":"pro";save();applyMode();renderAll(true);toast(m==="guided"?"Guided mode: simpler screens, one next step at a time":"Elite Pro mode: full telemetry and tables","good")}
+
+/* ===================== COMMAND STRIP: rings + next best action ===================== */
+function ringSm(p,color,label,val,sub){
+  const r=30,c=2*Math.PI*r,q=clamp01(p||0);
+  return `<div class="cring"><div class="cring-g"><svg width="76" height="76" viewBox="0 0 76 76" aria-hidden="true"><circle cx="38" cy="38" r="${r}" fill="none" stroke="var(--panel2)" stroke-width="7"/><circle cx="38" cy="38" r="${r}" fill="none" stroke="${color}" stroke-width="7" stroke-linecap="round" stroke-dasharray="${c.toFixed(1)}" stroke-dashoffset="${(c*(1-q)).toFixed(1)}" transform="rotate(-90 38 38)"/></svg><b>${val}</b></div><span>${label}</span><small>${sub}</small></div>`;
+}
+function dayFrac(){const n=new Date(),h=n.getHours()+n.getMinutes()/60;return clamp01((h-7)/14)}
+function nextActions(d){
+  const A=[],isT=d.date===TODAY,s=d.session,e=eatenOn(d),m=d.macros,rd=readiness(d.date),fr=dayFrac(),hx=hxState();
+  if(!S.confirmed)A.push({i:"👤",t:"Finish your profile",w:"Calories, macros and the training plan are all built from your stats and goal.",b:'<button class="btn pri" data-goto="profile">Open Profile</button>'});
+  if(isT&&s&&s.ex.length&&d.kind==="train"&&(!rd||rd.est))A.push({i:"🟢",t:"Do the 10-second readiness check",w:"Sleep, energy and soreness decide whether today is a push day or an easier one.",b:'<button class="btn" data-nba="ready">Check in</button>'});
+  if(s&&s.ex&&s.ex.length){const n=s.ex.length,dn=s.ex.filter((x,i)=>S.checks[`${d.date}|ex|${i}`]).length;if(dn<n)A.push({i:"🏋️",t:dn?`Resume ${s.name}`:`Train: ${s.name}`,w:`${n-dn} exercise${n-dn===1?"":"s"} left. Log each set so next week's targets move up on their own.`,b:`<button class="btn pri" data-wm="open">▶ ${dn?"Resume":"Start"}</button>`})}
+  const mi=d.meals.findIndex((x,i)=>!S.checks[`${d.date}|meal|${i}`]);
+  if(mi>=0)A.push({i:"🍽️",t:`Eat: ${d.meals[mi].name}`,w:`${d.meals[mi].kcal} kcal · ${d.meals[mi].P} g protein. Tick it when eaten and the day's numbers update.`,b:`<button class="btn" data-nba="meal" data-i="${mi}">Mark eaten</button>`});
+  if(isT){
+    const pl=Math.round(m.P-e.P);
+    if(fr>.55&&e.P<m.P*fr*.75&&pl>20)A.push({i:"🥩",t:`Protein is behind: ${pl} g to go`,w:"Protein is the number that protects muscle. A shake or Greek yogurt closes most of the gap.",b:'<button class="btn" data-nba="food">Log food</button>'});
+    const wt=W.T.water*1000,wn=(S.water||{})[d.date]||0;
+    if(wn<wt*fr*.7&&wn<wt)A.push({i:"💧",t:`Drink water: ${r1(wn/1000)} of ${W.T.water} L`,w:"Steady intake through the day beats catching up at night.",b:'<button class="btn" data-wa="500">+500 ml</button>'});
+    const st=S.steps[d.date]||0,g=stepGoal();
+    if(st>0&&st<g*fr*.7)A.push({i:"🚶",t:`${(g-st).toLocaleString()} steps to your goal`,w:"A 10-minute walk after a meal is about 1,000 steps.",b:""});
+    if(!(S.log[d.date]||{}).w&&new Date().getHours()<12)A.push({i:"⚖️",t:"Log this morning's weight",w:"Daily weigh-ins feed the trend line that auto-adjusts your calories.",b:'<button class="btn" data-goto="progress">Log weight</button>'});
+    if(hx.state==="stale")A.push({i:"⌚",t:"Health sync has gone quiet",w:`Last data ${hx.age} days ago. One tap checks for new data.`,b:'<button class="btn" data-hx="sync">Sync now</button>'});
+  }
+  if(!A.length)A.push({i:"✅",t:isT?"Everything is done for today":"Nothing open on this day",w:"Recovery is the job now: sleep 7.5 h or more.",b:""});
+  return A;
+}
+function renderCommand(){
+  const el=$("cmdBox");if(!el||!W)return;
+  const d=selDay(),e=eatenOn(d),m=d.macros,rd=readiness(d.date),s=d.session,st=S.steps[d.date]||0,g=stepGoal(),fr=d.date===TODAY?dayFrac():1;
+  const n=s&&s.ex?s.ex.length:0,dn=n?s.ex.filter((x,i)=>S.checks[`${d.date}|ex|${i}`]).length:0;
+  const pace=(v,t)=>d.date!==TODAY?"":v>=t?"goal hit":v>=t*fr*.9?"on pace":"behind pace";
+  const A=nextActions(d),guided=UX().mode==="guided",top=A[0],rest=A.slice(1,guided?3:4);
+  el.innerHTML=`<div class="card cmd"><div class="crings">
+     ${ringSm(rd?rd.score:0,rd?(rd.level==="green"?"var(--green)":rd.level==="yellow"?"var(--amber)":"var(--red)"):"var(--border)","Readiness",rd?rd.pct:"–",rd?(rd.est?"estimate":rd.level==="green"?"good to go":rd.level==="yellow"?"go easier":"back off"):"not checked")}
+     ${ringSm(e.kcal/m.kcal,"var(--accent)","Fuel",Math.round(e.kcal/m.kcal*100)+"%",`${Math.round(e.kcal).toLocaleString()} / ${Math.round(m.kcal).toLocaleString()} kcal<br>protein ${Math.round(e.P)} / ${Math.round(m.P)} g`)}
+     ${ringSm(n?dn/n:d.kind==="rest"?1:0,"var(--green)","Train",n?`${dn}/${n}`:"Rest",n?(dn===n?"session done":"exercises"):"recovery day")}
+     ${ringSm(st/g,"var(--amber)","Move",st?(st>=1000?r1(st/1000)+"k":st):"–",st?pace(st,g)||"steps":"no steps yet")}
+    </div>
+    <div class="nba"><div class="sechl">Next best action</div>
+     <div class="nba1"><span class="nba-i" aria-hidden="true">${top.i}</span><div class="nba-b"><b>${esc(top.t)}</b><p class="guided-only">${esc(top.w)}</p></div>${top.b}</div>
+     ${rest.length?`<div class="nbaq">${rest.map(a=>`<div class="nba2"><span aria-hidden="true">${a.i}</span><span>${esc(a.t)}</span>${a.b}</div>`).join("")}</div>`:""}
+    </div></div>`;
+}
+document.addEventListener("click",e=>{
+  const t=e.target.closest("[data-nba]");if(!t)return;
+  const a=t.dataset.nba;
+  if(a==="ready"){setPlanSeg("w");const x=$("readyBox");if(x)x.scrollIntoView({behavior:"smooth",block:"center"})}
+  else if(a==="food"){setPlanSeg("m");const x=$("foodBox");if(x)x.scrollIntoView({behavior:"smooth",block:"center"})}
+  else if(a==="meal"){const k=`${S.sel}|meal|${t.dataset.i}`;S.checks[k]=true;markDone(k);save();renderPlan();renderOverall();renderProgExtra();toast("Meal logged","good")}
+});
+
+/* ===================== SUPPLEMENTS, FAVORITES, QUICK ADD ===================== */
+function renderSupp(){
+  const h=$("hList");if(!h)return;
+  const ux=UX(),day=S.supp[S.sel]||{},n=ux.supps.filter(x=>day[x]).length;
+  h.insertAdjacentHTML("beforeend",`<div class="suppbar"><div class="sechl">Supplements &amp; electrolytes <b>${n} / ${ux.supps.length}</b><button class="rest" data-supp-edit="1">Edit list</button></div><div class="fchips">${ux.supps.map(x=>`<button type="button" class="fchip ${day[x]?"s1":"s0"}" data-supp="${esc(x)}" aria-pressed="${!!day[x]}">${day[x]?"✓ ":""}${esc(x)}</button>`).join("")||'<span class="d">No supplements listed.</span>'}</div></div>`);
+}
+function flogAdd(e){
+  const x=Object.assign({},e,{id:Date.now().toString(36)+Math.random().toString(36).slice(2,5)});
+  (S.flog[S.sel]=S.flog[S.sel]||[]).push(x);save();renderPlan();return x;
+}
+function recentFoods(){
+  const seen=new Set(S.favs.map(f=>f.n)),out=[];
+  Object.keys(S.flog||{}).sort().reverse().slice(0,21).forEach(d=>(S.flog[d]||[]).slice().reverse().forEach(x=>{if(x&&x.n&&!seen.has(x.n)&&out.length<8){seen.add(x.n);out.push(x)}}));
+  return out;
+}
+const QA=[];
+function renderQuick(){
+  const b=$("foodBox");if(!b)return;
+  v4Norm();QA.length=0;
+  const chip=(x,fav)=>{QA.push(x);return `<button type="button" class="fchip ${fav?"s1":"s0"}" data-qa="${QA.length-1}" title="${Math.round(x.kcal)} kcal · P ${x.p} · C ${x.c} · F ${x.f}">${fav?"★ ":""}${esc(x.n.length>26?x.n.slice(0,25)+"…":x.n)} <small>${Math.round(x.kcal)}</small></button>`};
+  const rec=recentFoods();
+  b.insertAdjacentHTML("afterbegin",`<div class="qadd">${S.favs.length||rec.length?`${S.favs.length?`<div class="sechl">Favorites · tap to log again</div><div class="fchips">${S.favs.map(x=>chip(x,true)).join("")}</div>`:""}${rec.length?`<div class="sechl" style="margin-top:8px">Recent</div><div class="fchips">${rec.map(x=>chip(x,false)).join("")}</div>`:""}`
+    :callout("info","⚡","Log faster next time","","Foods you log show up here as one-tap buttons. Star one to keep it as a favorite.")}</div>`);
+}
+document.addEventListener("click",e=>{
+  let t;
+  if((t=e.target.closest("[data-supp]"))){const d=S.supp[S.sel]=S.supp[S.sel]||{},k=t.dataset.supp;if(d[k])delete d[k];else d[k]=1;if(!Object.keys(d).length)delete S.supp[S.sel];save();renderPlan();return}
+  if((t=e.target.closest("[data-supp-edit]"))){const v=prompt("Supplements to track each day, separated by commas",UX().supps.join(", "));if(v!==null){UX().supps=[...new Set(v.split(",").map(x=>x.trim().slice(0,40)).filter(Boolean))].slice(0,10);save();renderPlan()}return}
+  if((t=e.target.closest("[data-qa]"))){const x=QA[+t.dataset.qa];if(x){flogAdd(x);toast(`Logged ${x.n}`,"good")}return}
+  if((t=e.target.closest("[data-fsfav]"))){
+    const x=((S.flog||{})[S.sel]||[]).find(y=>y.id===t.dataset.fsfav);if(!x)return;
+    const i=S.favs.findIndex(f=>f.n===x.n);
+    if(i>=0)S.favs.splice(i,1);else{if(S.favs.length>=24)S.favs.shift();S.favs.push(Object.assign({},x))}
+    save();renderPlan();return;
+  }
+});
+
+/* ===================== FOOD QUALITY (0–100) ===================== */
+/* An Elite OS estimate, in the spirit of label-scanning apps: 60% nutrient balance per 100 g, 25% degree of processing
+   (NOVA group), 15% additives. A part with no data is left out and the others are re-weighted; `est` marks that. */
+const QGRADE=s=>s>=75?["Excellent","good"]:s>=50?["Good","info"]:s>=25?["Mediocre","warn"]:["Poor","red"];
+function qScore(per,meta){
+  per=per||{};meta=meta||{};
+  const has=k=>per[k]!=null&&isFinite(per[k]),cap=(v,m)=>Math.max(0,Math.min(m,v));
+  let neg=cap((+per.kcal||0)/80,10),negMax=10,est=false;
+  if(has("sugar")){neg+=cap(per.sugar/4.5,10);negMax+=10}else est=true;
+  if(has("sat")){neg+=cap(per.sat/1,10);negMax+=10}else est=true;
+  if(has("sodium")){neg+=cap(per.sodium/90,10);negMax+=10}else est=true;
+  const negN=neg/negMax*40,pos=cap((+per.fiber||0)/.9,5)+(negN>=11?0:cap((+per.p||0)/1.6,5)); /* protein cannot rescue a product that is already heavy on sugar, salt or saturated fat */
+  const nutr=clamp01(1-(negN-pos+10)/50)*100;
+  const parts=[[.6,nutr]];
+  if(meta.nova>=1&&meta.nova<=4)parts.push([.25,[100,85,60,25][meta.nova-1]]);else est=true;
+  if(meta.add!=null&&isFinite(meta.add))parts.push([.15,Math.max(0,100-12*meta.add)]);else est=true;
+  const ws=parts.reduce((a,p)=>a+p[0],0);let score=Math.round(parts.reduce((a,p)=>a+p[0]*p[1],0)/ws);
+  if(meta.org)score=Math.min(100,score+3);
+  const fl=[];
+  if(meta.nova===4)fl.push(["red","Ultra-processed"]);
+  if(has("sugar")&&per.sugar>=22.5)fl.push(["red","High sugar · "+r1(per.sugar)+" g/100 g"]);else if(has("sugar")&&per.sugar>=10)fl.push(["warn","Moderate sugar · "+r1(per.sugar)+" g/100 g"]);
+  if(has("sodium")&&per.sodium>=600)fl.push(["red","High sodium · "+Math.round(per.sodium)+" mg/100 g"]);
+  if(has("sat")&&per.sat>=5)fl.push(["warn","High saturated fat · "+r1(per.sat)+" g/100 g"]);
+  if(meta.add>=3)fl.push(["warn",meta.add+" additives"]);else if(meta.add>0)fl.push(["info",meta.add+" additive"+(meta.add===1?"":"s")]);
+  if((+per.fiber||0)>=6)fl.push(["good","High fiber"]);
+  if((+per.p||0)>=15)fl.push(["good","High protein"]);
+  if(meta.nova===1)fl.push(["good","Whole food"]);
+  return {score:isFinite(score)?score:50,est,fl};
+}
+const QSWAP=[[/cereal|granola|muesli/i,"Rolled oats with blueberries and a spoon of honey"],[/bar\b|cookie|biscuit|candy|chocolate|brownie|donut|pastry|cake/i,"Greek yogurt with berries, or an apple with almond butter"],[/soda|cola|juice|energy drink|lemonade|sweet tea/i,"Sparkling water with lemon or lime"],[/chips|crisps|cracker|pretzel|puffs/i,"Rice cakes with almond butter, or a handful of almonds"],[/sausage|bacon|salami|ham\b|hot dog|nugget|deli/i,"Chicken breast, turkey or eggs you cook yourself"],[/yogurt|yoghurt|pudding/i,"Plain Greek yogurt with fruit you add yourself"],[/bread|bun\b|wrap|tortilla|bagel/i,"Whole-wheat bread, or rice or potatoes as the carb"],[/sauce|dressing|ketchup|mayo/i,"Olive oil, lemon, herbs and spices"],[/noodle|ramen|instant|frozen meal|pizza/i,"Batch-cooked rice or pasta with chicken and vegetables"],[/ice cream|gelato/i,"Frozen banana blended with Greek yogurt"]];
+function qSwap(name,q){
+  if(q.score>=60)return "";
+  const m=QSWAP.find(([re])=>re.test(name||""));
+  if(m)return m[1];
+  const bad=q.fl.map(f=>f[1]).join(" ");
+  return /sugar/i.test(bad)?"Fruit plus a protein source, such as an apple with Greek yogurt":/sodium/i.test(bad)?"A home-cooked version seasoned with herbs, garlic and lemon":/Ultra/.test(bad)?"The closest single-ingredient food: meat, fish, eggs, oats, rice, potatoes, fruit, vegetables":"";
+}
+const QNOVA3=["whey","pea","ricecake","bread","pasta","cheddar","seitan","tofu","tempeh","pnb","almb","honey"];
+function qFood(id){const f=FOODS[id];if(!f)return null;return qScore({kcal:4*f.p+4*f.c+9*f.f,p:f.p,fiber:f.cat==="Produce"?3:f.cat==="Carbohydrates"?4:0},{nova:QNOVA3.includes(id)?3:1,add:0})}
+function qMeal(mm){
+  if(mm.user||!mm.items||!mm.items.length){const r=(S.recipes||[]).find(x=>"u"+x.id===mm.tid);return r?qRecipe(r):null}
+  let w=0,s=0;mm.items.forEach(it=>{const q=qFood(it.id),k=itemMac(it).kc||1;if(q){w+=k;s+=q.score*k}});
+  return w?{score:Math.round(s/w),est:true,fl:[]}:null;
+}
+function qRecipe(r){
+  let w=0,s=0,hit=0;
+  (r.ing||[]).forEach(l=>{const low=l.toLowerCase(),k=KW.find(([id,ws])=>ws.some(x=>low.includes(x)));if(!k)return;const q=qFood(k[0]),g=lineGrams(l,k[0])||50;if(q){w+=g;s+=q.score*g;hit++}});
+  const junk=(r.ing||[]).filter(l=>/sugar|syrup|cream\b|butter|bacon|sausage|mayo|fried/i.test(l)).length;
+  if(!hit)return null;
+  return {score:Math.max(5,Math.round(s/w)-junk*6),est:true,fl:junk?[["warn",junk+" rich ingredient"+(junk===1?"":"s")]]:[]};
+}
+function qEntry(x){
+  if(x.q!=null)return {score:x.q,est:false,fl:(x.fl||[]).map(f=>Array.isArray(f)?f:["info",f])};
+  if(!(x.kcal>0))return null;
+  const g=x.g>0?x.g:null,per=g?{kcal:x.kcal/g*100,p:x.p/g*100,fiber:((x.m||{}).fiber||0)/g*100,sodium:x.m&&x.m.sodium!=null?x.m.sodium/g*100:undefined}:{kcal:200,p:x.p/x.kcal*200};
+  return Object.assign(qScore(per,{}),{est:true});
+}
+function qDay(d){
+  let w=0,s=0;const items=[];
+  d.meals.forEach((mm,i)=>{if(!S.checks[`${d.date}|meal|${i}`])return;const q=qMeal(mm);if(q){w+=mm.kcal;s+=q.score*mm.kcal;items.push({n:mm.name,kcal:mm.kcal,q})}});
+  ((S.flog||{})[d.date]||[]).forEach(x=>{const q=qEntry(x);if(q){w+=x.kcal;s+=q.score*x.kcal;items.push({n:x.n,kcal:x.kcal,q})}});
+  return {score:w?Math.round(s/w):null,items:items.sort((a,b)=>a.q.score-b.q.score)};
+}
+const qPill=q=>q?`<span class="qpill q-${QGRADE(q.score)[1]}" title="Quality score ${q.score} of 100${q.est?" (estimate: some label data is missing)":""}">${q.est?"~":""}${q.score}</span>`:"";
+const qFlags=q=>q&&q.fl.length?`<div class="qflags">${q.fl.map(f=>`<span class="qf q-${f[0]}">${esc(f[1])}</span>`).join("")}</div>`:"";
+function qGauge(score){
+  const g=QGRADE(score||0),r=52,c=Math.PI*r;
+  return `<div class="qg"><svg viewBox="0 0 120 70" width="150" aria-hidden="true"><path d="M8 62 A52 52 0 0 1 112 62" fill="none" stroke="var(--panel2)" stroke-width="10" stroke-linecap="round"/><path d="M8 62 A52 52 0 0 1 112 62" fill="none" stroke="var(--${g[1]==="good"?"green":g[1]==="info"?"accent":g[1]==="warn"?"amber":"red"})" stroke-width="10" stroke-linecap="round" stroke-dasharray="${c.toFixed(1)}" stroke-dashoffset="${(c*(1-(score||0)/100)).toFixed(1)}"/></svg><div class="qg-n"><b>${score==null?"–":score}</b><small>${score==null?"no data":g[0]}</small></div></div>`;
+}
+function renderQuality(){
+  const el=$("pane-quality");if(!el||!W)return;
+  const d=selDay(),qd=qDay(d),low=qd.items.filter(x=>x.q.score<50).slice(0,3),keepQ=$("qQ")?$("qQ").value:FS.q,keepB=$("qBc")?$("qBc").value:FS.bc;
+  const res=FS.res.map((it,i)=>{const q=it.q||qScore(it.per,it.meta),sw=qSwap(it.n,q);
+    return `<div class="qcard"><div class="qc-h">${qPill(q)}<div><b>${esc(it.n)}</b><small>${QGRADE(q.score)[0]}${q.est?" · estimate, label data incomplete":""}</small></div></div>${qFlags(q)}
+     <div class="d">per 100 g: ${Math.round(it.per.kcal)} kcal · Protein ${r1(it.per.p)} · Carbs ${r1(it.per.c)} · Fat ${r1(it.per.f)}${it.per.sugar!=null?" · Sugar "+r1(it.per.sugar):""}${it.per.sodium?" · Sodium "+Math.round(it.per.sodium)+" mg":""}</div>
+     ${sw?`<div class="qswap"><span aria-hidden="true">🔁</span> <b>Cleaner swap:</b> ${esc(sw)}</div>`:""}
+     <div class="perfrow"><input class="perf" type="number" inputmode="decimal" id="qG${i}" value="${it.srv}" aria-label="Grams"/><span>g</span><button class="btn pri" data-qadd="${i}">Log to ${S.sel===TODAY?"today":esc(dateLabel(S.sel,{weekday:"short"}))}</button></div></div>`}).join("");
+  const loading=/^(Searching|Looking)/.test(FS.msg);
+  el.innerHTML=`<div class="grid2"><div>
+    <div class="card"><h2><span>Food quality · ${S.sel===TODAY?"today":esc(dateLabel(S.sel))}</span><span class="badge">0–100</span></h2>
+     <div class="qtop">${qGauge(qd.score)}<div class="qtop-t">${qd.score==null?callout("info","🍎","Nothing eaten yet on this day","","Tick a meal on Today or log a food, and the day gets a quality score weighted by calories.")
+       :`<div class="d" style="font-size:.86rem">Weighted by calories across ${qd.items.length} item${qd.items.length===1?"":"s"} you ate. Whole foods score high; added sugar, sodium, saturated fat, additives and ultra-processing pull it down.</div>${low.length?callout("warn","⬇️","What pulled the score down","",`<ul class="cl">${low.map(x=>{const sw=qSwap(x.n,x.q);return `<li><b>${esc(x.n)}</b> · ${x.q.score}/100${sw?`<br><small>Swap: ${esc(sw)}</small>`:""}</li>`}).join("")}</ul>`):callout("good","🌿","Clean day so far","","Nothing you logged scores under 50.")}`}</div></div>
+     ${qd.items.length?`<div class="itab pro-only" style="margin-top:10px">${qd.items.map(x=>`<div class="irow"><span>${qPill(x.q)} ${esc(x.n)}</span><span class="ims">${Math.round(x.kcal)} kcal</span></div>`).join("")}</div>`:""}
+    </div>
+    <div class="card"><h2><span>Planned meals</span><span class="badge">estimates</span></h2>${d.meals.map(mm=>{const q=qMeal(mm);return `<div class="irow"><span>${qPill(q)} ${esc(mm.name)}</span><span class="ims">${mm.kcal} kcal</span></div>`}).join("")}<div class="d" style="margin-top:8px">Plan meals are built from single-ingredient foods, so they score high by design. A ~ marks an estimate.</div></div>
+    ${(S.recipes||[]).length?`<div class="card"><h2><span>My recipes</span></h2>${S.recipes.map(r=>{const q=qRecipe(r);return `<div class="irow"><span>${q?qPill(q):'<span class="qpill">?</span>'} ${esc(r.name)}</span><span class="ims">${q?QGRADE(q.score)[0]:"ingredients not recognised"}</span></div>`}).join("")}</div>`:""}
+   </div><div>
+    <div class="card"><h2><span>Check a product</span></h2>
+     <div class="d">Search a packaged food or scan its barcode. You get a 0–100 score, the reasons, and a cleaner swap.</div>
+     <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:10px"><input id="qQ" placeholder="Search, e.g. granola bar" value="${esc(keepQ)}" style="flex:1;min-width:160px"/><button class="btn pri" id="qGo">Search</button></div>
+     <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:8px"><input id="qBc" inputmode="numeric" placeholder="Barcode number" value="${esc(keepB)}" style="flex:1;min-width:140px"/><button class="btn" id="qBcGo">Look up</button>${"BarcodeDetector" in window?'<button class="btn" id="qScan">📷 Scan</button>':""}</div>
+     ${loading?'<div class="skelw" aria-label="Loading"><div class="skel"></div><div class="skel"></div><div class="skel"></div></div>':FS.msg?`<div class="d" style="margin-top:8px">${esc(FS.msg)}</div>`:""}
+     ${res||(loading?"":`<div class="empty"><div class="empty-i" aria-hidden="true">🔬</div><b>Scan your first product</b><p>Try one of these to see how scoring works:</p><div class="fchips">${["greek yogurt","granola bar","cola","protein bar","instant noodles"].map(x=>`<button type="button" class="fchip s0" data-qtry="${x}">${x}</button>`).join("")}</div></div>`)}
+    </div>
+    <div class="card"><h2><span>How the score works</span></h2><div class="d" style="font-size:.84rem;line-height:1.6"><b>60% nutrient balance</b> per 100 g: energy density, sugar, saturated fat and sodium count against; fiber and protein count for.<br><b>25% processing</b>: NOVA group 1 (whole) to 4 (ultra-processed).<br><b>15% additives</b>: each listed additive costs points.<br>Missing label data is left out and the rest is re-weighted; those scores carry a ~. This is an Elite OS estimate from Open Food Facts data, not a medical rating and not affiliated with any scanning app.</div></div>
+   </div></div>`;
+}
+document.addEventListener("click",e=>{
+  const t=e.target.closest("button");if(!t)return;
+  if(t.id==="qGo"){FS.q=$("qQ").value;fsSearch()}
+  else if(t.id==="qBcGo"){FS.bc=$("qBc").value;fsBarcode(FS.bc)}
+  else if(t.id==="qScan")fsScan();
+  else if(t.dataset.qtry){FS.q=t.dataset.qtry;fsSearch()}
+  else if(t.dataset.qadd!==undefined){fsAdd(+t.dataset.qadd,$("qG"+t.dataset.qadd).value);toast("Logged","good")}
+});
+document.addEventListener("keydown",e=>{if(e.key!=="Enter")return;if(e.target.id==="qQ"){FS.q=e.target.value;fsSearch()}else if(e.target.id==="qBc"){FS.bc=e.target.value;fsBarcode(FS.bc)}});
+
+/* ===================== RECIPES: scaler, cook, log, consolidated groceries ===================== */
+const RSC={};
+const fmtQty=n=>{const r=Math.round(n*100)/100;return String(r)};
+function scaleLine(line,m){
+  if(m===1)return line;
+  return String(line).replace(/^(\s*)(\d+\s+\d+\/\d+|\d+\/\d+|\d+(?:[.,]\d+)?)/,(a,sp,num)=>sp+fmtQty(numOf(num)*m));
+}
+function qtyKey(line){
+  const m=String(line).trim().match(/^(\d+\s+\d+\/\d+|\d+\/\d+|\d+(?:[.,]\d+)?)\s*([a-zA-Z]+\.?)?\s+(.*)$/);
+  if(!m)return null;
+  const units=/^(kg|g|grams?|oz|ounces?|lb|lbs|pounds?|ml|l|cups?|tbsp|tsp|tablespoons?|teaspoons?|cloves?|slices?|cans?|scoops?|pinch)$/i;
+  const hasU=m[2]&&units.test(m[2].replace(".",""));
+  return {n:numOf(m[1]),u:hasU?m[2].toLowerCase().replace(/\.$/,"").replace(/s$/,""):"",name:(hasU?m[3]:((m[2]||"")+" "+m[3])).trim().toLowerCase()};
+}
+/* add ingredient lines to the grocery list; a line that matches an unchecked item (same unit, same name) is summed into it */
+function addGroceryLines(lines){
+  S.groc=S.groc||[];let merged=0,added=0;
+  lines.forEach(l=>{
+    l=String(l||"").trim();if(!l)return;
+    const k=qtyKey(l),hit=k&&S.groc.find(x=>{if(x.done)return false;const o=qtyKey(x.t);return o&&o.u===k.u&&o.name===k.name});
+    if(hit){const o=qtyKey(hit.t),n=o.n+k.n;hit.t=`${fmtQty(n)}${k.u?" "+(n>1&&/^(cup|clove|slice|can|scoop)$/.test(k.u)?k.u+"s":k.u):""} ${k.name}`;merged++}
+    else if(!k&&S.groc.some(x=>!x.done&&x.t.toLowerCase()===l.toLowerCase()))merged++; /* "salt" is already on the list */
+    else{S.groc.push({id:Date.now().toString(36)+Math.random().toString(36).slice(2,5),t:l,done:false});added++}
+  });
+  save();renderCustomGrocery();
+  return {merged,added};
+}
+const AISLE=[["Produce",/onion|garlic|tomato|lemon|lime|carrot|herb|cilantro|parsley|basil|ginger|berr|fruit|apple|banana|avocado|spinach|broccoli|pepper|lettuce|salad|mushroom|zucchini|cucumber|potato|celery|kale/i],["Meat & fish",/chicken|beef|steak|turkey|pork|salmon|cod|tuna|shrimp|fish|bacon|sausage|lamb/i],["Dairy & eggs",/milk|butter|cream|yogurt|yoghurt|cheese|egg/i],["Grains & bakery",/rice|oat|pasta|bread|quinoa|flour|tortilla|wrap|cereal|noodle|bagel/i],["Pantry",/oil|sugar|salt|spice|sauce|stock|broth|vinegar|soy|can\b|beans|lentil|honey|nut|almond|peanut|seed|chia|powder|protein|whey|creatine/i],["Frozen",/frozen/i]];
+const aisleOf=t=>(AISLE.find(([,re])=>re.test(t))||["Other"])[0];
+function renderRecipeTools(){
+  const box=$("kRecipes");if(!box)return;
+  box.querySelectorAll("[data-red]").forEach(btn=>{
+    const id=btn.dataset.red,r=(S.recipes||[]).find(x=>x.id===id),row=btn.closest(".row");if(!r||!row||row.querySelector(".rtools"))return;
+    const m=RSC[id]||1,q=qRecipe(r);
+    row.querySelector(".body").insertAdjacentHTML("beforeend",`<div class="rtools"><div class="rscale" role="group" aria-label="Batch size"><button type="button" class="rest" data-rsc="${id}|-1" aria-label="Fewer servings">−</button><b>${m}×</b><button type="button" class="rest" data-rsc="${id}|1" aria-label="More servings">+</button><small>${m===1?"1 serving":m+" servings"} · ${Math.round(r.kcal*m)} kcal · P ${Math.round(r.P*m)}</small>${q?qPill(q):""}</div>
+      <div class="rbtns"><button type="button" class="btn pri" data-rck="${id}">🍳 Cook</button><button type="button" class="btn" data-rlog="${id}">＋ Log ${m>1?m+" servings":"1 serving"}</button><button type="button" class="btn" data-rgl2="${id}">🛒 Add ×${m} to groceries</button></div>
+      ${m>1&&r.ing.length?`<details class="rec"><summary>Ingredients for ${m}×</summary><div class="itab">${r.ing.map(l=>`<div class="irow"><span>${esc(scaleLine(l,m))}</span></div>`).join("")}</div></details>`:""}</div>`);
+    const old=row.querySelector("[data-rgl]");if(old)old.remove();
+  });
+}
+function openCookRecipe(id){
+  const r=(S.recipes||[]).find(x=>x.id===id);if(!r)return;
+  const m=RSC[id]||1;
+  CK={mm:{name:r.name,rec:[r.time&&r.time!=="your recipe"?r.time:"Your recipe"],user:true,ing:r.ing.map(l=>scaleLine(l,m)),kcal:Math.round(r.kcal*m),P:Math.round(r.P*m),C:Math.round(r.C*m),F:Math.round(r.F*m)},steps:r.steps||[],step:-1,mult:m,tab:"std",lock:null,rid:id};
+  $("cook").hidden=false;document.body.style.overflow="hidden";drawCook();
+  try{navigator.wakeLock.request("screen").then(l=>{if(CK)CK.lock=l;else l.release()}).catch(()=>{})}catch(e){console.warn(e)}
+}
+(function(){
+  const dc=drawCook;
+  drawCook=function(){
+    if(CK&&CK.rid){const r=(S.recipes||[]).find(x=>x.id===CK.rid);if(r){const m=CK.mult;Object.assign(CK.mm,{ing:r.ing.map(l=>scaleLine(l,m)),kcal:Math.round(r.kcal*m),P:Math.round(r.P*m),C:Math.round(r.C*m),F:Math.round(r.F*m)})}}
+    dc.apply(this,arguments);
+    if(CK&&CK.rid&&CK.step<0){
+      const sub=$("cook").querySelector(".ck-sub");
+      if(sub)sub.insertAdjacentHTML("afterend",`<div class="ck-mult">Batch: ${[1,2,3,4,5,6,8,10].map(x=>`<button type="button" class="rtab ${x===CK.mult?"on":""}" data-ckact="m${x}">×${x}</button>`).join("")}</div>`);
+      const go=$("cook").querySelector(".ck-go");
+      if(go)go.insertAdjacentHTML("beforebegin",`<button type="button" class="btn" data-rlog="${CK.rid}" data-m="${CK.mult}" style="margin-bottom:8px">＋ Log ${CK.mult} serving${CK.mult===1?"":"s"} to the food log</button>`);
+      if(!CK.steps.length&&go)go.textContent="Close";
+    }
+  };
+  const rl=renderRecipeList;
+  renderRecipeList=function(){rl.apply(this,arguments);renderRecipeTools()};
+  const rc=renderCustomGrocery;
+  renderCustomGrocery=function(){
+    rc.apply(this,arguments);
+    const box=$("gCustom"),g=S.groc||[];if(!box||g.length<4)return;
+    const rows=[...box.querySelectorAll(".row")],by={};
+    rows.forEach((el,i)=>{const a=aisleOf(g[i].t);(by[a]=by[a]||[]).push(el)});
+    const order=AISLE.map(a=>a[0]).concat("Other").filter(a=>by[a]);
+    if(order.length<2)return;
+    box.innerHTML="";order.forEach(a=>{const h=document.createElement("h3");h.textContent=a;box.appendChild(h);by[a].forEach(el=>box.appendChild(el))});
+  };
+})();
+document.addEventListener("click",e=>{
+  let t;
+  if((t=e.target.closest("[data-rsc]"))){const [id,dv]=t.dataset.rsc.split("|");RSC[id]=Math.max(1,Math.min(10,(RSC[id]||1)+(+dv)));renderRecipeList();return}
+  if((t=e.target.closest("[data-rck]"))){openCookRecipe(t.dataset.rck);return}
+  if((t=e.target.closest("[data-rlog]"))){
+    const r=(S.recipes||[]).find(x=>x.id===t.dataset.rlog);if(!r)return;
+    const m=+t.dataset.m||RSC[r.id]||1,q=qRecipe(r);
+    flogAdd(Object.assign({n:r.name+(m>1?` ×${m}`:""),g:0,kcal:Math.round(r.kcal*m),p:r1(r.P*m),c:r1(r.C*m),f:r1(r.F*m),m:{}},q?{q:q.score,fl:q.fl}:{}));
+    toast(`Logged ${m} serving${m===1?"":"s"} of ${r.name} to ${S.sel===TODAY?"today":dateLabel(S.sel)}`,"good");return;
+  }
+  if((t=e.target.closest("[data-rgl2]"))){
+    const r=(S.recipes||[]).find(x=>x.id===t.dataset.rgl2);if(!r)return;
+    const m=RSC[r.id]||1,res=addGroceryLines(r.ing.map(l=>scaleLine(l,m)));
+    toast(`Groceries: ${res.added} added${res.merged?`, ${res.merged} combined with items already on the list`:""}`,"good");return;
+  }
+});
+
+/* ===================== BIOMETRICS & TRENDS ===================== */
+const BIO={range:+lsGet("eliteBioRange")||30,metric:lsGet("eliteBioMetric")||"weight"};
+const BM={
+ weight:{l:"Weight",u:()=>wU(),f:v=>dW(v),dec:1,roll:7,good:0},
+ bf:{l:"Body fat",u:()=>"%",f:v=>r1(v),dec:1,roll:7,good:-1},
+ sleep:{l:"Sleep",u:()=>"h",f:v=>r1(v),dec:1,roll:7,good:1},
+ hrv:{l:"HRV",u:()=>"ms",f:v=>Math.round(v),dec:0,roll:7,good:1},
+ rhr:{l:"Resting HR",u:()=>"bpm",f:v=>Math.round(v),dec:0,roll:7,good:-1},
+ steps:{l:"Steps",u:()=>"",f:v=>Math.round(v),dec:0,roll:7,good:1,bar:1},
+ akcal:{l:"Active energy",u:()=>"kcal",f:v=>Math.round(v),dec:0,roll:7,good:1,bar:1},
+ kcal:{l:"Calories eaten",u:()=>"kcal",f:v=>Math.round(v),dec:0,roll:7,good:0,bar:1},
+ vol:{l:"Training volume",u:()=>wU(),f:v=>Math.round(dW(v)),dec:0,roll:0,good:1,bar:1}
+};
+function bioSeries(k,n,end){
+  const out=[];for(let i=n-1;i>=0;i--){const d=addD(end||TODAY,-i),v=dayModel(d)[k];out.push({d,v:v!=null&&isFinite(v)?v:null})}
+  return out;
+}
+/* trailing average over the days that have data; a day with no reading of its own gets an estimate (est) */
+function rolling(s,win){
+  return s.map((p,i)=>{const w=s.slice(Math.max(0,i-win+1),i+1).filter(x=>x.v!=null);return w.length?{d:p.d,v:avgOf(w.map(x=>x.v)),est:p.v==null}:{d:p.d,v:null}});
+}
+function bioStat(k,n){
+  const cur=bioSeries(k,n).filter(p=>p.v!=null),prev=bioSeries(k,n,addD(TODAY,-n)).filter(p=>p.v!=null);
+  const a=avgOf(cur.map(p=>p.v)),b=avgOf(prev.map(p=>p.v)),last=cur[cur.length-1]||null;
+  return {n:cur.length,avg:a,last,delta:a!=null&&b!=null?a-b:null};
+}
+function bioChart(k,n){
+  const M=BM[k],s=bioSeries(k,n),pts=s.filter(p=>p.v!=null);
+  if(!pts.length)return `<div class="empty"><div class="empty-i" aria-hidden="true">📉</div><b>No ${M.l.toLowerCase()} data in the last ${n} days</b><p>${k==="weight"?"Log a morning weight in the Daily log below.":k==="kcal"?"Tick meals or log food on Today.":k==="vol"?"Finish a session in workout mode.":"This comes from Apple Health. Connect it in Health sync below."}</p></div>`;
+  const vals=pts.map(p=>M.f(p.v)),roll=M.roll?rolling(s,M.roll):[];
+  let lo=Math.min(...vals),hi=Math.max(...vals);if(M.bar)lo=0;const pad=(hi-lo)*.12||1;if(!M.bar)lo-=pad;hi+=pad;
+  const Wd=window.innerWidth<700?350:640,H=window.innerWidth<700?200:220,L=44,R=10,T=12,B=26,X=i=>L+(n===1?0:i*(Wd-L-R)/(n-1)),Y=v=>T+(1-(v-lo)/(hi-lo))*(H-T-B);
+  const ticks=[0,.5,1].map(t=>lo+(hi-lo)*t),bw=Math.max(2,Math.min(16,(Wd-L-R)/n-2));
+  const marks=s.map((p,i)=>p.v==null?"":M.bar?`<rect x="${(X(i)-bw/2).toFixed(1)}" y="${Y(M.f(p.v)).toFixed(1)}" width="${bw.toFixed(1)}" height="${Math.max(1,H-B-Y(M.f(p.v))).toFixed(1)}" rx="2" fill="var(--accent)" opacity=".85"><title>${p.d}: ${M.f(p.v).toLocaleString()} ${M.u()}</title></rect>`
+    :`<circle cx="${X(i).toFixed(1)}" cy="${Y(M.f(p.v)).toFixed(1)}" r="${n>45?2.2:3.2}" fill="var(--accent)" stroke="var(--panel)" stroke-width="1.5"><title>${p.d}: ${M.f(p.v).toLocaleString()} ${M.u()}</title></circle>`).join("");
+  let line="";
+  if(M.roll&&pts.length>=3){
+    let seg=[],d="";
+    roll.forEach((p,i)=>{if(p.v==null){if(seg.length>1)d+="M"+seg.join("L");seg=[]}else seg.push(X(i).toFixed(1)+","+Y(M.f(p.v)).toFixed(1))});
+    if(seg.length>1)d+="M"+seg.join("L");
+    line=`<path d="${d}" fill="none" stroke="var(--text)" stroke-width="2" stroke-linejoin="round" stroke-linecap="round" opacity=".9"/>`;
+  }
+  return `<svg class="biochart" viewBox="0 0 ${Wd} ${H}" width="100%" role="img" aria-label="${M.l}, last ${n} days">
+    ${ticks.map(t=>`<line x1="${L}" x2="${Wd-R}" y1="${Y(t).toFixed(1)}" y2="${Y(t).toFixed(1)}" stroke="var(--border)" stroke-width="1"/><text x="${L-6}" y="${(Y(t)+3).toFixed(1)}" text-anchor="end" font-size="10" fill="var(--muted)">${M.dec?r1(t):Math.round(t).toLocaleString()}</text>`).join("")}
+    ${marks}${line}
+    <text x="${L}" y="${H-6}" font-size="10" fill="var(--muted)">${esc(dateLabel(s[0].d,{month:"short",day:"numeric"}))}</text><text x="${Wd-R}" y="${H-6}" text-anchor="end" font-size="10" fill="var(--muted)">today</text>
+   </svg><div class="d">${M.bar?"Bars":"Dots"} are measured days (${pts.length} of ${n}).${M.roll&&pts.length>=3?` The line is the ${M.roll}-day rolling average; across days without a reading it is an estimate from the days around them.`:""}</div>`;
+}
+function pearson(xs,ys){
+  const n=xs.length;if(n<3)return null;
+  const mx=avgOf(xs),my=avgOf(ys);let a=0,b=0,c=0;
+  for(let i=0;i<n;i++){const dx=xs[i]-mx,dy=ys[i]-my;a+=dx*dy;b+=dx*dx;c+=dy*dy}
+  const den=Math.sqrt(b*c);return den>0?a/den:null;
+}
+const CORR=[["sleep","vol",0,"Sleep → training volume","sleep","lifted"],["hrv","vol",0,"HRV → training volume","HRV","lifted"],["sleep","energy",0,"Sleep → energy rating","sleep","rated energy"],["kcal","vol",1,"Calories yesterday → training volume","calories the day before","lifted"],["steps","sleep",0,"Steps → sleep that night","steps","slept"],["protein","energy",1,"Protein yesterday → energy rating","protein the day before","rated energy"]];
+function bioCorr(n){
+  const days=[];for(let i=n-1;i>=0;i--)days.push(dayModel(addD(TODAY,-i)));
+  const by=Object.fromEntries(days.map(d=>[d.date,d]));
+  return CORR.map(([a,b,lag,label,an,bn])=>{
+    const xs=[],ys=[];
+    days.forEach(d=>{const src=lag?by[addD(d.date,-lag)]:d;const x=src?src[a]:null,y=a==="steps"&&b==="sleep"?(by[addD(d.date,1)]||{}).sleep:d[b];if(x!=null&&y!=null){xs.push(x);ys.push(y)}});
+    const r=xs.length>=5?pearson(xs,ys):null;let txt="";
+    if(r!=null){
+      const med=xs.slice().sort((p,q)=>p-q)[Math.floor(xs.length/2)],hiY=ys.filter((y,i)=>xs[i]>med),loY=ys.filter((y,i)=>xs[i]<=med);
+      if(hiY.length>=2&&loY.length>=2){const dv=(avgOf(hiY)/avgOf(loY)-1)*100;txt=`On your higher-${an} days you ${bn} ${Math.abs(dv)<1?"about the same":Math.abs(Math.round(dv))+"% "+(dv>0?"more":"less")}.`}
+    }
+    return {label,n:xs.length,r,txt};
+  });
+}
+function bioCSV(){
+  const all=new Set([...Object.keys(S.log),...Object.keys(S.hd||{}),...Object.keys(S.steps),...Object.keys(S.nut||{}),...Object.keys(S.wlog||{}),...Object.keys(S.done)]);
+  const dates=[...all].filter(d=>/^\d{4}-\d{2}-\d{2}$/.test(d)).sort();
+  const cols=["date","weight_kg","body_fat_pct","sleep_h","hrv_ms","resting_hr","steps","active_kcal","kcal_eaten","protein_g","kcal_target","water_ml","energy_1_5","soreness_1_5","readiness_0_100","readiness_estimated","adherence_pct","training_volume_kg","sets","cardio_min"];
+  const rows=dates.map(d=>{const m=dayModel(d),rd=readiness(d);return [d,m.weight!=null?r1(m.weight):"",m.bf??"",m.sleep??"",m.hrv??"",m.rhr??"",m.steps??"",m.akcal??"",m.kcal??"",m.protein??"",m.kcalT??"",m.water??"",m.energy??"",m.sore??"",rd?rd.pct:"",rd?(rd.est?1:0):"",m.adh??"",m.vol??"",m.sets??"",m.cardio??""].join(",")});
+  return cols.join(",")+"\n"+rows.join("\n")+"\n";
+}
+function dlFile(name,text,type){const a=document.createElement("a");a.href=URL.createObjectURL(new Blob([text],{type}));a.download=name;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(a.href),1000)}
+function renderBio(){
+  const el=$("bioBox");if(!el)return;
+  const n=BIO.range,keys=["weight","bf","sleep","hrv","rhr","steps","akcal","kcal","vol"];
+  if(!BM[BIO.metric])BIO.metric="weight";
+  const tiles=keys.map(k=>{
+    const M=BM[k],st=bioStat(k,n),s=bioSeries(k,Math.min(n,30)).filter(p=>p.v!=null).map(p=>M.f(p.v));
+    const dv=st.delta,ad=dv==null?0:(k==="weight"||k==="vol"?dW(Math.abs(dv)):Math.abs(dv)),dir=dv==null||ad<(M.dec?.05:.5)?"":dv>0?"▲":"▼",tone=!dir||!M.good?"":(dv>0)===(M.good>0)?"up":"dn";
+    return `<button type="button" class="btile ${BIO.metric===k?"on":""}" data-biom="${k}" aria-pressed="${BIO.metric===k}"><span class="l">${M.l}</span><b>${st.last?M.f(st.last.v).toLocaleString():"–"}<small> ${st.last?M.u():""}</small></b><span class="s">${st.n?`avg ${M.f(st.avg).toLocaleString()} · ${st.n}/${n} d`:"no data"}</span><span class="dlt ${tone}">${dir?`${dir} ${(M.dec?r1(ad):Math.round(ad)).toLocaleString()} vs prior ${n} d`:"&nbsp;"}</span>${s.length>=2?sparkline(s,70,22):""}</button>`;
+  }).join("");
+  const corr=bioCorr(n),have=corr.filter(c=>c.r!=null);
+  const tele=[];for(let i=0;i<Math.min(n,30);i++)tele.push(dayModel(addD(TODAY,-i)));
+  const cell=(v,f)=>v!=null?f(v):'<span class="na">–</span>';
+  el.innerHTML=`<div class="pgsec"><span>🧬</span> Biometrics &amp; trends</div>
+   <div class="card bio"><h2><span>Telemetry</span><span class="seg bioseg" role="group" aria-label="Range">${[7,30,90].map(x=>`<button type="button" class="${x===n?"on":""}" data-bior="${x}" aria-pressed="${x===n}">${x} d</button>`).join("")}</span></h2>
+    <div class="btiles">${tiles}</div>
+    <h3>${BM[BIO.metric].l}${BM[BIO.metric].u()?" · "+BM[BIO.metric].u():""} · last ${n} days</h3>${bioChart(BIO.metric,n)}
+   </div>
+   <div class="grid2">
+    <div class="card"><h2><span>What drives what</span><span class="badge">${n} d</span></h2>
+     ${have.length?have.map(c=>`<div class="crow"><div class="crow-h"><b>${esc(c.label)}</b><span class="badge ${Math.abs(c.r)>=.5?"g":""}">${Math.abs(c.r)<.2?"no clear link":Math.abs(c.r)<.5?"weak link":"strong link"}</span></div>${c.txt?`<div class="d">${esc(c.txt)}</div>`:""}<div class="d pro-only">r = ${c.r.toFixed(2)} · ${c.n} paired days</div></div>`).join("")
+       :callout("info","🔗","Not enough paired days yet","","Each link needs 5 days where both numbers exist. Log sleep or connect Health, tick meals, and finish sessions in workout mode.")}
+     ${have.length&&have.length<corr.length?`<div class="d" style="margin-top:8px">Waiting for data: ${esc(corr.filter(c=>c.r==null).map(c=>`${c.label} (${c.n}/5)`).join(" · "))}</div>`:""}
+     <div class="d" style="margin-top:8px">A link is a pattern in your own log, not proof of cause. More days make it more reliable.</div></div>
+    <div class="card"><h2><span>Your data</span></h2><div class="d">Everything you log is yours. Take it with you or bring it back in.</div>
+     <div class="hurlbtns" style="margin-top:10px"><button class="btn pri" data-bio="csv">Export CSV · one row per day</button><button class="btn" data-bio="json">Export full backup (JSON)</button><button class="btn" data-bio="imp">Import backup</button></div>
+     <div class="d" style="margin-top:8px">CSV opens in Excel, Numbers or Google Sheets. Health data in CSV or JSON can be brought in through the payload tester in Health sync.</div></div>
+   </div>
+   <div class="card pro-only"><h2><span>Daily table</span><span class="badge">last ${tele.length} days</span></h2><div class="tblw"><table class="tele"><thead><tr><th>Date</th><th>Weight</th><th>BF %</th><th>Sleep</th><th>HRV</th><th>RHR</th><th>Steps</th><th>Active</th><th>Eaten</th><th>Protein</th><th>Ready</th><th>Volume</th></tr></thead><tbody>
+    ${tele.map(m=>{const rd=readiness(m.date);return `<tr><td>${esc(dateLabel(m.date,{month:"short",day:"numeric"}))}</td><td>${cell(m.weight,dW)}</td><td>${cell(m.bf,r1)}</td><td>${cell(m.sleep,r1)}</td><td>${cell(m.hrv,Math.round)}</td><td>${cell(m.rhr,Math.round)}</td><td>${cell(m.steps,v=>v.toLocaleString())}</td><td>${cell(m.akcal,Math.round)}</td><td>${cell(m.kcal,v=>v.toLocaleString())}</td><td>${cell(m.protein,Math.round)}</td><td>${rd?(rd.est?`<i title="Estimate">~${rd.pct}</i>`:rd.pct):'<span class="na">–</span>'}</td><td>${cell(m.vol,v=>Math.round(dW(v)).toLocaleString())}</td></tr>`}).join("")}
+   </tbody></table></div><div class="d" style="margin-top:6px">A dash means not measured that day. ~ marks an estimate. Weight in ${wU()}.</div></div>`;
+}
+document.addEventListener("click",e=>{
+  let t;
+  if((t=e.target.closest("[data-bior]"))){BIO.range=+t.dataset.bior;lsSet("eliteBioRange",String(BIO.range));renderBio();return}
+  if((t=e.target.closest("[data-biom]"))){BIO.metric=t.dataset.biom;lsSet("eliteBioMetric",BIO.metric);renderBio();return}
+  if((t=e.target.closest("[data-bio]"))){const a=t.dataset.bio;if(a==="csv"){dlFile("elite-os-daily.csv",bioCSV(),"text/csv");toast("CSV downloaded","good")}else if(a==="json")$("btnExport").click();else $("btnImport").click();return}
+  if((t=e.target.closest("#btnMode"))){setMode(UX().mode==="guided"?"pro":"guided");return}
+  if((t=e.target.closest("button[data-mode]"))){setMode(t.dataset.mode);return}
+});
+
+/* ===================== WIRING ===================== */
+function renderModeCard(){
+  const p=$("pane-profile");if(!p||$("modeCard"))return;
+  const m=UX().mode;
+  p.insertAdjacentHTML("afterbegin",`<div class="card" id="modeCard"><h2><span>Experience</span><span class="badge">${m==="guided"?"Guided":"Elite Pro"}</span></h2>
+   <div class="modes"><button type="button" class="modeb ${m==="guided"?"on":""}" data-mode="guided" aria-pressed="${m==="guided"}"><b>🧭 Guided</b><span>One next step at a time, plain explanations, the essentials only.</span></button>
+   <button type="button" class="modeb ${m==="pro"?"on":""}" data-mode="pro" aria-pressed="${m==="pro"}"><b>⚡ Elite Pro</b><span>Everything: signal breakdowns, daily tables, correlations, micronutrients, plate math.</span></button></div>
+   <div class="d" style="margin-top:8px">Both modes use the same data and the same plan. You can switch any time, here or from the button at the top.</div></div>`);
+}
+(function(){
+  const ro=renderOverview,bp=buildProfile,ra=renderAll,st=showTab;
+  renderOverview=function(){ro.apply(this,arguments);$("pane-overview").insertAdjacentHTML("afterbegin",`<div class="seg foodseg">${[["grocery","🛒 Groceries"],["kitchen","🍳 Recipes"],["overview","🎯 Targets"]].map(([k,l])=>`<button data-food="${k}" class="${FOODSUB===k?"on":""}">${l}</button>`).join("")}</div>`)};
+  const rf=renderFood;
+  renderFood=function(){rf.apply(this,arguments);renderQuick();renderQuality()};
+  buildProfile=function(){bp.apply(this,arguments);renderModeCard()};
+  renderAll=function(){v4Norm();ra.apply(this,arguments);if(arguments[0]){const c=$("modeCard");if(c)c.remove();renderModeCard()}renderPill();applyMode()};
+  showTab=function(n,sub){
+    if(n==="overview"){n="food";sub="overview"}
+    st.call(this,n,sub);
+    if(n==="quality")renderQuality();
+  };
+})();
+PLANX.push(snapNut,renderCommand,renderSupp,renderQuick,renderQuality);
+PROGX.unshift(renderBio);
 
 /* footer version */
 (function(){const f=$("footVer");if(f)f.textContent=APP_MAJOR+" ("+APP_VER+")"})();

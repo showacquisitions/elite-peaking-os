@@ -1,5 +1,12 @@
 # Elite OS — Backlog
 
+## Blocking v4 (owner)
+- [ ] Run `supabase/v4-health.sql` in the Supabase SQL editor (additive: one column, one replaced function).
+- [ ] Deploy `supabase/functions/health` (index.ts + parse.mjs), verify_jwt off as before. Until this is live the server still has the old parser: background syncs keep the old failure modes, though the app side already merges safely.
+- [ ] Merge `claude/kind-fermi-14xk56` to `main` to ship the app.
+- [ ] On the iPhone: change the automation trigger from Time of Day to App: Is Opened, set JSON field types to Text, tap Send a test, then Sync now.
+- [ ] Replace `elite-peaking-os.html` and the note in the Obsidian vault (`docs/obsidian-note.md` is the updated note).
+
 ## Blocking v3 (owner, Supabase + Brevo dashboards, about 10 min)
 - [ ] **Auth → URL Configuration:** Site URL `https://showacquisitions.github.io/elite-peaking-os/`; add the same URL under Redirect URLs. Without this the reset email links to localhost (the likely cause of the earlier rollback).
 - [ ] **Brevo → SMTP & API → SMTP keys:** generate a key.
@@ -23,9 +30,13 @@
 ## Later (v4)
 - [ ] Native wrapper (Capacitor) for one-tap Apple Health / Health Connect (the only way to auto-sync Android Health).
 - [ ] Payments for coaches (Stripe) if the coaching side gets paying clients.
-- [ ] Split `index.html` into modules with a build step once it passes ~5,000 lines.
+- [ ] Split `index.html` into modules with a build step. It is now ~5,100 lines: due. The HX normalizer copy and `tools/inline-hx.cjs` disappear once there is a build.
+- [ ] Barcode scanning on iPhone: Safari has no BarcodeDetector, so Scan is hidden there. Add a JS decoder (ZXing) or the native wrapper.
+- [ ] Verify the Shortcut steps on a real iPhone and record the exact action names per iOS version.
 
 ## Known limits
-- Health ingest parses numbers by stripping non-digits; a locale that writes decimals with a comma (72,5) is read wrong. US/Canada iPhones send dots.
+- Fixed in v4 once the edge function is deployed: decimal commas, unit suffixes and sample lists are parsed.
+- Link sync (`#sync&…`) on iPhone lands in Safari, whose storage is separate from the Home Screen app. Signed-in users get it forwarded to the cloud; others should use background sync.
+- `S.nut` (per-day intake) only exists from v4 on; older days show no calories in trends.
 - A coach can't see progress photos (device-only by design).
 - Assignments older than 21 days aren't pulled to the client (history still shows what was logged).
