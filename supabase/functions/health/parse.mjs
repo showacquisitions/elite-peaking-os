@@ -18,6 +18,7 @@ const HX_ALIAS = {
   rhr: "rhr", restingheartrate: "rhr", restinghr: "rhr", resthr: "rhr",
   hrv: "hrv", heartratevariability: "hrv", hrvsdnn: "hrv", heartratevariabilitysdnn: "hrv",
   sleep: "sleep", sleeph: "sleep", sleephours: "sleep", sleepanalysis: "sleep", asleep: "sleep", timeasleep: "sleep", sleepduration: "sleep",
+  inbed: "inbed", timeinbed: "inbed", sleepinbed: "inbed", bedtime: "inbed",
   weight: "weight", w: "weight", bodymass: "weight", weightbodymass: "weight", bodyweight: "weight", weightkg: "weight_kg", weightlb: "weight_lb", weightlbs: "weight_lb",
   bf: "bf", bodyfat: "bf", bodyfatpercentage: "bf", bodyfatpercent: "bf", bodyfatpct: "bf",
   cardio: "cardio"
@@ -94,6 +95,8 @@ function hxRow(o, opt, issues) {
       const best = [raw, c.steps_a, c.steps_b].map(x => hxVal(x, f)).filter(Boolean).sort((a, b) => b.v - a.v)[0];
       raw = best ? best.v : raw;
     }
+    /* iPhone without an Apple Watch records sleep only as "In Bed". Asleep time wins when it exists; otherwise time in bed stands in. */
+    if (f === "sleep" && !hxVal(raw, f) && !hxIsEmpty(c.inbed) && hxVal(c.inbed, f)) { raw = c.inbed; bad("sleep", "", "no asleep time sent; used time in bed (iPhone without a watch)") }
     if (hxIsEmpty(raw)) continue;
     const x = hxVal(raw, f);
     if (!x) { if (!/^[\s0.,]*$/.test(String(raw))) bad(f, raw, "not a number"); continue }
@@ -153,7 +156,8 @@ function hxHAE(data) {
       else if (name === "weight_body_mass") { add(d, "weight", q, "last"); if (isFinite(q)) at(d).unit = /lb/.test(units) ? "lb" : "kg" }
       else if (name === "sleep_analysis") {
         let h = num(p.totalSleep ?? p.asleep);
-        if (!isFinite(h)) h = ["core", "deep", "rem"].reduce((a, k) => a + (num(p[k]) || 0), 0) || q;
+        if (!(h > 0)) h = ["core", "deep", "rem"].reduce((a, k) => a + (num(p[k]) || 0), 0) || q;
+        if (!(h > 0)) h = num(p.inBed ?? p.inbed);
         if (/min/.test(units)) h = h / 60;
         add(day(p.sleepEnd || p.date), "sleep", h, "sum");
       }
