@@ -29,7 +29,7 @@ const hxShift = (iso, n) => { const p = iso.split("-").map(Number), d = new Date
 
 /* "8,421", "8.421", "165,4", "1,234.5" -> number. Whole-number fields read a 3-digit group as thousands. */
 function hxNumStr(s, whole) {
-  s = s.replace(/[\s'  ]/g, "");
+  s = s.replace(/[\s'\u00a0\u202f]/g, "");
   const c = s.lastIndexOf(","), p = s.lastIndexOf(".");
   if (c >= 0 && p >= 0) s = c > p ? s.replace(/\./g, "").replace(",", ".") : s.replace(/,/g, "");
   else if (c >= 0) s = /^-?\d{1,3}(,\d{3})+$/.test(s) && (whole || s.split(",").length > 2) ? s.replace(/,/g, "") : s.replace(/,/g, ".");
@@ -48,7 +48,7 @@ function hxOne(t, whole) {
   if (m) return { v: +m[1] + m[2] / 60 + (m[3] || 0) / 3600, u: "h" };
   m = s.match(/(\d+(?:[.,]\d+)?)\s*(?:h|hr|hrs|hours?)\b\.?\s*(?:(\d+(?:[.,]\d+)?)\s*(?:m|min|mins|minutes?)\b)?/i);
   if (m) return { v: hxNumStr(m[1]) + (m[2] ? hxNumStr(m[2]) / 60 : 0), u: "h" };
-  m = s.match(/(-?\d[\d.,'  ]*)\s*([a-zµ%/]*)/i);
+  m = s.match(/(-?\d[\d.,'\u00a0\u202f]*)\s*([a-zµ%/]*)/i);
   if (!m) return null;
   const v = hxNumStr(m[1].replace(/[.,]+$/, ""), whole);
   return v === null ? null : { v, u: (m[2] || "").toLowerCase() };
@@ -67,7 +67,7 @@ function hxDate(v, today) {
   let m = s.match(/(\d{4})-(\d{1,2})-(\d{1,2})/) || s.match(/^(\d{4})(\d{2})(\d{2})$/);
   if (m && +m[2] >= 1 && +m[2] <= 12 && +m[3] >= 1 && +m[3] <= 31) return { d: m[1] + "-" + hxPad(+m[2]) + "-" + hxPad(+m[3]) };
   if (!HX_EMPTY.test(s)) {
-    const d = new Date(s.replace(/\bat\b/i, " ").replace(/[  ]/g, " "));
+    const d = new Date(s.replace(/\bat\b/i, " ").replace(/[\u202f\u00a0]/g, " "));
     if (!isNaN(d) && d.getFullYear() > 2000) return { d: hxISO(d) };
     return { d: today || null, bad: 1 };
   }
@@ -177,11 +177,11 @@ function hxHAE(data) {
 /* Text -> object. Tries JSON, then repaired JSON (Shortcuts leaves `"steps":,` when a value is empty),
    then a URL query, then CSV lines "date, weight, steps[, sleep, rhr, hrv, kcal]". */
 function hxText(txt, issues) {
-  let s = String(txt ?? "").replace(/^﻿/, "").trim();
+  let s = String(txt ?? "").replace(/^\ufeff/, "").trim();
   if (!s) return null;
   if (s[0] === "{" || s[0] === "[") {
     try { return JSON.parse(s) } catch (e) { /* try to repair below */ }
-    const fixed = s.replace(/:\s*(?=[,}\]])/g, ":null").replace(/:\s*(NaN|nan|undefined|-?Infinity)\s*(?=[,}\]])/g, ":null").replace(/,\s*(?=[}\]])/g, "").replace(/[“”]/g, '"');
+    const fixed = s.replace(/:\s*(?=[,}\]])/g, ":null").replace(/:\s*(NaN|nan|undefined|-?Infinity)\s*(?=[,}\]])/g, ":null").replace(/,\s*(?=[}\]])/g, "").replace(/[\u201c\u201d]/g, '"');
     try { const j = JSON.parse(fixed); issues.push({ field: "body", raw: "", why: "JSON had empty values; repaired" }); return j } catch (e) { issues.push({ field: "body", raw: s.slice(0, 60), why: "not valid JSON" }); return null }
   }
   if (/^[#?]?[^\s=,]*=/.test(s) && !/\n/.test(s)) {
