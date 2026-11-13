@@ -4,7 +4,7 @@ State of the app and the decisions behind it. Newest first.
 
 ## v4.0 — full audit and upgrade, build 2026.11.13.1 (2026-11-13)
 
-**On branch `claude/kind-fermi-14xk56`. Not on `main`, and the server side is NOT deployed, until the owner approves.**
+**Owner approved 2026-11-13: SQL applied, edge function deployed (v6), app merged to `main`.**
 
 ### Health sync (the main fix)
 - **Root causes found.** (1) `_hnum` stripped non-digits, so a Shortcuts list `"58\n62"` became 5862 and was dropped, and `"165,4"` became 1654. (2) `0` passed the range check and overwrote real steps and energy; the app's own "Send a test" sent `steps: 0`. (3) A missing date fell back to the server's UTC date, so a 9 PM Pacific sync was filed under tomorrow. (4) A non-ISO date ("Nov 13, 2026 at 9:00 PM") made the row vanish while the response still said ok. (5) Any body that was not strict JSON returned 400, and Shortcuts emits `"steps":,` when a value is empty. (6) The client pull replaced the whole day with the server row, zeros included. (7) `#h=` links only ran on first load, only carried weight and steps, and overwrote hand-typed weights. (8) iOS blocks Health reads while the phone is locked, so the documented 9 PM Time of Day trigger fails (verified from Apple Support Communities and Automators threads).
@@ -33,7 +33,8 @@ State of the app and the decisions behind it. Newest first.
 ### Verified
 - `node tests/smoke.cjs` → 145 passed, 0 failed (100 old + 45 new).
 - A click-anywhere bug (`closest("[data-mode]")` matched `<html>`) was caught by the old suite and fixed.
-- Not verified: a real iPhone Shortcut run, the edge function in Deno, the SQL against the live database.
+- Live: `health_ingest` checked in a rolled-back transaction; the deployed function checked through pg_net (200 with `ignored` for a blank body, 401 for a wrong key).
+- Not verified: a real iPhone Shortcut run.
 
 ### Owner actions
 See `docs/Backlog.md` → "Blocking v4".

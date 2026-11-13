@@ -1,9 +1,9 @@
 # Elite OS — Backlog
 
 ## Blocking v4 (owner)
-- [ ] Run `supabase/v4-health.sql` in the Supabase SQL editor (additive: one column, one replaced function).
-- [ ] Deploy `supabase/functions/health` (index.ts + parse.mjs), verify_jwt off as before. Until this is live the server still has the old parser: background syncs keep the old failure modes, though the app side already merges safely.
-- [ ] Merge `claude/kind-fermi-14xk56` to `main` to ship the app.
+- [x] `supabase/v4-health.sql` applied 2026-11-13 (migration `v4_health_fault_tolerant_ingest`). Verified in a rolled-back test: a second sync with zeros and blanks kept the stored steps and HRV.
+- [x] `health` edge function deployed 2026-11-13 (version 6, verify_jwt off). Verified live through pg_net: an all-blank body returns ok with `ignored`; a real body reaches `health_ingest`.
+- [x] Merged to `main` through showacquisitions/elite-peaking-os#1.
 - [ ] On the iPhone: change the automation trigger from Time of Day to App: Is Opened, set JSON field types to Text, tap Send a test, then Sync now.
 - [ ] Replace `elite-peaking-os.html` and the note in the Obsidian vault (`docs/obsidian-note.md` is the updated note).
 
