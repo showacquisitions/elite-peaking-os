@@ -2514,7 +2514,7 @@ document.addEventListener("click",e=>{
 });
 
 /* ---------- APP VERSION, UPDATE PROMPT, INSTALL PROMPT ---------- */
-const APP_VER="2026.11.13.1",APP_MAJOR="4.0";
+const APP_VER="2026.11.13.2",APP_MAJOR="4.0";
 let UPD=false,BIP=null;
 const inFrame=()=>{try{return window.self!==window.top}catch(e){return true}};
 const isStandalone=()=>matchMedia("(display-mode: standalone)").matches||navigator.standalone===true;
@@ -4524,7 +4524,9 @@ function hxState(){
   const hd=S.hd||{},days=Object.keys(hd).filter(d=>HX_FIELDS.some(f=>hd[d][f==="weight"?"w":f]>0)).sort(),last=days[days.length-1]||null;
   const t=hd[TODAY]||{},have=HX_FIELDS.filter(f=>t[f==="weight"?"w":f]>0),miss=HX_FIELDS.filter(f=>!have.includes(f));
   const at=+lsGet(HXATK)||0,age=last?diffD(last,TODAY):null;
-  return {last,age,at,have,miss,state:!last?"off":age<=1?"ok":"stale"};
+  const cov={};let synced=0;
+  for(let i=0;i<14;i++){const x=hd[addD(TODAY,-i)];if(!x)continue;let any=false;HX_FIELDS.forEach(f=>{if(x[f==="weight"?"w":f]>0){cov[f]=(cov[f]||0)+1;any=true}});if(any)synced++}
+  return {last,age,at,have,miss,cov,synced,never:HX_FIELDS.filter(f=>!cov[f]),state:!last?"off":age<=1?"ok":"stale"};
 }
 const agoTxt=t=>{if(!t)return "";const m=Math.max(0,Math.round((Date.now()-t)/6e4));return m<1?"just now":m<60?m+" min ago":m<1440?Math.round(m/60)+" h ago":Math.round(m/1440)+" d ago"};
 function renderPill(){
@@ -4563,6 +4565,9 @@ function renderHX(){
   const link=`${appURL()}#sync&steps=…&weight=…&sleep=…&rhr=…&hrv=…&kcal=…&u=${u}`;
   b.innerHTML=`${status}
    <div class="hxtoday"><div class="sechl">Today from Health <b>${s.have.length} of ${HX_FIELDS.length}</b></div><div class="hxfs">${HX_FIELDS.map(f=>chip(f,s.have.includes(f))).join("")}</div></div>
+   ${s.state!=="off"?`<div class="hxtoday"><div class="sechl">Last 14 days <b>synced on ${s.synced} of 14</b></div><div class="hxfs">${HX_FIELDS.map(f=>`<span class="hxf ${s.cov[f]?"on":""}">${HX_LABEL[f]} ${s.cov[f]||0}/14</span>`).join("")}</div></div>
+    ${s.synced<12?callout("warn","📅",`Your phone skipped ${14-s.synced} of the last 14 days`,"","iOS hides Health data while the iPhone is locked, so a night-time run on a locked phone sends nothing. Add the second trigger and turn on <b>Allow Running When Locked</b> (Option B, steps 6–8).")+(s.never.length?"":""):""}
+    ${s.never.length&&s.never.length<HX_FIELDS.length?callout("info","➕","Never received: "+esc(s.never.map(f=>HX_LABEL[f]).join(", ")),"",`Your Shortcut is not sending these. Add a <b>Find Health Samples</b> step for each one (Option B, step 1).${s.never.some(f=>f==="hrv"||f==="rhr")?" HRV and resting heart rate are measured only by an Apple Watch or another wearable that writes to Health; without one they stay empty, and that is fine.":""}${s.never.includes("sleep")?" Sleep needs sleep tracking on (Apple Watch, or a Sleep schedule in the Health app).":""}`):""}`:""}
    <div class="hurlbtns"><button class="btn pri" data-hx="sync">↻ Sync now</button><button class="btn" data-hx="focus">Paste data</button></div>
 
    <div class="sechl" style="margin-top:18px">Set up automatic sync</div>
@@ -4577,13 +4582,15 @@ function renderHX(){
        <li>Data type <b>Health Metrics</b>: Step Count, Weight &amp; Body Mass, Body Fat Percentage, Sleep Analysis, Resting Heart Rate, Heart Rate Variability, Active Energy. Aggregate by <b>Day</b>.</li>
        <li>Add a second automation with data type <b>Workouts</b>.</li>
        <li>Sync cadence hourly. Run one manual export of the last 30 days to backfill.</li></ol>
-      <h3>Option B · Apple Shortcuts (free)</h3><ol class="hsteps">
-       <li>Shortcuts → <b>+</b>. Add <b>Find Health Samples</b> six times, one per type, each with <b>Start Date is today</b>: Steps, Active Energy, Resting Heart Rate, Heart Rate Variability, Weight, Body Fat Percentage. For sleep add a seventh: Sleep, <b>End Date is today</b>.</li>
+      <h3>Option B · Apple Shortcuts (free) · iOS 27</h3><ol class="hsteps">
+       <li>Shortcuts → <b>+</b>, name it <b>Elite Health Sync</b>. Add <b>Find Health Samples</b> six times, one per type, each with <b>Start Date is today</b>: Steps, Active Energy, Resting Heart Rate, Heart Rate Variability, Weight, Body Fat Percentage. For sleep add a seventh: Sleep, <b>End Date is today</b>.</li>
        <li>If you wear an Apple Watch, add the filter <b>Source is</b> your Watch to the Steps and Active Energy actions. Without it the phone and the watch are both counted.</li>
        <li>After each one add <b>Calculate Statistics</b>: Sum for Steps, Active Energy and Sleep (duration); Average for Resting Heart Rate and HRV; for Weight and Body Fat sort the Find action by Start Date, latest first, limit 1.</li>
        <li>Add <b>Get Contents of URL</b>. URL: your link. Method <b>POST</b>. Request Body <b>JSON</b>. Add one field per value and set every field's type to <b>Text</b>: <code>steps</code>, <code>kcal</code>, <code>rhr</code>, <code>hrv</code>, <code>weight</code>, <code>bf</code>, <code>sleep</code>. Put the matching result in each. Add one more Text field, <code>unit</code>, with the value <b>${u}</b>.</li>
        <li>No <b>If</b> blocks are needed for empty values: a blank, 0 or "NaN" field is skipped by the server and the rest of the day is still saved. If you prefer guards, wrap a field in <b>If [result] has any value</b> and set it to empty text in Otherwise.</li>
-       <li>Automation tab → <b>+</b> → trigger <b>App: Is Opened</b> (pick an app you open every morning, or this one) → <b>Run Immediately</b> → run the shortcut. An app-open trigger means the phone is unlocked, which Health requires.</li>
+       <li><b>Let it run while locked.</b> In iOS 27 automations live inside the shortcut: open it → <b>Edit</b> → <b>ⓘ</b> → <b>Privacy</b> → turn on <b>Allow Running When Locked</b>.</li>
+       <li><b>Trigger 1, the full day.</b> <b>Edit</b> → <b>Automation</b> → <b>Time of Day</b>. The next screen offers Time of Day, Sunrise or Sunset: pick <b>Time of Day</b>, set <b>9:30 PM</b>, <b>Daily</b>.</li>
+       <li><b>Trigger 2, the safety net.</b> iOS hides Health data while the iPhone is locked, so some nights trigger 1 sends nothing. Add a trigger that fires while you are using the phone: <b>Edit</b> → <b>Automation</b>, then go back to the trigger list (not the time screen) and scroll down to <b>App</b> → pick an app you open every morning → <b>Is Opened</b>. If the shortcut accepts only one trigger, make a second shortcut <b>Elite Sync 2</b> with one action, <b>Run Shortcut → Elite Health Sync</b>, and give that one the App trigger. Running more than once a day is safe: each run sends the totals so far and the server keeps the newest value per field.</li>
        <li>Run it once with ▶. Then tap <b>Send a test</b> above and <b>Sync now</b>.</li></ol>`
     :`<div class="d">Your phone sends steps, weight, body fat, sleep, HRV, resting heart rate and workouts every day, even with the app closed. This app picks them up whenever it opens.</div><button class="btn pri" id="htNew" style="margin-top:10px">Create my sync link</button><div class="d" id="htMsg" style="margin-top:6px"></div>`}</details>
    <details class="rec" data-hk="url"${op("url")}><summary>No account · the Shortcut opens the app with today's numbers</summary>
@@ -4591,8 +4598,10 @@ function renderHX(){
     <div class="hurlrow" style="margin-top:8px"><input readonly id="hxLink" value="${esc(link)}" onclick="this.select()"/><button class="btn" data-hx="copylink">Copy</button></div>
     <div class="d" style="margin-top:6px">The app reads the numbers, saves them, and removes them from the address bar. Empty values are fine. Limit: on iPhone, a link opens in Safari, and Safari keeps its own copy of your data, separate from the Home Screen app. If you use the Home Screen app, choose background sync instead.</div></details>
    <details class="rec" data-hk="fix"${op("fix")||(s.state==="stale"?" open":"")}><summary>🛠 Repair: the automation stopped or values are missing</summary><ol class="hsteps">
-    <li><b>Nothing arrives at night.</b> iOS locks Health data while the iPhone is locked, so a Time of Day automation at 9 PM fails silently. Change the trigger to <b>App: Is Opened</b> or <b>Alarm: Is Stopped</b>.</li>
-    <li><b>"Ask Before Running" is on.</b> Open the automation and switch to <b>Run Immediately</b>.</li>
+    <li><b>Some days are missing.</b> iOS hides Health data while the iPhone is locked, so a 9 PM run on a locked phone sends nothing. Turn on <b>Allow Running When Locked</b> and add trigger 2 (Option B, steps 6–8).</li>
+    <li><b>I only see Time of Day, Sunrise or Sunset.</b> That is the screen after you tapped Time of Day. Go back one step: the trigger list is longer, and App, Alarm, Charger and the others are further down.</li>
+    <li><b>It asks before running.</b> Open the shortcut → <b>Edit</b> → <b>ⓘ</b> → <b>Privacy</b> → <b>Allow Running When Locked</b>.</li>
+    <li><b>Sleep, HRV or resting HR never arrive.</b> Your shortcut is missing those Find Health Samples steps, or no device measures them: HRV and resting heart rate come from an Apple Watch or another wearable; sleep needs sleep tracking on.</li>
     <li><b>One empty value used to stop everything.</b> It no longer does. Set every JSON field type to <b>Text</b>, never Number: an empty Number field can stop the request inside Shortcuts before it is sent.</li>
     <li><b>Steps look doubled.</b> Add the <b>Source is</b> Apple Watch filter (step 2 of Option B).</li>
     <li><b>Sleep is missing.</b> Filter sleep by <b>End Date is today</b>, not Start Date: last night's sleep started yesterday.</li>
