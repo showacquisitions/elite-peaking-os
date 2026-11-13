@@ -408,10 +408,16 @@ async function page(browser, vp) {
       showTab("progress"); $("hxIn").value = HX_SAMPLE; hxCheck(false);
       const dry = { tbl: !!document.querySelector("#hxOut table.tele"), hd: JSON.stringify(S.hd[TODAY]) };
       S.hd = {}; hxUpsert([{ date: TODAY, hrv: 50, steps: 9000 }]); hxUpsert([{ date: TODAY, steps: 9500, hrv: null, rhr: NaN, sleep: 0 }]);
-      return { dry, merged: S.hd[TODAY], guide: /Is Opened/.test($("hxBox").textContent) && /Text/.test($("hxBox").textContent), over: document.documentElement.scrollWidth > document.documentElement.clientWidth };
+      return { dry, merged: S.hd[TODAY], guide: /Sunrise or Sunset/.test($("hxBox").textContent) && /Text/.test($("hxBox").textContent), over: document.documentElement.scrollWidth > document.documentElement.clientWidth };
     });
     ok(r.dry.tbl && r.merged.hrv === 50 && r.merged.steps === 9500 && r.merged.rhr === undefined && r.merged.sleep === undefined, "payload tester reads without saving; upsert ignores null, NaN and 0");
     ok(r.guide && !r.over, "Shortcut setup and repair guide is shown and fits a phone");
+    r = await p.evaluate(() => {
+      S.hd = {}; for (let i = 0; i < 14; i++) if (i % 2 === 0) S.hd[addD(TODAY, -i)] = { steps: 8000, w: 75, kcal: 400 };
+      renderHX(); const s = hxState(), txt = $("hxBox").textContent;
+      return { synced: s.synced, never: s.never.join(), skip: /skipped 7 of the last 14 days/.test(txt), nev: /Never received: Resting HR, HRV, Sleep, Body fat/.test(txt), ios27: /Allow Running When Locked/.test(txt) && /Sunrise or Sunset/.test(txt) };
+    });
+    ok(r.synced === 7 && r.never === "rhr,hrv,sleep,bf" && r.skip && r.nev && r.ios27, "coverage check names skipped days and values the phone never sends; guide covers the iOS 27 trigger screens");
     ok(p.errors.length === 0, "no JS errors in Health sync " + p.errors.join(" | "));
     await p.close();
   }

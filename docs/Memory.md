@@ -2,6 +2,14 @@
 
 State of the app and the decisions behind it. Newest first.
 
+## v4.0.1 — iOS 27 Shortcuts guide, build 2026.11.13.2 (2026-11-13)
+
+- **What the server showed.** One sync link (created 2026-11-06). 6 days of data in 14: Nov 6, 7, 8, 11, 12, 13. Every row has steps; weight and active energy on most. Sleep, HRV, resting HR, body fat and workouts never arrived. Runs at 02:00 UTC (9 PM Eastern) succeeded on Nov 7 and 8 and failed on Nov 9 and 10, which fits the locked-phone limit.
+- **iOS 27 changed automations** (Apple Support, iOS 27 guide): they are added inside a shortcut (Edit → Automation), and Edit → ⓘ → Privacy → "Allow Running When Locked" replaces Run Immediately. "Time of Day / Sunrise / Sunset" is the time screen, not the trigger list; Apple lists App, Alarm, Charger and others as auto-run triggers.
+- **Guide now says:** two triggers (9:30 PM Time of Day plus App: Is Opened), with a one-action helper shortcut if a shortcut takes only one trigger. Unverified: whether iOS 27 allows several triggers per shortcut, and whether Allow Running When Locked also unlocks Health reads.
+- **Coverage check** in the Health sync card: days synced out of 14, per-field counts, and a "never received" callout naming the missing Find Health Samples steps.
+- Tests: 146 passed.
+
 ## v4.0 — full audit and upgrade, build 2026.11.13.1 (2026-11-13)
 
 **Owner approved 2026-11-13: SQL applied, edge function deployed (v6), app merged to `main`.**

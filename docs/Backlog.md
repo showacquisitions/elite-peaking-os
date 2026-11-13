@@ -4,7 +4,8 @@
 - [x] `supabase/v4-health.sql` applied 2026-11-13 (migration `v4_health_fault_tolerant_ingest`). Verified in a rolled-back test: a second sync with zeros and blanks kept the stored steps and HRV.
 - [x] `health` edge function deployed 2026-11-13 (version 6, verify_jwt off). Verified live through pg_net: an all-blank body returns ok with `ignored`; a real body reaches `health_ingest`.
 - [x] Merged to `main` through showacquisitions/elite-peaking-os#1.
-- [ ] On the iPhone: change the automation trigger from Time of Day to App: Is Opened, set JSON field types to Text, tap Send a test, then Sync now.
+- [ ] On the iPhone (iOS 27): turn on Allow Running When Locked, add trigger 2 (App: Is Opened), add the missing Find Health Samples steps (sleep, resting HR, HRV, body fat). Then check "Last 14 days" in the Health sync card after a week.
+- [ ] If fewer than 12 of 14 days sync after a week, switch to Health Auto Export.
 - [ ] Replace `elite-peaking-os.html` and the note in the Obsidian vault (`docs/obsidian-note.md` is the updated note).
 
 ## Blocking v3 (owner, Supabase + Brevo dashboards, about 10 min)
