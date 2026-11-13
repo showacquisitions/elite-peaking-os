@@ -376,6 +376,8 @@ async function page(browser, vp) {
     const bad = N({ date: "2027-06-01", steps: 5 }), junk = N({ steps: "abc", rhr: 900, weight: "12 kg" });
     ok(bad.rows.length === 0 && bad.issues.length === 1 && junk.rows.length === 0 && junk.issues.length === 3, "future dates and out-of-range values are reported, never stored");
     ok(N(null).rows.length === 0 && N("hello").rows.length === 0 && N(undefined).issues.length === 0 && N([null, 5, "x"]).rows.length === 0, "garbage input never throws");
+    const ip = N({ sleep: "", inbed: "28800", steps: "2251" }), wa = one({ sleep: "27000", inbed: "30000" }), hae = one({ data: { metrics: [{ name: "sleep_analysis", units: "hr", data: [{ date: "2026-11-13", totalSleep: 0, inBed: 8.1 }] }] } });
+    ok(ip.rows[0].sleep === 8 && /time in bed/.test(ip.issues[0].why) && wa.sleep === 7.5 && hae.sleep === 8.1, "sleep: asleep time wins (Apple Watch); time in bed stands in on an iPhone alone, and says so");
     const m = mod.hxMerge({ date: "d", steps: 9000, hrv: 50 }, { date: "d", steps: 9500 }, false);
     ok(m.steps === 9500 && m.hrv === 50, "a later sync updates what it carries and keeps the rest");
     const html = fs.readFileSync(file, "utf8"), src = fs.readFileSync(path.join(__dirname, "..", "supabase", "functions", "health", "parse.mjs"), "utf8"), blk = t => t.slice(t.indexOf("/*HX-BEGIN*/"), t.indexOf("/*HX-END*/"));

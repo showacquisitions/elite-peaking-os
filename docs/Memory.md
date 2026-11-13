@@ -2,6 +2,14 @@
 
 State of the app and the decisions behind it. Newest first.
 
+## v4.0.2 — sleep for iPhone-only users, build 2026.11.13.3 (2026-11-13)
+
+- [OBSERVED] The owner has no Apple Watch; other users do. A 6:42 PM background run delivered steps, weight and 1 kcal, and no sleep, resting HR, HRV or body fat. The "Value is not In Bed" filter removed the only sleep an iPhone records.
+- Shortcut sends two sleep fields: `sleep` (asleep stages: In Bed and Awake filtered out) and `inbed` (In Bed only). The parser uses `sleep` when it is present, else `inbed`, and reports the fallback in `ignored`. Health Auto Export rows fall back to `inBed` the same way. Old shortcuts are unaffected.
+- Edge function `health` deployed as version 7 (same index.ts; parse.mjs as in the repo).
+- Not verified: whether the owner's 1 kcal active energy is real or a statistics or limit setting in the shortcut.
+- Tests: 147 passed.
+
 ## v4.0.1 — iOS 27 Shortcuts guide, build 2026.11.13.2 (2026-11-13)
 
 - **What the server showed.** One sync link (created 2026-11-06). 6 days of data in 14: Nov 6, 7, 8, 11, 12, 13. Every row has steps; weight and active energy on most. Sleep, HRV, resting HR, body fat and workouts never arrived. Runs at 02:00 UTC (9 PM Eastern) succeeded on Nov 7 and 8 and failed on Nov 9 and 10, which fits the locked-phone limit.
