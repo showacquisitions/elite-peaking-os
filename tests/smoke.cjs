@@ -522,6 +522,48 @@ async function page(browser, vp) {
     await o.close();
   }
 
+  console.log("v4.1: phone layout, icons, one-tap sync");
+  {
+    for (const width of [320, 360, 390]) {
+      const p = await page(browser, { width, height: 844 });
+      const r = await p.evaluate(() => {
+        S.confirmed = true; S.flog[TODAY] = [{ id: "a", n: "Granola bar with a very long product name (Brand Name Co)", g: 40, kcal: 190, p: 3, c: 28, f: 7, m: {}, q: 31, fl: [] }]; S.favs = [{ id: "f", n: "Greek yogurt", g: 170, kcal: 100, p: 17, c: 6, f: 0, m: {} }]; save(); regen(); renderAll();
+        const bad = [];
+        for (const mode of ["guided", "pro"]) { setMode(mode); for (const [t, s, seg] of [["plan", "", "w"], ["plan", "", "m"], ["train"], ["food", "grocery"], ["food", "kitchen"], ["food", "overview"], ["quality"], ["progress"], ["profile"]]) { showTab(t, s || undefined); if (seg) setPlanSeg(seg); if (document.documentElement.scrollWidth > document.documentElement.clientWidth) bad.push(mode + " " + t + ":" + (s || seg || "")) } }
+        return bad;
+      });
+      ok(r.length === 0, `${width}px: no sideways scroll on any tab, Workout and Nutrition views, both modes ${r.join(", ")}`);
+      if (width === 390) {
+        const v = await p.evaluate(() => {
+          showTab("plan"); const cw = document.documentElement.clientWidth, days = [...document.querySelectorAll("#days .day")].map(e => e.getBoundingClientRect());
+          const hd = document.querySelector("header").getBoundingClientRect(), tabs = [...document.querySelectorAll(".tab:not([hidden])")];
+          showTab("profile"); const sel = [...document.querySelectorAll("#pane-profile select")].every(e => e.scrollWidth <= e.clientWidth + 1), bar = getComputedStyle(document.querySelector(".overall")).display;
+          showTab("plan");
+          return { seven: days.length === 7 && days.every(r => r.left >= 0 && r.right <= cw + .5), hd: hd.height, svg: tabs.every(b => b.querySelector(".ic svg")) && !/[\u{1F300}-\u{1FAFF}]/u.test(document.querySelector(".tabs").textContent), sel, bar, bar2: getComputedStyle(document.querySelector(".overall")).display, theme: !!document.querySelector("#btnTheme svg"), mode: !!document.querySelector("#btnMode svg") };
+        });
+        ok(v.seven && v.hd <= 70, `phone: all seven days fit the week strip and the header is one row (${Math.round(v.hd)}px)`);
+        ok(v.svg && v.theme && v.mode, "navigation and header use the icon set, not emoji");
+        ok(v.sel && v.bar === "none" && v.bar2 !== "none", "profile dropdowns are not cut off; the week bar shows on Today only");
+      }
+      ok(p.errors.length === 0, `${width}px: no JS errors ${p.errors.join(" | ")}`);
+      await p.close();
+    }
+    const ctx = await browser.newContext({ viewport: { width: 390, height: 844 }, userAgent: "Mozilla/5.0 (iPhone; CPU iPhone OS 27_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/27.0 Mobile/15E148 Safari/604.1" });
+    const ip = await ctx.newPage(); ip.errors = []; ip.on("pageerror", e => ip.errors.push(e.message));
+    await ip.route("**/*", r => r.request().url().startsWith("file:") ? r.continue() : r.abort());
+    await ip.goto(url); await ip.waitForFunction(() => typeof W !== "undefined" && W && W.days);
+    const s = await ip.evaluate(() => {
+      S.confirmed = true; S.hd = { [addD(TODAY, -4)]: { steps: 5000 } }; S.sel = TODAY; save(); regen(); renderAll(); showTab("progress");
+      const a = document.querySelector("#hxBox a[data-hxrun]"), h1 = a && a.getAttribute("href"), stale = /No Health data for 4 days/.test($("hxBox").textContent);
+      lsSet(HXSCK, "Run Sync"); renderHX(); const h2 = document.querySelector("#hxBox a[data-hxrun]").getAttribute("href");
+      showTab("plan"); const n = document.querySelector("#cmdBox a[data-hxrun]"), acts = nextActions(selDay()).map(x => x.t);
+      return { h1, h2, stale, nba: !!n, pos: acts.findIndex(t => /Health data is 4 days old/.test(t)), pill: $("hxPill").textContent };
+    });
+    ok(s.h1 === "shortcuts://run-shortcut?name=Elite%20Health%20Sync" && s.h2 === "shortcuts://run-shortcut?name=Run%20Sync", "iPhone: Run sync opens the named shortcut in the Shortcuts app");
+    ok(s.stale && s.nba && s.pos >= 0 && s.pos <= 1 && /4 d old/.test(s.pill) && ip.errors.length === 0, "stale Health data is called out on Today, in the sync card and in the header pill " + ip.errors.join(" | "));
+    await ctx.close();
+  }
+
   const vf = path.join(path.dirname(file), "version.json");
   if (fs.existsSync(vf)) {
     const v = JSON.parse(fs.readFileSync(vf, "utf8")).v, av = await pg.evaluate(() => APP_VER);

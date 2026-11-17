@@ -2,6 +2,14 @@
 
 State of the app and the decisions behind it. Newest first.
 
+## v4.1 — premium polish and one-tap sync, build 2026.11.17.1 (2026-11-17)
+
+- **Audit findings [OBSERVED].** No Health data has reached the server since 2026-11-13 23:42 UTC; the logs show no requests at all for 3+ days, so the automation is not firing (not failing). Push: both saved subscriptions are iPhones; Apple returned HTTP 400 on 2026-11-13. On phones, the Nutrition view scrolled sideways (food-log rows), as did Today at 320 px (rings, Next best action) and Groceries (the add-item row). The week strip hid three days, and the header wrapped to two rows.
+- **One-tap sync.** On iPhone, "Run sync" is a `shortcuts://run-shortcut?name=…` link; the name is editable (stored in `eliteShortcut`). Coming back to the app triggers a pull after 1.8 s. When data is stale, it shows as the first or second Next best action, in the sync card and in the header pill.
+- **Design.** An inline SVG icon set (`ico()`, `ICO_P`) replaces emoji in navigation, the header, segment controls, section headers and Next best action. Phone header is one row. Week strip shows all 7 days as weekday + date numeral, with rest days dimmed. Tab bar is glass with an active marker. Week-progress bar shows on Today only. Gradient primary buttons. Profile form is single-column on phones.
+- **Push diagnostics.** `sendPush` returns the push service's rejection body through `opts.detail`; the push function logs it. Deployed as version 2.
+- Tests: 158 passed (11 new: no sideways scroll at 320/360/390 px on every tab in both modes, 7-day strip, one-row header, icon set, Run sync link, stale-data callouts).
+
 ## v4.0.2 — sleep for iPhone-only users, build 2026.11.13.3 (2026-11-13)
 
 - [OBSERVED] The owner has no Apple Watch; other users do. A 6:42 PM background run delivered steps, weight and 1 kcal, and no sleep, resting HR, HRV or body fat. The "Value is not In Bed" filter removed the only sleep an iPhone records.

@@ -52,5 +52,7 @@ export async function sendPush(sub, data, privJwk, subject, opts = {}) {
     headers: { "Content-Encoding": "aes128gcm", "Content-Type": "application/octet-stream", TTL: String(opts.ttl ?? 3600), Urgency: opts.urgency || "high", ...(opts.topic ? { Topic: opts.topic } : {}), Authorization: await vapidAuth(sub.endpoint, privJwk, subject) },
     body,
   });
+  /* push services explain a rejection in the body (Apple: {"reason":"BadJwtToken"}); hand it to the caller for the log */
+  if (!r.ok && opts.detail) opts.detail.reason = (await r.text().catch(() => "")).slice(0, 200);
   return r.status;
 }
