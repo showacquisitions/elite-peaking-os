@@ -27,9 +27,10 @@ Deno.serve(async req => {
       if (!items || !items.length) break;
       await Promise.all(items.flatMap((it: any) => (it.subs || []).map(async (s: any) => {
         try {
-          const st = await sendPush(s, { title: it.title, body: it.body, url: it.url || "./", tag: it.tag, cat: it.cat }, jwk, SUBJECT, { ttl: it.cat === "rest" ? 300 : 86400, urgency: it.cat === "rem" ? "normal" : "high", topic: it.tag.replace(/[^A-Za-z0-9_-]/g, "").slice(0, 32) || undefined });
+          const detail: { reason?: string } = {};
+          const st = await sendPush(s, { title: it.title, body: it.body, url: it.url || "./", tag: it.tag, cat: it.cat }, jwk, SUBJECT, { ttl: it.cat === "rest" ? 300 : 86400, urgency: it.cat === "rem" ? "normal" : "high", topic: it.tag.replace(/[^A-Za-z0-9_-]/g, "").slice(0, 32) || undefined, detail });
           if (st >= 200 && st < 300) { sent++; ok.push(s.endpoint) }
-          else { failed++; if (st === 404 || st === 410) dead.push(s.endpoint); console.warn("push status", st, new URL(s.endpoint).host) }
+          else { failed++; if (st === 404 || st === 410) dead.push(s.endpoint); console.warn("push status", st, new URL(s.endpoint).host, detail.reason || "") }
         } catch (e) { failed++; console.warn("push error", String(e)) }
       })));
     }

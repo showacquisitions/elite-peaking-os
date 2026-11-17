@@ -646,23 +646,92 @@
     .tab:hover:not(.active){background:var(--panel2);color:var(--text);border-color:transparent}
     .tab .tbadge{top:50%;right:10px;transform:translateY(-50%)}
   }
+
+  /* ===================== V4.1 POLISH ===================== */
+  html{color-scheme:dark}html[data-theme=light]{color-scheme:light}
+  *{-webkit-tap-highlight-color:transparent}
+  ::selection{background:rgba(59,130,246,.35)}
+  .ico{flex:none;display:block}
+  a.btn{display:inline-flex;align-items:center;justify-content:center;text-decoration:none}
+  .btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;font-weight:600}
+  .btn.pri{background:linear-gradient(180deg,#4b8ff8,#2f6fe6);border-color:#2f6fe6;color:#fff;box-shadow:0 1px 0 rgba(255,255,255,.18) inset,0 6px 16px rgba(47,111,230,.28)}
+  .btn.pri:hover{filter:brightness(1.07);color:#fff;border-color:#2f6fe6}
+  .seg button{display:flex;align-items:center;justify-content:center;gap:7px}
+  .hprof .hpi{font-size:0}
+  .hthm{opacity:.8}
+  .pgsec span{display:grid;place-items:center;width:28px;height:28px;border-radius:9px;background:var(--panel2);border:1px solid var(--border);color:var(--accent2,var(--accent))}
+  .nba-i{display:grid;place-items:center;width:44px;height:44px;border-radius:13px;background:var(--glow);color:var(--accent2,var(--accent));font-size:0}
+  .nba-s{display:grid;place-items:center;width:26px;height:26px;border-radius:8px;background:var(--panel2);border:1px solid var(--border);color:var(--muted);flex:none}
+  .day.today b::after{content:" · today"}
+  .day .dd,.day .dl{display:block}
+  body[data-tab]:not([data-tab=plan]) .overall{display:none}
+  /* readiness breakdown: one grid, so the bars line up */
+  .rdx-r{grid-template-columns:150px minmax(80px,1fr) minmax(110px,170px) 52px}
+  .rdx-r em{text-align:right}
+  /* food log rows keep their buttons on screen */
+  #foodBox .irow{align-items:center}
+  #foodBox .irow .ims{white-space:normal;display:flex;flex-wrap:wrap;align-items:center;justify-content:flex-end;gap:4px 8px;min-width:0}
+  .crings{grid-template-columns:repeat(4,minmax(0,1fr))}
+  .nbaq{grid-template-columns:minmax(0,1fr)}.nba2{min-width:0}.nba1{min-width:0}.nba{min-width:0}.cmd{min-width:0}.cmd>*{min-width:0}
+  #gcIn{min-width:0}
+  @media(min-width:701px){
+    ::-webkit-scrollbar{width:11px;height:11px}::-webkit-scrollbar-thumb{background:var(--border);border-radius:8px;border:3px solid var(--bg)}::-webkit-scrollbar-track{background:transparent}
+    .hxl-f{display:inline}
+  }
+  @media(max-width:700px){
+    /* header: one row, brand left, controls right */
+    header{flex-wrap:nowrap!important;align-items:center!important;padding:10px 12px;gap:8px;border-radius:16px}
+    header .sub{display:none}
+    header h1{font-size:.92rem;letter-spacing:.12em;white-space:nowrap}
+    .hact{flex-wrap:nowrap;gap:6px}
+    .hxpill{min-height:38px;padding:6px 11px}
+    .hxpill .hxl{max-width:none}.hxl-f{display:none}
+    #btnMode,.hprof,.hthm{width:38px;height:38px;min-height:38px;padding:0;justify-content:center;border-radius:50%;flex:none}
+    .hprof .hpi{width:auto;height:auto;background:none}
+    #btnMode .hpl{display:none}
+    /* week strip: all seven days visible */
+    .days{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:6px;overflow:visible;padding-bottom:0}
+    .day{flex:none;padding:8px 0 8px;border-radius:14px;min-width:0}
+    .day b{font-size:.62rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.05em}
+    .day.today b::after{content:none}.day.today b{color:var(--accent2,var(--accent))}
+    .day .dm,.day .dl{display:none}
+    .day .dd{font-size:1.05rem;font-weight:800;color:var(--text);margin-top:1px;line-height:1.2}
+    .day.rs:not(.active) .dd{opacity:.5}
+    .day .mini{margin:6px 9px 0;height:3px}
+    /* tab bar: glass, icon + label, thin active marker */
+    .tabs{background:var(--panel);background:color-mix(in srgb,var(--panel) 80%,transparent);-webkit-backdrop-filter:saturate(1.6) blur(18px);backdrop-filter:saturate(1.6) blur(18px)}
+    .tab{min-height:58px;gap:3px;padding:8px 2px 6px;font-size:.64rem;font-weight:600;letter-spacing:.01em;color:var(--muted)}
+    .tab.active,.tab:hover{background:transparent;color:var(--accent2,var(--accent))}
+    html[data-theme=light] .tab.active,html[data-theme=light] .tab:hover{color:var(--accent2)}
+    .tab.active::before{content:"";position:absolute;top:0;left:50%;width:26px;height:3px;border-radius:0 0 3px 3px;background:var(--accent);transform:translateX(-50%)}
+    .tab .ic{display:grid;place-items:center;height:24px;font-size:0}
+    .planseg{-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);background:color-mix(in srgb,var(--panel2) 86%,transparent)}
+    .overall{padding:10px 14px}
+    .cring small{font-size:.66rem}
+    #pane-profile .fgrid{grid-template-columns:1fr}
+    #pane-profile select,#pane-profile input:not([type=checkbox]){width:100%}
+    .rdx-r{grid-template-columns:minmax(0,1.1fr) minmax(0,1fr) minmax(0,1.2fr)}.rdx-r em{display:none}
+    .card h2{flex-wrap:wrap;gap:8px}
+  }
+  @media(max-width:700px){.irow .ims{white-space:normal;text-align:right;min-width:0}.seg button{min-width:0;padding:10px 6px}}
+  @media(max-width:360px){.seg .ico{display:none}.seg button{font-size:.84rem}.cring-g{transform:scale(.82);margin:-6px}.crings{gap:2px}.cring span{font-size:.62rem;letter-spacing:.03em}.hxn{display:none}}
 </style>
 </head>
 <body>
 <header style="display:flex;justify-content:space-between;align-items:flex-start;gap:10px">
   <div><h1><span class="h1f">ELITE AESTHETIC TRAINING &amp; NUTRITION OS</span><span class="h1s">ELITE OS</span></h1>
   <p class="sub" id="sub"></p></div>
-  <div class="hact"><button type="button" class="hxpill s-off" id="hxPill" aria-label="Health sync status"></button><button type="button" id="btnMode" aria-label="Experience mode"></button><button type="button" class="hprof" data-goto="profile" aria-label="Profile and settings"><span class="hpi">👤</span><span class="hpl">Profile</span></button><button type="button" class="hthm" id="btnTheme" aria-label="Switch theme" title="Switch theme">☀</button></div>
+  <div class="hact"><button type="button" class="hxpill s-off" id="hxPill" aria-label="Health sync status"></button><button type="button" id="btnMode" aria-label="Experience mode"></button><button type="button" class="hprof" data-goto="profile" aria-label="Profile and settings"><span class="hpi" data-ico="user"></span><span class="hpl">Profile</span></button><button type="button" class="hthm" id="btnTheme" aria-label="Switch theme" title="Switch theme"></button></div>
 </header>
 <div id="updBar"></div><div id="installBox"></div>
 <div class="overall"><span class="sub">This week</span><div class="bar"><div id="overallFill" style="width:0"></div></div><b id="overallTxt"></b></div>
 <nav class="tabs" aria-label="Sections">
-  <button class="tab active" data-tab="plan"><span class="ic">🏠</span><span class="full">Today</span><span class="short">Today</span></button>
-  <button class="tab" data-tab="train"><span class="ic">🏋️</span><span class="full">Train</span><span class="short">Train</span></button>
-  <button class="tab" data-tab="food"><span class="ic">🍽️</span><span class="full">Fuel &amp; Recipes</span><span class="short">Fuel</span></button>
-  <button class="tab" data-tab="quality"><span class="ic">🔬</span><span class="full">Quality</span><span class="short">Quality</span></button>
-  <button class="tab" data-tab="progress"><span class="ic">📈</span><span class="full">Biometrics</span><span class="short">Trends</span></button>
-  <button class="tab" data-tab="coach" id="tabCoach" hidden><span class="ic">🧑‍🏫</span><span class="full">Clients</span><span class="short">Clients</span></button>
+  <button class="tab active" data-tab="plan"><span class="ic" data-ico="home"></span><span class="full">Today</span><span class="short">Today</span></button>
+  <button class="tab" data-tab="train"><span class="ic" data-ico="dumbbell"></span><span class="full">Train</span><span class="short">Train</span></button>
+  <button class="tab" data-tab="food"><span class="ic" data-ico="utensils"></span><span class="full">Fuel &amp; Recipes</span><span class="short">Fuel</span></button>
+  <button class="tab" data-tab="quality"><span class="ic" data-ico="scan"></span><span class="full">Quality</span><span class="short">Quality</span></button>
+  <button class="tab" data-tab="progress"><span class="ic" data-ico="activity"></span><span class="full">Biometrics</span><span class="short">Trends</span></button>
+  <button class="tab" data-tab="coach" id="tabCoach" hidden><span class="ic" data-ico="users"></span><span class="full">Clients</span><span class="short">Clients</span></button>
   </nav>
 
 <section id="pane-train" class="pane"></section>
@@ -679,7 +748,7 @@
   <div class="kpis" id="kpis"></div>
   <div id="peakNote"></div>
   <div id="coachBox"></div>
-  <div class="seg planseg" role="tablist"><button class="on" data-pseg="w">🏋️ Workout</button><button data-pseg="m">🍽️ Nutrition</button></div>
+  <div class="seg planseg" role="tablist"><button class="on" data-pseg="w"><span data-ico="dumbbell"></span>Workout</button><button data-pseg="m"><span data-ico="utensils"></span>Nutrition</button></div>
   <div class="card" data-s="w"><h2><span>Readiness check</span><span class="badge" id="rdBadge"></span></h2><div id="readyBox"></div></div>
   <div class="grid2">
     <div class="card" data-s="w"><h2><span id="wTitle"></span><span style="display:flex;gap:8px;align-items:center"><span class="badge" id="wBadge"></span><button class="btn pri" id="wStart" data-wm="open" hidden>▶ Start workout</button><button class="btn" id="wEdit" data-goto="train" hidden>✎ Edit plan</button></span></h2><div id="wList"></div></div>
@@ -696,14 +765,14 @@
 </section>
 
 <section id="pane-grocery" class="pane">
-  <div class="seg foodseg"><button data-food="grocery">🛒 Groceries</button><button data-food="kitchen">🍳 Recipes</button><button data-food="overview">🎯 Targets</button></div>
+  <div class="seg foodseg"><button data-food="grocery"><span data-ico="cart"></span>Groceries</button><button data-food="kitchen"><span data-ico="book"></span>Recipes</button><button data-food="overview"><span data-ico="target"></span>Targets</button></div>
   <div class="card"><h2><span>Shopping list for the displayed week</span><span style="display:flex;gap:8px;align-items:center"><span class="badge" id="gBadge"></span><button class="btn" id="gShare">Share / copy</button></span></h2><div id="gList"></div></div>
   <div class="card"><h2><span>Your items</span><button class="btn" id="btnGcClear">Clear checked</button></h2><div style="display:flex;gap:8px;margin-top:4px"><input id="gcIn" placeholder="Add an item, e.g. 2 lb ground turkey" style="flex:1"/><button class="btn" id="btnGcAdd">Add</button></div><div id="gCustom"></div><div id="gRecipes"></div></div>
   <div class="card"><h2><span>Batch cook plan</span><span class="badge">Meal prep</span></h2><div id="prepList"></div></div>
 </section>
 
 <section id="pane-kitchen" class="pane">
-  <div class="seg foodseg"><button data-food="grocery">🛒 Groceries</button><button data-food="kitchen">🍳 Recipes</button><button data-food="overview">🎯 Targets</button></div>
+  <div class="seg foodseg"><button data-food="grocery"><span data-ico="cart"></span>Groceries</button><button data-food="kitchen"><span data-ico="book"></span>Recipes</button><button data-food="overview"><span data-ico="target"></span>Targets</button></div>
   <div class="grid2">
     <div>
       <div class="card"><h2><span>Foods I like and dislike</span><span class="badge" id="kfBadge"></span></h2><div class="d">Tap a food to cycle: neutral, liked 👍, disliked 🚫. Disliked foods leave your plan right away. Liked foods show up more often.</div><input id="kq" placeholder="Search foods" style="width:100%;margin:8px 0"/><div id="kFoods"></div></div>
@@ -718,7 +787,7 @@
 
 <section id="pane-progress" class="pane">
   <div id="bioBox"></div>
-  <div class="pgsec"><span>📏</span> Body &amp; check-in</div>
+  <div class="pgsec"><span data-ico="ruler"></span> Body &amp; check-in</div>
   <div class="grid2">
     <div class="card"><h2><span>Daily log</span><input type="date" id="logDate"/></h2>
       <div class="log-grid">
@@ -735,15 +804,15 @@
     <div class="card"><h2><span>Trend & auto-adjust</span></h2><div id="trend"></div><h3>Weight, last 28 days</h3><div id="logWt"></div></div>
   </div>
   <div id="measBox"></div>
-  <div class="pgsec"><span>🏋️</span> Training</div>
+  <div class="pgsec"><span data-ico="dumbbell"></span> Training</div>
   <div id="wlogBox"></div>
   <div id="chartBox"></div>
   <div id="progExtra"></div>
-  <div class="pgsec"><span>⌚</span> Health &amp; photos</div>
+  <div class="pgsec"><span data-ico="heart"></span> Health &amp; photos</div>
   <div class="card" id="hxCard"><h2><span>Health sync</span><span class="badge">Apple Health · Shortcuts</span></h2><div id="hxBox"></div></div>
   <div class="card"><h2><span>Steps</span></h2><div id="healthBox"></div></div>
   <div class="card"><h2><span>Progress photos</span></h2><div id="photoBox"></div></div>
-  <div class="pgsec"><span>🔒</span> Privacy</div>
+  <div class="pgsec"><span data-ico="lock"></span> Privacy</div>
   <div class="card"><h2><span>Privacy and data</span></h2>
     <details class="rec" open><summary>What is stored and where</summary>
       <ol>
@@ -1948,7 +2017,7 @@ function renderPlan(){
     :`<button class="btn" data-wk="-1">‹</button><b>${dateLabel(mon,{month:"short",day:"numeric"})} – ${dateLabel(addD(mon,6),{month:"short",day:"numeric"})}</b><button class="btn" data-wk="1">›</button>${S.weekOffset?'<button class="btn" data-wk="0">Today</button>':""}<span class="badge"><span class="bfull">Week ${W.wk+1} of 4 · RIR ${W.rir}${W.wk===3?" · deload":""}</span><span class="bshort">W${W.wk+1} · RIR ${W.rir}${W.wk===3?" · DL":""}</span></span><details class="more"><summary class="btn" aria-label="More week options" title="More">⋯</summary><div class="menu"><button class="btn" id="btnRotate">🔄 New block (rotate exercises)</button><button class="btn" id="btnIcs">📅 Add week to calendar</button><button class="btn" data-ui="ics4">⏰ Reminders: next 4 weeks</button><button class="btn" id="btnWake">${wlWant?"🔆 Screen stays on ✓":"🔆 Keep screen on"}</button><div class="mver">Version ${APP_MAJOR} · build ${APP_VER}</div></div></details>`;
   $("days").innerHTML=W.days.map(x=>{
     const pr=dayProg(x);
-    return `<button aria-pressed="${x.date===d.date}" class="day ${x.date===d.date?"active":""} ${pr.t&&pr.n===pr.t?"done":""}" data-day="${x.date}"><b>${dateLabel(x.date,{weekday:"short"})}${x.date===TODAY?" · today":""}</b><small>${dateLabel(x.date,{month:"short",day:"numeric"})}</small><small>${esc(x.label)}</small><div class="mini"><i style="width:${pr.pct*100}%"></i></div></button>`;
+    return `<button aria-pressed="${x.date===d.date}" class="day ${x.date===d.date?"active":""} ${pr.t&&pr.n===pr.t?"done":""} ${x.date===TODAY?"today":""} ${x.session&&x.session.ex&&x.session.ex.length?"tr":"rs"}" data-day="${x.date}"><b>${dateLabel(x.date,{weekday:"short"})}</b><small class="dd"><span class="dm">${dateLabel(x.date,{month:"short"})} </span>${parseISO(x.date).getDate()}</small><small class="dl">${esc(x.label)}</small><div class="mini"><i style="width:${pr.pct*100}%"></i></div></button>`;
   }).join("");
   const pr=dayProg(d),m=d.macros,a=d.actual;
   const xt=S.extra[d.date]||{kcal:0,p:0};
@@ -2518,7 +2587,7 @@ document.addEventListener("click",e=>{
 });
 
 /* ---------- APP VERSION, UPDATE PROMPT, INSTALL PROMPT ---------- */
-const APP_VER="2026.11.13.3",APP_MAJOR="4.0";
+const APP_VER="2026.11.17.1",APP_MAJOR="4.1";
 let UPD=false,BIP=null;
 const inFrame=()=>{try{return window.self!==window.top}catch(e){return true}};
 const isStandalone=()=>matchMedia("(display-mode: standalone)").matches||navigator.standalone===true;
@@ -3405,7 +3474,7 @@ const THK="elitePeakingTheme";
 function applyTheme(t){
   document.documentElement.dataset.theme=t;
   const m=document.querySelector("meta[name=theme-color]");if(m)m.content=t==="light"?"#f4f6fa":"#0a0d13";
-  const b=$("btnTheme");if(b){b.textContent=t==="light"?"☾":"☀";b.title=b.ariaLabel=t==="light"?"Switch to dark theme":"Switch to light theme"}
+  const b=$("btnTheme");if(b){b.innerHTML=ico(t==="light"?"moon":"sun",18);b.title=b.ariaLabel=t==="light"?"Switch to dark theme":"Switch to light theme"}
 }
 function initTheme(){
   let t="dark";
@@ -4339,6 +4408,33 @@ async function coPhotos(id){
 /* ===================== V4: ONE DAY MODEL, HEALTH SYNC ENGINE, READINESS, QUALITY, BIOMETRICS, MODES ===================== */
 /* New synced keys: supp (supplements per day), nut (what was eaten per day), favs (favorite foods), ux (mode, supplement list).
    All are optional: an older backup or cloud copy without them loads unchanged. */
+/* One icon set, drawn in the text colour, instead of emoji that look different on every device. */
+const ICO_P={
+ home:'<path d="M3 10.5 12 3l9 7.5"/><path d="M5 9.5V20a1 1 0 0 0 1 1h4v-6h4v6h4a1 1 0 0 0 1-1V9.5"/>',
+ dumbbell:'<path d="M6.5 6.5v11M3.5 9v6M17.5 6.5v11M20.5 9v6M6.5 12h11"/>',
+ utensils:'<path d="M7 3v7a2 2 0 0 0 2 2v9M5 3v5M9 3v5"/><path d="M17 3c-1.7 1.5-2.5 3.6-2.5 6.5V13H17v8"/>',
+ scan:'<path d="M4 8V6a2 2 0 0 1 2-2h2M16 4h2a2 2 0 0 1 2 2v2M20 16v2a2 2 0 0 1-2 2h-2M8 20H6a2 2 0 0 1-2-2v-2"/><path d="m8.5 12 2.5 2.5 4.5-5"/>',
+ activity:'<path d="M3 12h4l2.5-7 5 14 2.5-7h4"/>',
+ users:'<circle cx="9" cy="8" r="3.5"/><path d="M2.5 20a6.5 6.5 0 0 1 13 0"/><path d="M16 4.6a3.5 3.5 0 0 1 0 6.8M18 14.2a6.5 6.5 0 0 1 3.5 5.8"/>',
+ user:'<circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/>',
+ sun:'<circle cx="12" cy="12" r="4"/><path d="M12 2v2.5M12 19.5V22M2 12h2.5M19.5 12H22M4.9 4.9l1.8 1.8M17.3 17.3l1.8 1.8M4.9 19.1l1.8-1.8M17.3 6.7l1.8-1.8"/>',
+ moon:'<path d="M20 14.5A8.5 8.5 0 1 1 9.5 4a7 7 0 0 0 10.5 10.5z"/>',
+ compass:'<circle cx="12" cy="12" r="9"/><path d="m15.5 8.5-2 5-5 2 2-5z"/>',
+ bolt:'<path d="M13 2 4.5 13.5H11L10 22l8.5-11.5H12z"/>',
+ cart:'<path d="M3 4h2.5l2.2 10.5h10.6L20.5 7H6.6"/><circle cx="9" cy="19" r="1.5"/><circle cx="17" cy="19" r="1.5"/>',
+ book:'<path d="M5 4.5A1.5 1.5 0 0 1 6.5 3H19v15H6.5A1.5 1.5 0 0 0 5 19.5z"/><path d="M5 19.5A1.5 1.5 0 0 0 6.5 21H19M9 7.5h6M9 11h4"/>',
+ target:'<circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1.2"/>',
+ ruler:'<rect x="3" y="8" width="18" height="8" rx="1.5"/><path d="M7 8v3M11 8v4M15 8v3"/>',
+ heart:'<path d="M12 20.5s-7.5-4.6-7.5-10A4.3 4.3 0 0 1 12 7.6a4.3 4.3 0 0 1 7.5 2.9c0 5.4-7.5 10-7.5 10z"/>',
+ lock:'<rect x="5" y="10.5" width="14" height="10" rx="2"/><path d="M8 10.5V7.5a4 4 0 0 1 8 0v3"/>',
+ droplet:'<path d="M12 3s6 6.2 6 11a6 6 0 0 1-12 0c0-4.8 6-11 6-11z"/>',
+ check:'<path d="m5 12.5 4.5 4.5L19 7.5"/>',
+ steps:'<path d="M4 20h4l3-6 4 3 5-9"/><circle cx="18" cy="5" r="2"/>',
+ scale:'<rect x="4" y="4" width="16" height="16" rx="4"/><path d="M8.5 9.5a5 5 0 0 1 7 0M12 8v3"/>',
+ refresh:'<path d="M20 11a8 8 0 0 0-14.5-4M4 4v4h4M4 13a8 8 0 0 0 14.5 4M20 20v-4h-4"/>'
+};
+const ico=(n,s)=>`<svg class="ico" viewBox="0 0 24 24" width="${s||20}" height="${s||20}" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${ICO_P[n]||""}</svg>`;
+document.querySelectorAll("[data-ico]").forEach(e=>{e.innerHTML=ico(e.dataset.ico,e.closest(".tab")?22:18)});
 ["supp","nut","favs","ux"].forEach(k=>{if(!SYNCKEYS.includes(k))SYNCKEYS.push(k)});
 ["supp","nut"].forEach(k=>{if(!MAPK.includes(k))MAPK.push(k)});
 const obj4=v=>v&&typeof v==="object"&&!Array.isArray(v)?v:{};
@@ -4509,7 +4605,12 @@ async function hxFeedPull(force){
   try{const r=await fetch(u,{cache:"no-store"});if(!r.ok)throw new Error("HTTP "+r.status);return hxIngest(await r.text(),"feed",{forward:false})}
   catch(e){hxLogAdd({src:"feed",days:0,fields:[],changed:0,issues:[{field:"feed",raw:"",why:"could not load: "+e.message}]});renderHX();return null}
 }
-function hxAuto(){hxFromURL();hxFeedPull(false)}
+function hxAuto(){
+  hxFromURL();hxFeedPull(false);
+  /* back from the Shortcuts app after a one-tap sync: give the server a moment, then pull */
+  const t=+lsGet(HXRUNK)||0;
+  if(t&&Date.now()-t<6e5&&document.visibilityState==="visible"){try{localStorage.removeItem(HXRUNK)}catch(e){console.warn(e)}setTimeout(hxSyncNow,1800)}
+}
 window.addEventListener("hashchange",hxFromURL);
 window.addEventListener("pageshow",hxAuto);
 window.addEventListener("focus",hxAuto);
@@ -4538,8 +4639,14 @@ function renderPill(){
   const s=hxState();
   b.className="hxpill s-"+s.state;
   b.title=b.ariaLabel=s.state==="off"?"Health sync is not connected. Tap to set it up.":`Health sync. Last data ${s.last}. Today: ${s.have.length} of ${HX_FIELDS.length} values. Tap for details.`;
-  b.innerHTML=`<span class="hxdot" aria-hidden="true"></span><span class="hxl">${s.state==="off"?"Connect Health":s.state==="stale"?"Health · "+s.age+" d old":"Health · "+(s.at?agoTxt(s.at):"synced")}</span>${s.state==="off"?"":`<span class="hxn">${s.have.length}/${HX_FIELDS.length}</span>`}`;
+  b.innerHTML=`<span class="hxdot" aria-hidden="true"></span><span class="hxl">${s.state==="off"?'Connect<span class="hxl-f"> Health</span>':'<span class="hxl-f">Health · </span>'+(s.state==="stale"?s.age+" d old":s.at?agoTxt(s.at):"synced")}</span>${s.state==="off"?"":`<span class="hxn">${s.have.length}/${HX_FIELDS.length}</span>`}`;
 }
+/* One-tap sync: opens the Shortcuts app and runs the user's shortcut. It works while the phone is unlocked, which is
+   exactly when iOS lets Health data be read, so it does not depend on an automation firing. */
+const HXSCK="eliteShortcut",HXRUNK="eliteHxRun";
+const hxShortcut=()=>(lsGet(HXSCK)||"Elite Health Sync");
+const hxRunURL=()=>"shortcuts://run-shortcut?name="+encodeURIComponent(hxShortcut());
+const hxRunBtn=(cls,label)=>`<a class="btn ${cls||""}" href="${esc(hxRunURL())}" data-hxrun="1">${label||"▶ Run sync on this iPhone"}</a>`;
 const HX_SAMPLE='{"date":"","steps":"4,210\\n4,211","weight":"165.4 lb","sleep":"7 hr 30 min","rhr":"58 bpm","hrv":"","kcal":"NaN","bf":null}';
 const HXT={out:"",open:false};
 function hookURL(t){
@@ -4565,14 +4672,15 @@ function renderHX(){
   const chip=(f,on)=>`<span class="hxf ${on?"on":""}">${on?"✓":"○"} ${HX_LABEL[f]}</span>`;
   const status=s.state==="off"?callout("info","⌚","Health is not connected yet","","Pick one of the two setups below. Until then everything still works from what you type in.")
     :s.state==="ok"?callout("good","✅","Health sync is working",`Last data ${esc(dateLabel(s.last,{month:"short",day:"numeric"}))}${s.at?" · "+agoTxt(s.at):""}`,"Missing values are fine: the app keeps what it has and scores around the gaps.")
-    :callout("warn","⚠️","Health sync has gone quiet",`Last data ${esc(dateLabel(s.last,{month:"short",day:"numeric"}))}`,"Open Repair below. The usual cause is the automation running while the iPhone is locked: iOS blocks Health data until you unlock.");
+    :callout("warn","⚠️",`No Health data for ${s.age} days`,`Last data ${esc(dateLabel(s.last,{month:"short",day:"numeric"}))}`,(isIOS()?"Tap <b>Run sync</b> below to bring today in now. ":"On your iPhone, open this app and tap <b>Run sync</b>. ")+"Then open Repair: an automation that never fires is usually missing <b>Allow Running When Locked</b>, or runs while the phone is locked, when iOS hides Health data.");
   const link=`${appURL()}#sync&steps=…&weight=…&sleep=…&rhr=…&hrv=…&kcal=…&u=${u}`;
   b.innerHTML=`${status}
    <div class="hxtoday"><div class="sechl">Today from Health <b>${s.have.length} of ${HX_FIELDS.length}</b></div><div class="hxfs">${HX_FIELDS.map(f=>chip(f,s.have.includes(f))).join("")}</div></div>
    ${s.state!=="off"?`<div class="hxtoday"><div class="sechl">Last 14 days <b>synced on ${s.synced} of 14</b></div><div class="hxfs">${HX_FIELDS.map(f=>`<span class="hxf ${s.cov[f]?"on":""}">${HX_LABEL[f]} ${s.cov[f]||0}/14</span>`).join("")}</div></div>
     ${s.synced<12?callout("warn","📅",`Your phone skipped ${14-s.synced} of the last 14 days`,"","iOS hides Health data while the iPhone is locked, so a night-time run on a locked phone sends nothing. Add the second trigger and turn on <b>Allow Running When Locked</b> (Option B, steps 7–9).")+(s.never.length?"":""):""}
     ${s.never.length&&s.never.length<HX_FIELDS.length?callout("info","➕","Never received: "+esc(s.never.map(f=>HX_LABEL[f]).join(", ")),"",`Your Shortcut is not sending these. Add a <b>Find Health Samples</b> step for each one (Option B, step 1).${s.never.some(f=>f==="hrv"||f==="rhr")?" HRV and resting heart rate are measured only by an Apple Watch or another wearable that writes to Health; without one they stay empty, and that is fine.":""}${s.never.includes("sleep")?" Sleep: on an iPhone without a watch, send the <code>inbed</code> field (Option B, step 2) and keep a Sleep schedule on in the Health app.":""}`):""}`:""}
-   <div class="hurlbtns"><button class="btn pri" data-hx="sync">↻ Sync now</button><button class="btn" data-hx="focus">Paste data</button></div>
+   <div class="hurlbtns">${isIOS()?hxRunBtn("pri"):""}<button class="btn ${isIOS()?"":"pri"}" data-hx="sync">${ico("refresh",16)} ${isIOS()?"Check for new data":"Sync now"}</button><button class="btn" data-hx="focus">Paste data</button></div>
+   ${isIOS()?`<div class="d" style="margin-top:6px">Run sync opens the Shortcuts app, runs <b>${esc(hxShortcut())}</b> and brings today's numbers in. Use it whenever the automation has not fired.</div>`:""}
 
    <div class="sechl" style="margin-top:18px">Set up automatic sync</div>
    <details class="rec" data-hk="bg"${op("bg")||(tok&&s.state!=="ok"?" open":"")}><summary>⭐ Background sync · phone sends data with the app closed (needs an account)</summary>
@@ -4596,7 +4704,8 @@ function renderHX(){
        <li><b>Let it run while locked.</b> In iOS 27 automations live inside the shortcut: open it → <b>Edit</b> → <b>ⓘ</b> → <b>Privacy</b> → turn on <b>Allow Running When Locked</b>.</li>
        <li><b>Trigger 1, the full day.</b> <b>Edit</b> → <b>Automation</b> → <b>Time of Day</b>. The next screen offers Time of Day, Sunrise or Sunset: pick <b>Time of Day</b>, set <b>9:30 PM</b>, <b>Daily</b>.</li>
        <li><b>Trigger 2, the safety net.</b> iOS hides Health data while the iPhone is locked, so some nights trigger 1 sends nothing. Add a trigger that fires while you are using the phone: <b>Edit</b> → <b>Automation</b>, then go back to the trigger list (not the time screen) and scroll down to <b>App</b> → pick an app you open every morning → <b>Is Opened</b>. If the shortcut accepts only one trigger, make a second shortcut <b>Elite Sync 2</b> with one action, <b>Run Shortcut → Elite Health Sync</b>, and give that one the App trigger. Running more than once a day is safe: each run sends the totals so far and the server keeps the newest value per field.</li>
-       <li>Run it once with ▶. Then tap <b>Send a test</b> above and <b>Sync now</b>.</li></ol>`
+       <li>Run it once with ▶. Then tap <b>Send a test</b> above and <b>Sync now</b>.</li></ol>
+      <div class="cg" style="margin-top:10px;max-width:420px"><label for="hxScName">Shortcut name, exactly as in the Shortcuts app (used by Run sync)</label><div class="hurlrow"><input id="hxScName" value="${esc(hxShortcut())}" maxlength="80"/><button class="btn" data-hx="scname">Save</button></div></div>`
     :`<div class="d">Your phone sends steps, weight, body fat, sleep, HRV, resting heart rate and workouts every day, even with the app closed. This app picks them up whenever it opens.</div><button class="btn pri" id="htNew" style="margin-top:10px">Create my sync link</button><div class="d" id="htMsg" style="margin-top:6px"></div>`}</details>
    <details class="rec" data-hk="url"${op("url")}><summary>No account · the Shortcut opens the app with today's numbers</summary>
     <div class="d" style="margin-top:6px">Build the same Find Health Samples and Calculate Statistics steps as Option B, then finish with a <b>Text</b> action holding this link (put each result where the … is) and an <b>Open URLs</b> action:</div>
@@ -4644,6 +4753,7 @@ async function healthTest(){
   }catch(e){if($("htMsg"))$("htMsg").textContent="Test failed: "+v3Err(e)}
 }
 document.addEventListener("click",e=>{
+  if(e.target.closest("[data-hxrun]")){lsSet(HXRUNK,String(Date.now()));return} /* the link itself opens Shortcuts */
   const p=e.target.closest("#hxPill");
   if(p){showTab("progress");setTimeout(()=>{const x=$("hxCard");if(x)x.scrollIntoView({behavior:"smooth",block:"start"})},60);return}
   const t=e.target.closest("[data-hx]");if(!t)return;
@@ -4654,13 +4764,14 @@ document.addEventListener("click",e=>{
   else if(a==="import")hxCheck(true);
   else if(a==="sample"){$("hxIn").value=HX_SAMPLE;hxCheck(false)}
   else if(a==="copylink"){const v=$("hxLink").value;if(navigator.clipboard)navigator.clipboard.writeText(v).then(()=>toast("Link copied","good")).catch(()=>prompt("Copy",v));else prompt("Copy",v)}
+  else if(a==="scname"){const v=$("hxScName").value.trim();if(v)lsSet(HXSCK,v);else{try{localStorage.removeItem(HXSCK)}catch(x){console.warn(x)}}toast("Run sync will open: "+hxShortcut(),"good");renderHX();renderPlan()}
   else if(a==="feedsave"){const v=$("hxFeed").value.trim();if(v&&!/^https:\/\//.test(v)){toast("The address must start with https://","warn");return}if(v)lsSet(HXFEEDK,v);else{try{localStorage.removeItem(HXFEEDK)}catch(x){console.warn(x)}}toast(v?"Saved. Pulling now…":"Turned off","good");if(v)hxFeedPull(true)}
 });
 
 /* ===================== EXPERIENCE MODE ===================== */
 function applyMode(){
   const m=UX().mode;document.documentElement.dataset.mode=m;
-  const b=$("btnMode");if(b){b.innerHTML=m==="guided"?'<span aria-hidden="true">🧭</span><span class="hpl">Guided</span>':'<span aria-hidden="true">⚡</span><span class="hpl">Pro</span>';b.title=b.ariaLabel=m==="guided"?"Guided mode is on. Tap for Elite Pro mode: full data and tables.":"Elite Pro mode is on. Tap for Guided mode: simpler screens and next steps."}
+  const b=$("btnMode");if(b){b.innerHTML=m==="guided"?ico("compass",18)+'<span class="hpl">Guided</span>':ico("bolt",18)+'<span class="hpl">Pro</span>';b.title=b.ariaLabel=m==="guided"?"Guided mode is on. Tap for Elite Pro mode: full data and tables.":"Elite Pro mode is on. Tap for Guided mode: simpler screens and next steps."}
 }
 function setMode(m){UX().mode=m==="guided"?"guided":"pro";save();applyMode();renderAll(true);toast(m==="guided"?"Guided mode: simpler screens, one next step at a time":"Elite Pro mode: full telemetry and tables","good")}
 
@@ -4672,22 +4783,22 @@ function ringSm(p,color,label,val,sub){
 function dayFrac(){const n=new Date(),h=n.getHours()+n.getMinutes()/60;return clamp01((h-7)/14)}
 function nextActions(d){
   const A=[],isT=d.date===TODAY,s=d.session,e=eatenOn(d),m=d.macros,rd=readiness(d.date),fr=dayFrac(),hx=hxState();
-  if(!S.confirmed)A.push({i:"👤",t:"Finish your profile",w:"Calories, macros and the training plan are all built from your stats and goal.",b:'<button class="btn pri" data-goto="profile">Open Profile</button>'});
-  if(isT&&s&&s.ex.length&&d.kind==="train"&&(!rd||rd.est))A.push({i:"🟢",t:"Do the 10-second readiness check",w:"Sleep, energy and soreness decide whether today is a push day or an easier one.",b:'<button class="btn" data-nba="ready">Check in</button>'});
-  if(s&&s.ex&&s.ex.length){const n=s.ex.length,dn=s.ex.filter((x,i)=>S.checks[`${d.date}|ex|${i}`]).length;if(dn<n)A.push({i:"🏋️",t:dn?`Resume ${s.name}`:`Train: ${s.name}`,w:`${n-dn} exercise${n-dn===1?"":"s"} left. Log each set so next week's targets move up on their own.`,b:`<button class="btn pri" data-wm="open">▶ ${dn?"Resume":"Start"}</button>`})}
+  if(!S.confirmed)A.push({i:"user",t:"Finish your profile",w:"Calories, macros and the training plan are all built from your stats and goal.",b:'<button class="btn pri" data-goto="profile">Open Profile</button>'});
+  if(isT&&s&&s.ex.length&&d.kind==="train"&&(!rd||rd.est))A.push({i:"activity",t:"Do the 10-second readiness check",w:"Sleep, energy and soreness decide whether today is a push day or an easier one.",b:'<button class="btn" data-nba="ready">Check in</button>'});
+  if(s&&s.ex&&s.ex.length){const n=s.ex.length,dn=s.ex.filter((x,i)=>S.checks[`${d.date}|ex|${i}`]).length;if(dn<n)A.push({i:"dumbbell",t:dn?`Resume ${s.name}`:`Train: ${s.name}`,w:`${n-dn} exercise${n-dn===1?"":"s"} left. Log each set so next week's targets move up on their own.`,b:`<button class="btn pri" data-wm="open">▶ ${dn?"Resume":"Start"}</button>`})}
   const mi=d.meals.findIndex((x,i)=>!S.checks[`${d.date}|meal|${i}`]);
-  if(mi>=0)A.push({i:"🍽️",t:`Eat: ${d.meals[mi].name}`,w:`${d.meals[mi].kcal} kcal · ${d.meals[mi].P} g protein. Tick it when eaten and the day's numbers update.`,b:`<button class="btn" data-nba="meal" data-i="${mi}">Mark eaten</button>`});
+  if(mi>=0)A.push({i:"utensils",t:`Eat: ${d.meals[mi].name}`,w:`${d.meals[mi].kcal} kcal · ${d.meals[mi].P} g protein. Tick it when eaten and the day's numbers update.`,b:`<button class="btn" data-nba="meal" data-i="${mi}">Mark eaten</button>`});
   if(isT){
     const pl=Math.round(m.P-e.P);
-    if(fr>.55&&e.P<m.P*fr*.75&&pl>20)A.push({i:"🥩",t:`Protein is behind: ${pl} g to go`,w:"Protein is the number that protects muscle. A shake or Greek yogurt closes most of the gap.",b:'<button class="btn" data-nba="food">Log food</button>'});
+    if(fr>.55&&e.P<m.P*fr*.75&&pl>20)A.push({i:"utensils",t:`Protein is behind: ${pl} g to go`,w:"Protein is the number that protects muscle. A shake or Greek yogurt closes most of the gap.",b:'<button class="btn" data-nba="food">Log food</button>'});
     const wt=W.T.water*1000,wn=(S.water||{})[d.date]||0;
-    if(wn<wt*fr*.7&&wn<wt)A.push({i:"💧",t:`Drink water: ${r1(wn/1000)} of ${W.T.water} L`,w:"Steady intake through the day beats catching up at night.",b:'<button class="btn" data-wa="500">+500 ml</button>'});
+    if(wn<wt*fr*.7&&wn<wt)A.push({i:"droplet",t:`Drink water: ${r1(wn/1000)} of ${W.T.water} L`,w:"Steady intake through the day beats catching up at night.",b:'<button class="btn" data-wa="500">+500 ml</button>'});
     const st=S.steps[d.date]||0,g=stepGoal();
-    if(st>0&&st<g*fr*.7)A.push({i:"🚶",t:`${(g-st).toLocaleString()} steps to your goal`,w:"A 10-minute walk after a meal is about 1,000 steps.",b:""});
-    if(!(S.log[d.date]||{}).w&&new Date().getHours()<12)A.push({i:"⚖️",t:"Log this morning's weight",w:"Daily weigh-ins feed the trend line that auto-adjusts your calories.",b:'<button class="btn" data-goto="progress">Log weight</button>'});
-    if(hx.state==="stale")A.push({i:"⌚",t:"Health sync has gone quiet",w:`Last data ${hx.age} days ago. One tap checks for new data.`,b:'<button class="btn" data-hx="sync">Sync now</button>'});
+    if(st>0&&st<g*fr*.7)A.push({i:"steps",t:`${(g-st).toLocaleString()} steps to your goal`,w:"A 10-minute walk after a meal is about 1,000 steps.",b:""});
+    if(!(S.log[d.date]||{}).w&&new Date().getHours()<12)A.push({i:"scale",t:"Log this morning's weight",w:"Daily weigh-ins feed the trend line that auto-adjusts your calories.",b:'<button class="btn" data-goto="progress">Log weight</button>'});
+    if(hx.state==="stale")A.splice(Math.min(1,A.length),0,{i:"heart",t:`Health data is ${hx.age} days old`,w:isIOS()?"Your phone has not sent anything since then. One tap runs the sync now.":"Your phone has not sent anything since then. Open the app on your iPhone and tap Run sync.",b:isIOS()?hxRunBtn("pri","▶ Run sync"):'<button class="btn" data-hx="sync">Check</button>'});
   }
-  if(!A.length)A.push({i:"✅",t:isT?"Everything is done for today":"Nothing open on this day",w:"Recovery is the job now: sleep 7.5 h or more.",b:""});
+  if(!A.length)A.push({i:"check",t:isT?"Everything is done for today":"Nothing open on this day",w:"Recovery is the job now: sleep 7.5 h or more.",b:""});
   return A;
 }
 function renderCommand(){
@@ -4698,13 +4809,13 @@ function renderCommand(){
   const A=nextActions(d),guided=UX().mode==="guided",top=A[0],rest=A.slice(1,guided?3:4);
   el.innerHTML=`<div class="card cmd"><div class="crings">
      ${ringSm(rd?rd.score:0,rd?(rd.level==="green"?"var(--green)":rd.level==="yellow"?"var(--amber)":"var(--red)"):"var(--border)","Readiness",rd?rd.pct:"–",rd?(rd.est?"estimate":rd.level==="green"?"good to go":rd.level==="yellow"?"go easier":"back off"):"not checked")}
-     ${ringSm(e.kcal/m.kcal,"var(--accent)","Fuel",Math.round(e.kcal/m.kcal*100)+"%",`${Math.round(e.kcal).toLocaleString()} / ${Math.round(m.kcal).toLocaleString()} kcal<br>protein ${Math.round(e.P)} / ${Math.round(m.P)} g`)}
+     ${ringSm(e.kcal/m.kcal,"var(--accent)","Fuel",Math.round(e.kcal/m.kcal*100)+"%",`${Math.round(e.kcal).toLocaleString()} of ${Math.round(m.kcal).toLocaleString()}<br>P ${Math.round(e.P)}/${Math.round(m.P)} g`)}
      ${ringSm(n?dn/n:d.kind==="rest"?1:0,"var(--green)","Train",n?`${dn}/${n}`:"Rest",n?(dn===n?"session done":"exercises"):"recovery day")}
      ${ringSm(st/g,"var(--amber)","Move",st?(st>=1000?r1(st/1000)+"k":st):"–",st?pace(st,g)||"steps":"no steps yet")}
     </div>
     <div class="nba"><div class="sechl">Next best action</div>
-     <div class="nba1"><span class="nba-i" aria-hidden="true">${top.i}</span><div class="nba-b"><b>${esc(top.t)}</b><p class="guided-only">${esc(top.w)}</p></div>${top.b}</div>
-     ${rest.length?`<div class="nbaq">${rest.map(a=>`<div class="nba2"><span aria-hidden="true">${a.i}</span><span>${esc(a.t)}</span>${a.b}</div>`).join("")}</div>`:""}
+     <div class="nba1"><span class="nba-i" aria-hidden="true">${ico(top.i,22)}</span><div class="nba-b"><b>${esc(top.t)}</b><p class="guided-only">${esc(top.w)}</p></div>${top.b}</div>
+     ${rest.length?`<div class="nbaq">${rest.map(a=>`<div class="nba2"><span class="nba-s" aria-hidden="true">${ico(a.i,16)}</span><span>${esc(a.t)}</span>${a.b}</div>`).join("")}</div>`:""}
     </div></div>`;
 }
 document.addEventListener("click",e=>{
@@ -5038,7 +5149,7 @@ function renderBio(){
   const corr=bioCorr(n),have=corr.filter(c=>c.r!=null);
   const tele=[];for(let i=0;i<Math.min(n,30);i++)tele.push(dayModel(addD(TODAY,-i)));
   const cell=(v,f)=>v!=null?f(v):'<span class="na">–</span>';
-  el.innerHTML=`<div class="pgsec"><span>🧬</span> Biometrics &amp; trends</div>
+  el.innerHTML=`<div class="pgsec"><span>${ico("activity",18)}</span> Biometrics &amp; trends</div>
    <div class="card bio"><h2><span>Telemetry</span><span class="seg bioseg" role="group" aria-label="Range">${[7,30,90].map(x=>`<button type="button" class="${x===n?"on":""}" data-bior="${x}" aria-pressed="${x===n}">${x} d</button>`).join("")}</span></h2>
     <div class="btiles">${tiles}</div>
     <h3>${BM[BIO.metric].l}${BM[BIO.metric].u()?" · "+BM[BIO.metric].u():""} · last ${n} days</h3>${bioChart(BIO.metric,n)}
@@ -5077,13 +5188,14 @@ function renderModeCard(){
 }
 (function(){
   const ro=renderOverview,bp=buildProfile,ra=renderAll,st=showTab;
-  renderOverview=function(){ro.apply(this,arguments);$("pane-overview").insertAdjacentHTML("afterbegin",`<div class="seg foodseg">${[["grocery","🛒 Groceries"],["kitchen","🍳 Recipes"],["overview","🎯 Targets"]].map(([k,l])=>`<button data-food="${k}" class="${FOODSUB===k?"on":""}">${l}</button>`).join("")}</div>`)};
+  renderOverview=function(){ro.apply(this,arguments);$("pane-overview").insertAdjacentHTML("afterbegin",`<div class="seg foodseg">${[["grocery","cart","Groceries"],["kitchen","book","Recipes"],["overview","target","Targets"]].map(([k,i,l])=>`<button data-food="${k}" class="${FOODSUB===k?"on":""}">${ico(i,18)}${l}</button>`).join("")}</div>`)};
   const rf=renderFood;
   renderFood=function(){rf.apply(this,arguments);renderQuick();renderQuality()};
   buildProfile=function(){bp.apply(this,arguments);renderModeCard()};
   renderAll=function(){v4Norm();ra.apply(this,arguments);if(arguments[0]){const c=$("modeCard");if(c)c.remove();renderModeCard()}renderPill();applyMode()};
   showTab=function(n,sub){
     if(n==="overview"){n="food";sub="overview"}
+    document.body.dataset.tab=n;
     st.call(this,n,sub);
     if(n==="quality")renderQuality();
   };
