@@ -2,6 +2,33 @@
 
 State of the app and the decisions behind it. Newest first.
 
+## v5.0 — Obsidian Precision overhaul, Workout Cockpit, EWMA/TDEE & module split, build 2026.11.21.1 (2026-11-21)
+
+**Shipped on branch `v5-elite-overhaul` for Claude Opus review + owner deploy approval. See `docs/HANDOFF-OPUS.md`.**
+
+### Phase 1 — Mechanical, security & UX reliability
+- **Midnight rollover:** Replaced static `const TODAY = todayISO()` with mutable `TODAY` + `syncToday()` triggered on `visibilitychange`, `focus`, and `pageshow` so a PWA kept open overnight rolls forward cleanly.
+- **Wall-clock rest timer & AudioContext:** Replaced interval-decrement timer with `tmrEnd = Date.now() + secs * 1000` (catches up instantly after iOS backgrounding/screen lock), added `−15s / +15s / Skip` controls + live progress bar, and shared a single gesture-unlocked `AudioContext` (fixes iOS Safari silent-beep + context leak).
+- **Manual telemetry protection:** Manual weight (`#lw`), sleep (`#ls`, readiness sleep dropdown), and steps (`#cdSteps` tracked via `S.stepsM`) are never overwritten by subsequent Apple Health syncs (`hxProject`).
+- **Tombstone sync merge:** Added `S.del` tombstones to `mergeData()` and `SYNCKEYS` so deleted `recipes`, `groc`, `favs`, and `flog` items do not resurrect across devices.
+- **Cardio & RLS hardening:** ID-based cardio deletion (`data-cddel`) + Undo toast; `supabase/v5-elite.sql` adds `checkins_protect_reply` trigger preventing clients from spoofing coach replies via `UPDATE checkins`, `_merge_cardio` preserving earlier Health workouts on partial syncs, `push_subs.fail_count`/`last_err` + `push_result_v2`, and 15s `pg_cron` cadence.
+- **APNs Web Push fix:** Changed VAPID `SUBJECT` in `supabase/functions/push/index.ts` from `https://showacquisitions.github.io/elite-peaking-os/` to `mailto:showacquisitions@gmail.com` to resolve Apple APNs HTTP 400 rejections.
+- **Zero native popups:** Replaced all 25+ `alert()`/`confirm()`/`prompt()` calls in `src/ui/` with custom Promise-based modals/bottom sheets (`src/ui/dialogs.js`: `uiAlert`, `uiConfirm`, `uiPrompt`, `openSheet`) and Undo-capable `toast()`.
+- **Surface declutter:** Merged Hero stats into Daily Brief (`#cmdBox`), collapsed Quick Add behind a toggle inside Food Log, removed redundant standalone Steps card and legacy 28d Weight polyline, moved Data & Privacy to Profile, and eliminated monkey-patching of `renderPlan`/`renderAll`.
+
+### Phase 2 — Obsidian Precision visual overhaul
+- **Clean 3-file CSS system:** Rewrote 5 stacked CSS eras into `src/styles/tokens.css`, `src/styles/base.css`, and `src/styles/components.css` — true OLED Obsidian dark (`#050608` canvas, stepped graphite `#0D1015`/`#141820`/`#1B212C`, translucent hairline borders, platinum high-contrast primary CTAs) + Ceramic Light theme.
+- **Typography & brand:** Loaded `Plus Jakarta Sans` + `JetBrains Mono` with tabular numerals; redesigned geometric apex chevron `icon.svg` and regenerated crisp `icon-512.png`, `icon-192.png`, `apple-touch-icon.png`; removed gradient `<h1>` and double desktop branding.
+- **100% vector iconography:** Expanded `ICO_P` to 48 uniform 1.75px-stroke SVG icons (`src/ui/icons.js`); zero raw system emojis in UI chrome.
+- **Interactive charts:** Built unified touch-scrubbable `buildInteractiveChart()` (`src/ui/charts.js`) with pointer drag/hover crosshair and live readout header.
+
+### Phase 3 — 1% Elite athletic & nutrition engine + module architecture
+- **Gym-Floor Workout Cockpit (`#wm`):** Live elapsed clock (`#wmClock`), set-by-set table with previous-session ghost values, `−`/`+` weight & rep steppers, inline Plate Calculator drawer, mid-session Exercise Swap drawer, inline ramp-up checklist, edit any set, `+ Add set`, docked wall-clock rest timer bar, and `localStorage` draft crash recovery (`eliteWmDraft`).
+- **EWMA Trend Weight & Adaptive TDEE:** Added `ewmaSeries()` (α = 0.14) and MacroFactor-style `adaptiveTDEE()` in `src/engine/core.js`, surfaced with a dual-series interactive chart in Biometrics → Trend & adaptive TDEE.
+- **Nutrition depth:** Enriched all 50 `FOODS` entries with USDA per-100g micronutrients (`mi`) so planned meals populate `renderMicro()` automatically; added `0.5× / 1× / 1.5×` planned meal portion toggles (`S.mealMult`); added lazy ZXing CDN barcode scanner fallback for iOS Safari in `fsScan()`.
+- **Strength engine & library:** Bodyweight-inclusive `effLoad()` and smooth tapered E1RM above 12 reps (no 12-rep cliff); expanded exercise library from 63 → 140 exercises preserving all 63 original `slot:id` keys.
+- **Modular source + zero-dep bundler:** Split the 5,213-line `index.html` monolith into `src/{styles,data,engine,ui}/*` + `src/template.html` assembled by `node tools/build.cjs` (auto-injecting `supabase/functions/health/parse.mjs` `HX` block). Single-file `index.html` remains the offline/GitHub Pages/Obsidian deploy artifact; CI verifies `git diff --exit-code index.html` after running `tools/build.cjs`.
+
 ## v4.1 — premium polish and one-tap sync, build 2026.11.17.1 (2026-11-17)
 
 - **Audit findings [OBSERVED].** No Health data has reached the server since 2026-11-13 23:42 UTC; the logs show no requests at all for 3+ days, so the automation is not firing (not failing). Push: both saved subscriptions are iPhones; Apple returned HTTP 400 on 2026-11-13. On phones, the Nutrition view scrolled sideways (food-log rows), as did Today at 320 px (rings, Next best action) and Groceries (the add-item row). The week strip hid three days, and the header wrapped to two rows.

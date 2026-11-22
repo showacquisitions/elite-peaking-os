@@ -345,7 +345,7 @@ async function page(browser, vp) {
     await p9.click(".cocard"); await p9.waitForTimeout(100);
     ok(calls.some(c => c.startsWith("POST /rest/v1/rpc/msg_read")), "opening a client marks their messages read");
     ok(/Not shared/.test(await p9.textContent("#coPhotos")), "client photos stay hidden until the client shares them");
-    await p9.selectOption("#coProgP", "wave"); await p9.selectOption("#coWeeks", "4"); await p9.click("#coAssignProg"); await p9.waitForTimeout(200);
+    await p9.selectOption("#coProgP", "wave"); await p9.selectOption("#coWeeks", "4"); await p9.click("#coAssignProg"); await p9.waitForSelector('#eliteDlg [data-dlg="ok"]'); await p9.click('#eliteDlg [data-dlg="ok"]'); await p9.waitForTimeout(200);
     const rows = JSON.parse(calls.bodies["/rest/v1/assignments"] || "[]").filter(x => x.session.ex.length);
     const byWeek = w => rows.filter(x => /^Week (\d+)/.exec(x.note) && +/^Week (\d+)/.exec(x.note)[1] === w)[0];
     const s1 = byWeek(1) && byWeek(1).session.ex[0].sets, s3 = byWeek(3) && byWeek(3).session.ex[0].sets, s4 = byWeek(4) && byWeek(4).session.ex[0].sets;
@@ -380,7 +380,7 @@ async function page(browser, vp) {
     ok(ip.rows[0].sleep === 8 && /time in bed/.test(ip.issues[0].why) && wa.sleep === 7.5 && hae.sleep === 8.1, "sleep: asleep time wins (Apple Watch); time in bed stands in on an iPhone alone, and says so");
     const m = mod.hxMerge({ date: "d", steps: 9000, hrv: 50 }, { date: "d", steps: 9500 }, false);
     ok(m.steps === 9500 && m.hrv === 50, "a later sync updates what it carries and keeps the rest");
-    const html = fs.readFileSync(file, "utf8"), src = fs.readFileSync(path.join(__dirname, "..", "supabase", "functions", "health", "parse.mjs"), "utf8"), blk = t => t.slice(t.indexOf("/*HX-BEGIN*/"), t.indexOf("/*HX-END*/"));
+    const html = fs.readFileSync(file, "utf8").replace(/\r\n/g, "\n"), src = fs.readFileSync(path.join(__dirname, "..", "supabase", "functions", "health", "parse.mjs"), "utf8").replace(/\r\n/g, "\n"), blk = t => t.slice(t.indexOf("/*HX-BEGIN*/"), t.indexOf("/*HX-END*/"));
     ok(blk(html).length > 1000 && blk(html) === blk(src), "the app and the server run the identical normalizer (run tools/inline-hx.cjs after editing parse.mjs)");
   }
 
@@ -562,6 +562,136 @@ async function page(browser, vp) {
     ok(s.h1 === "shortcuts://run-shortcut?name=Elite%20Health%20Sync" && s.h2 === "shortcuts://run-shortcut?name=Run%20Sync", "iPhone: Run sync opens the named shortcut in the Shortcuts app");
     ok(s.stale && s.nba && s.pos >= 0 && s.pos <= 1 && /4 d old/.test(s.pill) && ip.errors.length === 0, "stale Health data is called out on Today, in the sync card and in the header pill " + ip.errors.join(" | "));
     await ctx.close();
+  }
+
+  console.log("v5.0: Obsidian overhaul, cockpit, EWMA/TDEE, micros, tombstones, dialogs");
+  {
+    const uiDir = path.join(__dirname, "..", "src", "ui");
+    if (fs.existsSync(uiDir)) {
+      const uiSrc = fs.readdirSync(uiDir).filter(f => f.endsWith(".js")).map(f => fs.readFileSync(path.join(uiDir, f), "utf8")).join("\n");
+      const nativeCalls = (uiSrc.match(/(?<!\.)\b(?:window\.)?(?:alert|confirm|prompt)\s*\(/g) || []);
+      ok(nativeCalls.length === 0, `zero native alert/confirm/prompt calls in src/ui/ (found ${nativeCalls.length})`);
+    }
+    const p5 = await page(browser, { width: 390, height: 844 });
+    /* Custom modal confirm & prompt */
+    const dlgRes = await p5.evaluate(async () => {
+      const p1 = uiConfirm("Confirm test?", { title: "Check", okText: "Yes" });
+      const shown = !!document.querySelector("#eliteDlg .sheet-card");
+      document.querySelector('#eliteDlg [data-dlg="ok"]').click();
+      const a1 = await p1;
+      const p2 = uiPrompt("Enter value", "42", { title: "Prompt" });
+      const inp = document.querySelector("#eliteDlg #dlgInput"); inp.value = "99";
+      document.querySelector('#eliteDlg [data-dlg="ok"]').click();
+      const a2 = await p2;
+      return { shown, a1, a2 };
+    });
+    ok(dlgRes.shown && dlgRes.a1 === true && dlgRes.a2 === "99", "custom modal confirm/prompt resolves cleanly without native dialogs");
+
+    /* Wall-clock timer catch-up & adjustTimer */
+    const tmrRes = await p5.evaluate(() => {
+      startTimer(90); const r1 = left;
+      adjustTimer(15); const r2 = left;
+      tmrEnd = Date.now() - 2000; tickTimer();
+      const ended = $("timer").className === "end" && left === 0;
+      stopTimer();
+      return { r1, r2, ended };
+    });
+    ok(tmrRes.r1 === 90 && tmrRes.r2 >= 104 && tmrRes.ended, "wall-clock rest timer supports +15s adjust and catches up after backgrounding");
+
+    /* Manual weight, sleep, steps protected from Health overwrite */
+    const prot = await p5.evaluate(() => {
+      const d = TODAY;
+      S.log[d] = { w: 81.2, s: "8.2" }; S.steps[d] = 7400; S.stepsM = { [d]: 1 };
+      hxUpsert([{ date: d, weight: 79.0, sleep: 6.1, steps: 9800, hrv: 58 }]);
+      return { w: S.log[d].w, s: S.log[d].s, st: S.steps[d], hrv: S.hd[d].hrv };
+    });
+    ok(prot.w === 81.2 && prot.s === "8.2" && prot.st === 7400 && prot.hrv === 58, "manual weight, sleep and steps are never overwritten by Health sync");
+
+    /* Tombstone sync merge prevents resurrection */
+    const tombRes = await p5.evaluate(() => {
+      const a = freshState(), b = freshState();
+      a.recipes = []; a.del = { r9: 2000 };
+      b.recipes = [{ id: "r9", name: "Deleted recipe" }, { id: "r10", name: "Live recipe" }];
+      const m = mergeData(a, b);
+      return { ids: m.recipes.map(x => x.id).join(","), tomb: m.del.r9 };
+    });
+    ok(tombRes.ids === "r10" && tombRes.tomb === 2000, "tombstone sync merge prevents resurrection of deleted recipes/items");
+
+    /* EWMA trend weight + Adaptive TDEE */
+    const metRes = await p5.evaluate(() => {
+      S.log = {}; S.nut = {};
+      for (let i = 21; i >= 0; i--) {
+        const d = addD(TODAY, -i);
+        S.log[d] = { w: 82 - (21 - i) * 0.05 + (i % 2 ? 0.25 : -0.25) };
+        S.nut[d] = { k: 2200, p: 170 };
+      }
+      const tr = weightTrend(S.log, TODAY), at = adaptiveTDEE(S.log, S.nut, TODAY);
+      return { hasTr: !!(tr && tr.ewma && tr.ewma.length >= 20 && tr.trendNow > 0), rate: tr && tr.rate, tdee: at && at.tdee };
+    });
+    ok(metRes.hasTr && metRes.rate < 0 && metRes.tdee > 2300 && metRes.tdee < 2900, `EWMA trend weight (${metRes.rate?.toFixed(2)} kg/wk) and adaptive TDEE (${metRes.tdee} kcal) compute accurately`);
+
+    /* E1RM smooth >12 reps & bodyweight-inclusive pull-up load + expanded EX library */
+    const strRes = await p5.evaluate(() => {
+      S.prof.kg = 80;
+      const e12 = e1(50, 12), e15 = e1(50, 15), e20 = e1(50, 20);
+      const pu = effLoad("vpull:wpu", 10);
+      return { smooth: e15 > e12 && e20 > e15, pu, exLen: EX.length };
+    });
+    ok(strRes.smooth && strRes.pu === 90 && strRes.exLen >= 120, `smooth E1RM above 12 reps, BW-inclusive pull-up load (${strRes.pu} kg), and ${strRes.exLen} exercises`);
+
+    /* Planned-meal micronutrients + 0.5x/1.5x portion scaling */
+    const fuelRes = await p5.evaluate(() => {
+      S.flog = {}; S.checks = {}; S.mealMult = {};
+      const d = W.days.find(x => x.meals && x.meals.length);
+      S.sel = d.date; S.checks[`${d.date}|meal|0`] = true;
+      const e1x = eatenOn(d).kcal, m1 = dayMicros(d);
+      S.mealMult[`${d.date}|0`] = 1.5;
+      const e15x = eatenOn(d).kcal;
+      renderPlan();
+      const hasMicroRows = document.querySelectorAll("#microBox .vrow").length >= 8;
+      return { e1x, e15x, iron: m1.tot.iron, k: m1.tot.k, hasMicroRows };
+    });
+    ok(fuelRes.iron > 0 && fuelRes.k > 0 && fuelRes.hasMicroRows, "planned meals populate micronutrients automatically");
+    ok(Math.abs(fuelRes.e15x - fuelRes.e1x * 1.5) <= 2, `meal portion toggle scales calories accurately (${fuelRes.e1x} -> ${fuelRes.e15x})`);
+
+    /* Workout Cockpit: set table, steppers, plate drawer, exercise swap, set edit, draft */
+    const wmRes = await p5.evaluate(() => {
+      const d = W.days.find(x => x.session && x.session.ex.length >= 2);
+      S.sel = d.date; S.sets = {}; showTab("plan"); renderPlan();
+      wmOpen();
+      const clock = !!$("wmClock"), tbl = document.querySelectorAll("#wm .wm-tr").length >= 2;
+      const draft = !!lsGet(WMDRAFTK);
+      $("wmW").value = "60"; $("wmR").value = "8";
+      document.querySelector('[data-wmstep="w|2.5"],[data-wmstep="w|5"]').click();
+      const steppedW = parseFloat($("wmW").value);
+      document.querySelector('[data-wm="log"]').click();
+      document.querySelector('[data-wm="plates"]').click();
+      const plateOk = !!$("wmPlOut") && /Each side|Bar only/.test($("wmPlOut").textContent);
+      document.querySelector('[data-wmedit="0"]').click();
+      $("wmR").value = "10"; document.querySelector('[data-wm="log"]').click();
+      const editedR = (S.sets[WM.sess.ex[0].uid + "|" + WM.date] || [])[0]?.r;
+      const oldName = WM.sess.ex[0].name;
+      document.querySelector('[data-wm="swap"]').click();
+      const swBtn = document.querySelector("[data-wmswap]");
+      if (swBtn) swBtn.click();
+      const swapped = WM.sess.ex[0].name !== oldName;
+      wmClose();
+      return { clock, tbl, draft, steppedW, plateOk, editedR, swapped, draftCleared: !lsGet(WMDRAFTK) };
+    });
+    ok(wmRes.clock && wmRes.tbl && wmRes.draft && wmRes.steppedW > 60 && wmRes.plateOk && wmRes.editedR === 10 && wmRes.swapped && wmRes.draftCleared, "Workout Cockpit: live clock, set table, steppers, plate drawer, set edit, exercise swap & draft recovery");
+
+    /* Zero raw emoji in UI chrome + interactive chart present */
+    const uiRes = await p5.evaluate(() => {
+      showTab("plan"); renderPlan();
+      const emo = /[\u{1F300}-\u{1FAFF}]/u;
+      const chrome = [document.querySelector("header").textContent, document.querySelector(".tabs").textContent, [...document.querySelectorAll(".callout .c-i")].map(x => x.textContent).join("")].join("");
+      showTab("progress"); renderProgress();
+      const wrap = !!document.querySelector(".chart-wrap"), tip = !!document.querySelector(".chart-tip");
+      return { cleanChrome: !emo.test(chrome), wrap, tip };
+    });
+    ok(uiRes.cleanChrome && uiRes.wrap && uiRes.tip, "zero raw emojis in UI chrome and touch-scrubbable interactive charts render");
+    ok(p5.errors.length === 0, "no JS errors in v5.0 tests " + p5.errors.join(" | "));
+    await p5.close();
   }
 
   const vf = path.join(path.dirname(file), "version.json");

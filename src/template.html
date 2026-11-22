@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<!-- Elite OS · © 2026 Show Acquisitions. All rights reserved. Proprietary; see LICENSE. -->
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<meta name="theme-color" content="#050608" />
+<link rel="manifest" href="manifest.webmanifest" />
+<link rel="icon" href="icon.svg" type="image/svg+xml" />
+<link rel="apple-touch-icon" href="apple-touch-icon.png" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@500;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" />
+<meta name="mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+<meta name="apple-mobile-web-app-title" content="Elite OS" />
+<title>Elite OS — Training &amp; Nutrition</title>
+<meta name="copyright" content="© 2026 Show Acquisitions. All rights reserved."/>
+<meta name="author" content="Show Acquisitions"/>
+<style>
+/*__STYLES__*/
+</style>
+</head>
+<body>
+<header>
+  <div>
+    <div class="brand-row">
+      <svg class="brand-mark" viewBox="0 0 32 32" aria-hidden="true"><rect width="32" height="32" rx="8" fill="#0d1015"/><path d="M7.5 22.5L16 8l8.5 14.5h-4.2L16 14.8l-4.3 7.7z" fill="#f8fafc"/><rect x="10.5" y="24.2" width="11" height="1.8" rx=".9" fill="#4f8bff"/></svg>
+      <h1><span class="h1f">ELITE OS</span><span class="h1s">ELITE OS</span><span class="page-title" id="pageTitle">Today</span></h1>
+    </div>
+    <p class="sub" id="sub"></p>
+  </div>
+  <div class="hact">
+    <button type="button" class="hxpill s-off" id="hxPill" aria-label="Health sync status"></button>
+    <button type="button" id="btnMode" aria-label="Experience mode"></button>
+    <button type="button" class="hprof" data-goto="profile" aria-label="Profile and settings"><span class="hpi" data-ico="user"></span><span class="hpl">Profile</span></button>
+    <button type="button" class="hthm" id="btnTheme" aria-label="Switch theme" title="Switch theme"></button>
+  </div>
+</header>
+<div id="updBar"></div>
+<div id="installBox"></div>
+<div class="overall"><span class="sub">This week</span><div class="bar"><div id="overallFill" style="width:0"></div></div><b id="overallTxt"></b></div>
+
+<nav class="tabs" aria-label="Sections">
+  <div class="side-brand" aria-hidden="true">
+    <svg width="24" height="24" viewBox="0 0 32 32"><rect width="32" height="32" rx="8" fill="#0d1015"/><path d="M7.5 22.5L16 8l8.5 14.5h-4.2L16 14.8l-4.3 7.7z" fill="#f8fafc"/><rect x="10.5" y="24.2" width="11" height="1.8" rx=".9" fill="#4f8bff"/></svg>
+    <span>ELITE OS</span>
+  </div>
+  <button class="tab active" data-tab="plan"><span class="ic" data-ico="home"></span><span class="full">Today</span><span class="short">Today</span></button>
+  <button class="tab" data-tab="train"><span class="ic" data-ico="dumbbell"></span><span class="full">Train</span><span class="short">Train</span></button>
+  <button class="tab" data-tab="food"><span class="ic" data-ico="utensils"></span><span class="full">Fuel &amp; Recipes</span><span class="short">Fuel</span></button>
+  <button class="tab" data-tab="quality"><span class="ic" data-ico="scan"></span><span class="full">Quality</span><span class="short">Quality</span></button>
+  <button class="tab" data-tab="progress"><span class="ic" data-ico="activity"></span><span class="full">Biometrics</span><span class="short">Trends</span></button>
+  <button class="tab" data-tab="coach" id="tabCoach" hidden><span class="ic" data-ico="users"></span><span class="full">Clients</span><span class="short">Clients</span></button>
+</nav>
+
+<section id="pane-train" class="pane"></section>
+<section id="pane-profile" class="pane"></section>
+<section id="pane-overview" class="pane"></section>
+<section id="pane-coach" class="pane"></section>
+<section id="pane-quality" class="pane"></section>
+
+<section id="pane-plan" class="pane active" data-seg="w">
+  <div class="wknav" id="weekNav"></div>
+  <div class="days" id="days"></div>
+  <div id="cmdBox"></div>
+  <div class="kpis" id="kpis"></div>
+  <div id="peakNote"></div>
+  <div id="coachBox"></div>
+  <div class="seg planseg" role="tablist">
+    <button class="on" data-pseg="w"><span data-ico="dumbbell"></span>Workout</button>
+    <button data-pseg="m"><span data-ico="utensils"></span>Nutrition</button>
+  </div>
+  <div class="card" data-s="w"><h2><span><span data-ico="activity"></span>Readiness check</span><span class="badge" id="rdBadge"></span></h2><div id="readyBox"></div></div>
+  <div class="grid2">
+    <div class="card" data-s="w">
+      <h2>
+        <span id="wTitle"></span>
+        <span style="display:flex;gap:8px;align-items:center">
+          <span class="badge" id="wBadge"></span>
+          <button class="btn pri" id="wStart" data-wm="open" hidden><span data-ico="play"></span>Start workout</button>
+          <button class="btn" id="wEdit" data-goto="train" hidden><span data-ico="edit"></span>Edit plan</button>
+        </span>
+      </h2>
+      <div id="wList"></div>
+    </div>
+    <div>
+      <div class="card" data-s="m"><h2><span><span data-ico="utensils"></span>Meals</span><span class="badge" id="mBadge"></span></h2><div id="mList"></div></div>
+      <div class="card" data-s="m"><h2><span><span data-ico="check"></span>Daily habits</span></h2><div id="hList"></div></div>
+      <div class="card" data-s="m">
+        <h2>
+          <span><span data-ico="plus"></span>Food log &amp; quick add</span>
+          <button type="button" class="btn" id="btnOpenQuick"><span data-ico="zap"></span>Quick macros</button>
+        </h2>
+        <div id="exBox" hidden></div>
+        <div id="foodBox"></div>
+      </div>
+      <div class="card pro-only" data-s="m"><h2><span><span data-ico="spark"></span>Micronutrients</span><span class="badge">Meals + logged</span></h2><div id="microBox"></div></div>
+      <div class="card" data-s="w"><h2><span><span data-ico="steps"></span>Cardio &amp; steps</span><span class="badge" id="cdBadge"></span></h2><div id="cardioBox"></div></div>
+      <div class="card pro-only" data-s="w"><h2><span><span data-ico="disc"></span>Plate calculator</span></h2><div id="plateBox"></div></div>
+    </div>
+  </div>
+</section>
+
+<section id="pane-grocery" class="pane">
+  <div class="seg foodseg"><button data-food="grocery"><span data-ico="cart"></span>Groceries</button><button data-food="kitchen"><span data-ico="book"></span>Recipes</button><button data-food="overview"><span data-ico="target"></span>Targets</button></div>
+  <div class="card"><h2><span>Shopping list for the displayed week</span><span style="display:flex;gap:8px;align-items:center"><span class="badge" id="gBadge"></span><button class="btn" id="gShare">Share / copy</button></span></h2><div id="gList"></div></div>
+  <div class="card"><h2><span>Your items</span><button class="btn" id="btnGcClear">Clear checked</button></h2><div style="display:flex;gap:8px;margin-top:4px"><input id="gcIn" placeholder="Add an item, e.g. 2 lb ground turkey" style="flex:1"/><button class="btn" id="btnGcAdd">Add</button></div><div id="gCustom"></div><div id="gRecipes"></div></div>
+  <div class="card"><h2><span>Batch cook plan</span><span class="badge">Meal prep</span></h2><div id="prepList"></div></div>
+</section>
+
+<section id="pane-kitchen" class="pane">
+  <div class="seg foodseg"><button data-food="grocery"><span data-ico="cart"></span>Groceries</button><button data-food="kitchen"><span data-ico="book"></span>Recipes</button><button data-food="overview"><span data-ico="target"></span>Targets</button></div>
+  <div class="grid2">
+    <div>
+      <div class="card"><h2><span>Foods I like and dislike</span><span class="badge" id="kfBadge"></span></h2><div class="d">Tap a food to cycle: neutral, liked, disliked. Disliked foods leave your plan right away. Liked foods show up more often.</div><input id="kq" placeholder="Search foods" style="width:100%;margin:8px 0"/><div id="kFoods"></div></div>
+      <div class="card"><h2><span>Meals you rated</span></h2><div id="kMeals"></div></div>
+    </div>
+    <div>
+      <div class="card"><h2><span>Add a recipe</span></h2><div id="kForm"></div></div>
+      <div class="card"><h2><span>My recipes</span></h2><div id="kRecipes"></div></div>
+    </div>
+  </div>
+</section>
+
+<section id="pane-progress" class="pane">
+  <div id="bioBox"></div>
+  <div class="pgsec"><span data-ico="ruler"></span> Body &amp; check-in</div>
+  <div class="grid2">
+    <div class="card"><h2><span>Daily log</span><input type="date" id="logDate"/></h2>
+      <div class="log-grid">
+        <div class="cg"><label id="lwl">Morning weight</label><input type="number" step="0.1" id="lw"/></div>
+        <div class="cg"><label id="lwal">Waist</label><input type="number" step="0.1" id="lwa"/></div>
+        <div class="cg"><label>Sleep (h)</label><input type="number" step="0.25" id="ls"/></div>
+        <div class="cg"><label>Energy (1–5)</label><input type="number" min="1" max="5" id="le"/></div>
+        <div class="cg"><label id="lchL">Chest</label><input type="number" step="0.1" id="lch"/></div>
+        <div class="cg"><label id="larL">Arm</label><input type="number" step="0.1" id="lar"/></div>
+        <div class="cg"><label id="lthL">Thigh</label><input type="number" step="0.1" id="lth"/></div>
+      </div>
+      <h3>Notes</h3><textarea id="ln" placeholder="Pump, strength, hunger, mood, mirror check…"></textarea>
+    </div>
+    <div class="card"><h2><span>Weekly check-in</span></h2><div id="checkin"></div></div>
+    <div class="card"><h2><span>Trend &amp; adaptive TDEE</span><span class="badge" id="tdeeBadge">EWMA</span></h2><div id="trend"></div><div id="logWt"></div></div>
+  </div>
+  <div id="measBox"></div>
+  <div class="pgsec"><span data-ico="dumbbell"></span> Training</div>
+  <div id="wlogBox"></div>
+  <div id="chartBox"></div>
+  <div id="progExtra"></div>
+  <div class="pgsec"><span data-ico="heart"></span> Health &amp; photos</div>
+  <div class="card" id="hxCard"><h2><span>Health sync</span><span class="badge">Apple Health · Shortcuts</span></h2><div id="hxBox"></div></div>
+  <div class="card"><h2><span>Progress photos</span></h2><div id="photoBox"></div></div>
+</section>
+
+<footer class="appfoot">© 2026 Show Acquisitions. All rights reserved. Elite OS v<span id="footVer"></span> · <a href="LICENSE" target="_blank" rel="noopener">License</a> · Food data © Open Food Facts contributors (ODbL)</footer>
+<input type="file" id="fileIn" accept="application/json" hidden />
+<input type="file" id="phFile" accept="image/*" multiple hidden />
+<input type="file" id="hsFile" accept=".csv,.json,.txt,text/csv,application/json,text/plain" hidden />
+<div id="cook" hidden></div>
+<div id="wm" hidden role="dialog" aria-label="Workout mode"></div>
+<div id="timer">
+  <span class="sub" style="margin:0;font-size:.72rem;text-transform:uppercase;letter-spacing:.08em;font-weight:800">Rest</span>
+  <span class="clk" id="clk">0:00</span>
+  <button class="btn" data-tadj="-15">−15s</button>
+  <button class="btn" data-tadj="15">+15s</button>
+  <button class="btn" data-t="45">45</button>
+  <button class="btn" data-t="90">90</button>
+  <button class="btn" data-t="180">180</button>
+  <button class="btn pri" id="tStop">Skip</button>
+  <div class="tbar" id="tBar"></div>
+</div>
+
+<script>
+/*__ENGINE__*/
+</script>
+<script>
+/*__UI__*/
+</script>
+</body>
+</html>
