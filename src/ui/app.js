@@ -1,5 +1,5 @@
 /* Elite OS v5.0 — Unified App Orchestrator (Zero monkey-patching, zero native popups) */
-const APP_VER = "2026.11.21.1", APP_MAJOR = "5.0";
+const APP_VER = "2026.11.21.2", APP_MAJOR = "5.0";
 let UPD = false, BIP = null;
 
 function callout(kind, icon, title, meta, body) {
