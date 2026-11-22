@@ -750,6 +750,19 @@ async function page(browser, vp) {
     });
     ok(wu.shown && wu.hidden && wu.saved, "ticking Warm-up done in the cockpit collapses the warm-up callout");
 
+    /* Flagship pass: the cockpit fits a phone; both steppers on screen, no sideways scroll */
+    for (const width of [320, 390]) {
+      await p5.setViewportSize({ width, height: 800 });
+      const fit = await p5.evaluate(() => {
+        const d = W.days.find(x => x.session); S.sel = d.date; renderPlan(); wmOpen();
+        const vw = document.documentElement.clientWidth, boxes = [...document.querySelectorAll("#wm .wm-in-box")].map(b => b.getBoundingClientRect());
+        const r = { over: $("wm").scrollWidth > $("wm").clientWidth, inside: boxes.length === 2 && boxes.every(b => b.left >= 0 && b.right <= vw) };
+        wmClose(); return r;
+      });
+      ok(!fit.over && fit.inside, `${width}px cockpit: weight and reps steppers both on screen, no sideways scroll`);
+    }
+    await p5.setViewportSize({ width: 390, height: 844 });
+
     /* v5.0 review: WCAG AA (4.5:1) for small ink on the darkest-contrast surface, both themes */
     const cr = await p5.evaluate(() => {
       const lum = h => { const c = [1, 3, 5].map(i => parseInt(h.slice(i, i + 2), 16) / 255).map(v => v <= .03928 ? v / 12.92 : ((v + .055) / 1.055) ** 2.4); return .2126 * c[0] + .7152 * c[1] + .0722 * c[2] };

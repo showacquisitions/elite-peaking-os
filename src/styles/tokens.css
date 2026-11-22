@@ -5,8 +5,8 @@
   --panel: #0d1015;
   --panel2: #141820;
   --panel3: #1b212c;
-  --border: rgba(255, 255, 255, 0.075);
-  --border-strong: rgba(255, 255, 255, 0.14);
+  --border: rgba(255, 255, 255, 0.065);
+  --border-strong: rgba(255, 255, 255, 0.13);
   --ring: rgba(255, 255, 255, 0.075);
   --edge: inset 0 1px 0 rgba(255, 255, 255, 0.045);
 
@@ -30,7 +30,10 @@
 
   /* Typography */
   --font: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Segoe UI', Roboto, sans-serif;
-  --mono: 'JetBrains Mono', ui-monospace, 'SF Mono', Menlo, Consolas, monospace;
+  /* Numbers use the text face with tabular figures (body sets tnum); true monospace is kept for code only. */
+  --num: var(--font);
+  --code: 'JetBrains Mono', ui-monospace, 'SF Mono', Menlo, Consolas, monospace;
+  --fs-label: 0.76rem; /* sentence-case field and value labels */
   --fs-xs: 0.72rem;
   --fs-sm: 0.82rem;
   --fs-md: 0.92rem;
@@ -39,10 +42,10 @@
   --fs-2xl: 2.05rem;
 
   /* Radii & Motion */
-  --r-sm: 10px;
-  --r-md: 14px;
-  --r-lg: 20px;
-  --r: 20px;
+  --r-sm: 12px;
+  --r-md: 16px;
+  --r-lg: 22px;
+  --r: 22px;
   --radius: 14px;
   --side: 232px;
   --ease: cubic-bezier(0.22, 1, 0.36, 1);

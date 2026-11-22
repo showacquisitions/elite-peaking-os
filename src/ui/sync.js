@@ -1011,7 +1011,7 @@ function renderHX() {
      <details class="rec" data-hk="feed"${op("feed")}><summary>Advanced · pull from private https JSON/CSV URL</summary>
       <div class="hurlrow" style="margin-top:8px"><input id="hxFeed" placeholder="https://…" value="${esc(feed)}"/><button class="btn" data-hx="feedsave">Save</button></div></details>
      <div class="sechl" style="margin-top:14px">Payload tester</div>
-     <textarea id="hxIn" spellcheck="false" placeholder='{"steps":"8421","weight":"165.4 lb","sleep":"","hrv":"NaN"}' style="margin-top:6px;font-family:var(--mono);font-size:.78rem">${esc(keep)}</textarea>
+     <textarea id="hxIn" spellcheck="false" placeholder='{"steps":"8421","weight":"165.4 lb","sleep":"","hrv":"NaN"}' style="margin-top:6px;font-family:var(--num);font-size:.78rem">${esc(keep)}</textarea>
      <div class="hurlbtns"><button class="btn pri" data-hx="check">Check</button><button class="btn" data-hx="import">Import</button><button class="btn" data-hx="sample">Load sample</button><button class="btn" id="hsPick">Upload file</button></div>
      <div id="hxOut" style="margin-top:10px">${HXT.out}</div>
      <div class="sechl" style="margin-top:14px">Sync log</div>
