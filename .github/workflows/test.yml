@@ -11,6 +11,10 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 20
+      - name: Verify build output matches committed index.html
+        run: |
+          node tools/build.cjs
+          git diff --exit-code index.html
       - run: npm install --no-save playwright@1.63.0
       - run: npx playwright install --with-deps chromium
       - run: node tests/smoke.cjs index.html

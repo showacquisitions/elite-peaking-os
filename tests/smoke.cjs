@@ -308,6 +308,10 @@ async function page(browser, vp) {
     const A = { ua_public: "BCVxsr7N_eNgVRqvHtD0zTZsEc6-VV-JvLexhqUzORcxaOzi6-AYWXvTBHm4bjyPjs7Vd8pZGH6SRpkNtoIAiw4", as_public: "BP4z9KsN6nGRTbVYI_c7VJSPQTBtkgcy27mlmlMoZIIgDll6e3vCYLocInmYWAmS6TlzAC8wEqKK6PBru3jl7A8", ecdh: "kyrL1jIIOHEzg3sM2ZWRHDRB62YACZhhSlknJ672kSs", auth: "BTBZMqHH6r4Tts7J_aSIgg", salt: "DGv6ra1nlYgDCS1FRnbzlw" };
     const kk = await deriveKeys(unb64u(A.ecdh), unb64u(A.auth), unb64u(A.ua_public), unb64u(A.as_public), unb64u(A.salt));
     ok(b64u(kk.cek) === "oIhVW04MRdy2XN9CiKLxTg" && b64u(kk.nonce) === "4h_95klXJ5E_qnoN", "push key schedule matches the RFC 8291 test vector");
+    const { topicOf, endpointFault } = await import(require("url").pathToFileURL(path.join(__dirname, "..", "supabase", "functions", "push", "webpush.mjs")).href);
+    const co = "a".repeat(36), t1 = await topicOf("msg:" + co + "b".repeat(36)), t2 = await topicOf("msg:" + co + "c".repeat(36));
+    ok(t1.length === 32 && /^[A-Za-z0-9_-]+$/.test(t1) && t1 !== t2, "push Topic is 32 base64url chars and differs per client (no truncation collisions)");
+    ok([[400, "BadDeviceToken"], [400, ""]].every(([s, r]) => endpointFault(s, r)) && [[403, ""], [401, ""], [400, "BadJwtToken"], [429, ""], [500, ""], [503, ""], [410, ""], [413, ""]].every(([s, r]) => !endpointFault(s, r)), "only endpoint-specific push failures count toward pruning; VAPID, rate-limit and server errors never do");
   }
 
   console.log("v3.2: auto supersets, demos, progression, unread, photos, copyright");
@@ -345,7 +349,7 @@ async function page(browser, vp) {
     await p9.click(".cocard"); await p9.waitForTimeout(100);
     ok(calls.some(c => c.startsWith("POST /rest/v1/rpc/msg_read")), "opening a client marks their messages read");
     ok(/Not shared/.test(await p9.textContent("#coPhotos")), "client photos stay hidden until the client shares them");
-    await p9.selectOption("#coProgP", "wave"); await p9.selectOption("#coWeeks", "4"); await p9.click("#coAssignProg"); await p9.waitForTimeout(200);
+    await p9.selectOption("#coProgP", "wave"); await p9.selectOption("#coWeeks", "4"); await p9.click("#coAssignProg"); await p9.waitForSelector('#eliteDlg [data-dlg="ok"]'); await p9.click('#eliteDlg [data-dlg="ok"]'); await p9.waitForTimeout(200);
     const rows = JSON.parse(calls.bodies["/rest/v1/assignments"] || "[]").filter(x => x.session.ex.length);
     const byWeek = w => rows.filter(x => /^Week (\d+)/.exec(x.note) && +/^Week (\d+)/.exec(x.note)[1] === w)[0];
     const s1 = byWeek(1) && byWeek(1).session.ex[0].sets, s3 = byWeek(3) && byWeek(3).session.ex[0].sets, s4 = byWeek(4) && byWeek(4).session.ex[0].sets;
@@ -380,7 +384,7 @@ async function page(browser, vp) {
     ok(ip.rows[0].sleep === 8 && /time in bed/.test(ip.issues[0].why) && wa.sleep === 7.5 && hae.sleep === 8.1, "sleep: asleep time wins (Apple Watch); time in bed stands in on an iPhone alone, and says so");
     const m = mod.hxMerge({ date: "d", steps: 9000, hrv: 50 }, { date: "d", steps: 9500 }, false);
     ok(m.steps === 9500 && m.hrv === 50, "a later sync updates what it carries and keeps the rest");
-    const html = fs.readFileSync(file, "utf8"), src = fs.readFileSync(path.join(__dirname, "..", "supabase", "functions", "health", "parse.mjs"), "utf8"), blk = t => t.slice(t.indexOf("/*HX-BEGIN*/"), t.indexOf("/*HX-END*/"));
+    const html = fs.readFileSync(file, "utf8").replace(/\r\n/g, "\n"), src = fs.readFileSync(path.join(__dirname, "..", "supabase", "functions", "health", "parse.mjs"), "utf8").replace(/\r\n/g, "\n"), blk = t => t.slice(t.indexOf("/*HX-BEGIN*/"), t.indexOf("/*HX-END*/"));
     ok(blk(html).length > 1000 && blk(html) === blk(src), "the app and the server run the identical normalizer (run tools/inline-hx.cjs after editing parse.mjs)");
   }
 
@@ -562,6 +566,203 @@ async function page(browser, vp) {
     ok(s.h1 === "shortcuts://run-shortcut?name=Elite%20Health%20Sync" && s.h2 === "shortcuts://run-shortcut?name=Run%20Sync", "iPhone: Run sync opens the named shortcut in the Shortcuts app");
     ok(s.stale && s.nba && s.pos >= 0 && s.pos <= 1 && /4 d old/.test(s.pill) && ip.errors.length === 0, "stale Health data is called out on Today, in the sync card and in the header pill " + ip.errors.join(" | "));
     await ctx.close();
+  }
+
+  console.log("v5.0: Obsidian overhaul, cockpit, EWMA/TDEE, micros, tombstones, dialogs");
+  {
+    const uiDir = path.join(__dirname, "..", "src", "ui");
+    if (fs.existsSync(uiDir)) {
+      const uiSrc = fs.readdirSync(uiDir).filter(f => f.endsWith(".js")).map(f => fs.readFileSync(path.join(uiDir, f), "utf8")).join("\n");
+      const nativeCalls = (uiSrc.match(/(?<!\.)\b(?:window\.)?(?:alert|confirm|prompt)\s*\(/g) || []);
+      ok(nativeCalls.length === 0, `zero native alert/confirm/prompt calls in src/ui/ (found ${nativeCalls.length})`);
+    }
+    const p5 = await page(browser, { width: 390, height: 844 });
+    /* Custom modal confirm & prompt */
+    const dlgRes = await p5.evaluate(async () => {
+      const p1 = uiConfirm("Confirm test?", { title: "Check", okText: "Yes" });
+      const shown = !!document.querySelector("#eliteDlg .sheet-card");
+      document.querySelector('#eliteDlg [data-dlg="ok"]').click();
+      const a1 = await p1;
+      const p2 = uiPrompt("Enter value", "42", { title: "Prompt" });
+      const inp = document.querySelector("#eliteDlg #dlgInput"); inp.value = "99";
+      document.querySelector('#eliteDlg [data-dlg="ok"]').click();
+      const a2 = await p2;
+      return { shown, a1, a2 };
+    });
+    ok(dlgRes.shown && dlgRes.a1 === true && dlgRes.a2 === "99", "custom modal confirm/prompt resolves cleanly without native dialogs");
+
+    /* Wall-clock timer catch-up & adjustTimer */
+    const tmrRes = await p5.evaluate(() => {
+      startTimer(90); const r1 = left;
+      adjustTimer(15); const r2 = left;
+      tmrEnd = Date.now() - 2000; tickTimer();
+      const ended = $("timer").className === "end" && left === 0;
+      stopTimer();
+      return { r1, r2, ended };
+    });
+    ok(tmrRes.r1 === 90 && tmrRes.r2 >= 104 && tmrRes.ended, "wall-clock rest timer supports +15s adjust and catches up after backgrounding");
+
+    /* Manual weight, sleep, steps protected from Health overwrite */
+    const prot = await p5.evaluate(() => {
+      const d = TODAY;
+      S.log[d] = { w: 81.2, s: "8.2" }; S.steps[d] = 7400; S.stepsM = { [d]: 1 };
+      hxUpsert([{ date: d, weight: 79.0, sleep: 6.1, steps: 9800, hrv: 58 }]);
+      return { w: S.log[d].w, s: S.log[d].s, st: S.steps[d], hrv: S.hd[d].hrv };
+    });
+    ok(prot.w === 81.2 && prot.s === "8.2" && prot.st === 7400 && prot.hrv === 58, "manual weight, sleep and steps are never overwritten by Health sync");
+
+    /* Tombstone sync merge prevents resurrection */
+    const tombRes = await p5.evaluate(() => {
+      const a = freshState(), b = freshState();
+      const t = NOW() - 2000;
+      a.recipes = []; a.del = { r9: t };
+      b.recipes = [{ id: "r9", name: "Deleted recipe" }, { id: "r10", name: "Live recipe" }];
+      const m = mergeData(a, b);
+      return { ids: m.recipes.map(x => x.id).join(","), tomb: m.del.r9 === t };
+    });
+    ok(tombRes.ids === "r10" && tombRes.tomb, "tombstone sync merge prevents resurrection of deleted recipes/items");
+
+    /* EWMA trend weight + Adaptive TDEE */
+    const metRes = await p5.evaluate(() => {
+      S.log = {}; S.nut = {};
+      for (let i = 21; i >= 0; i--) {
+        const d = addD(TODAY, -i);
+        S.log[d] = { w: 82 - (21 - i) * 0.05 + (i % 2 ? 0.25 : -0.25) };
+        S.nut[d] = { k: 2200, p: 170 };
+      }
+      const tr = weightTrend(S.log, TODAY), at = adaptiveTDEE(S.log, S.nut, TODAY);
+      return { hasTr: !!(tr && tr.ewma && tr.ewma.length >= 20 && tr.trendNow > 0), rate: tr && tr.rate, tdee: at && at.tdee };
+    });
+    ok(metRes.hasTr && metRes.rate < 0 && metRes.tdee > 2300 && metRes.tdee < 2900, `EWMA trend weight (${metRes.rate?.toFixed(2)} kg/wk) and adaptive TDEE (${metRes.tdee} kcal) compute accurately`);
+
+    /* E1RM smooth >12 reps & bodyweight-inclusive pull-up load + expanded EX library */
+    const strRes = await p5.evaluate(() => {
+      S.prof.kg = 80;
+      const e12 = e1(50, 12), e15 = e1(50, 15), e20 = e1(50, 20);
+      const pu = effLoad("vpull:wpu", 10);
+      return { smooth: e15 > e12 && e20 > e15, pu, exLen: EX.length };
+    });
+    ok(strRes.smooth && strRes.pu === 90 && strRes.exLen >= 120, `smooth E1RM above 12 reps, BW-inclusive pull-up load (${strRes.pu} kg), and ${strRes.exLen} exercises`);
+
+    /* Planned-meal micronutrients + 0.5x/1.5x portion scaling */
+    const fuelRes = await p5.evaluate(() => {
+      S.flog = {}; S.checks = {}; S.mealMult = {};
+      const d = W.days.find(x => x.meals && x.meals.length);
+      S.sel = d.date; S.checks[`${d.date}|meal|0`] = true;
+      const e1x = eatenOn(d).kcal, m1 = dayMicros(d);
+      S.mealMult[`${d.date}|0`] = 1.5;
+      const e15x = eatenOn(d).kcal;
+      renderPlan();
+      const hasMicroRows = document.querySelectorAll("#microBox .vrow").length >= 8;
+      return { e1x, e15x, iron: m1.tot.iron, k: m1.tot.k, hasMicroRows };
+    });
+    ok(fuelRes.iron > 0 && fuelRes.k > 0 && fuelRes.hasMicroRows, "planned meals populate micronutrients automatically");
+    ok(Math.abs(fuelRes.e15x - fuelRes.e1x * 1.5) <= 2, `meal portion toggle scales calories accurately (${fuelRes.e1x} -> ${fuelRes.e15x})`);
+
+    /* Workout Cockpit: set table, steppers, plate drawer, exercise swap, set edit, draft */
+    const wmRes = await p5.evaluate(() => {
+      const d = W.days.find(x => x.session && x.session.ex.length >= 2);
+      S.sel = d.date; S.sets = {}; showTab("plan"); renderPlan();
+      wmOpen();
+      const clock = !!$("wmClock"), tbl = document.querySelectorAll("#wm .wm-tr").length >= 2;
+      const draft = !!lsGet(WMDRAFTK);
+      $("wmW").value = "60"; $("wmR").value = "8";
+      document.querySelector('[data-wmstep="w|2.5"],[data-wmstep="w|5"]').click();
+      const steppedW = parseFloat($("wmW").value);
+      document.querySelector('[data-wm="log"]').click();
+      document.querySelector('[data-wm="plates"]').click();
+      const plateOk = !!$("wmPlOut") && /Each side|Bar only/.test($("wmPlOut").textContent);
+      document.querySelector('[data-wmedit="0"]').click();
+      $("wmR").value = "10"; document.querySelector('[data-wm="log"]').click();
+      const editedR = (S.sets[WM.sess.ex[0].uid + "|" + WM.date] || [])[0]?.r;
+      const oldName = WM.sess.ex[0].name;
+      document.querySelector('[data-wm="swap"]').click();
+      const swBtn = document.querySelector("[data-wmswap]");
+      if (swBtn) swBtn.click();
+      const swapped = WM.sess.ex[0].name !== oldName;
+      wmClose();
+      return { clock, tbl, draft, steppedW, plateOk, editedR, swapped, draftCleared: !lsGet(WMDRAFTK) };
+    });
+    ok(wmRes.clock && wmRes.tbl && wmRes.draft && wmRes.steppedW > 60 && wmRes.plateOk && wmRes.editedR === 10 && wmRes.swapped && wmRes.draftCleared, "Workout Cockpit: live clock, set table, steppers, plate drawer, set edit, exercise swap & draft recovery");
+
+    /* Zero raw emoji in UI chrome + interactive chart present */
+    const uiRes = await p5.evaluate(() => {
+      showTab("plan"); renderPlan();
+      const emo = /[\u{1F300}-\u{1FAFF}]/u;
+      const chrome = [document.querySelector("header").textContent, document.querySelector(".tabs").textContent, [...document.querySelectorAll(".callout .c-i")].map(x => x.textContent).join("")].join("");
+      showTab("progress"); renderProgress();
+      const wrap = !!document.querySelector(".chart-wrap"), tip = !!document.querySelector(".chart-tip");
+      return { cleanChrome: !emo.test(chrome), wrap, tip };
+    });
+    ok(uiRes.cleanChrome && uiRes.wrap && uiRes.tip, "zero raw emojis in UI chrome and touch-scrubbable interactive charts render");
+
+    /* v5.0 review: tombstones never kill live items */
+    const tomb = await p5.evaluate(() => {
+      S.sel = TODAY; S.flog = {}; S.favs = []; S.del = {}; showTab("plan"); setPlanSeg("m"); renderPlan();
+      $("exN").value = "Oats"; $("exP").value = "10"; $("exC").value = "50"; $("exF").value = "5"; $("btnAddEx").click();
+      const e = S.flog[TODAY].slice(-1)[0];
+      document.querySelector(`[data-fsfav="${e.id}"]`).click();
+      const favId = S.favs[0] && S.favs[0].id;
+      document.querySelector(`[data-fsfav="${e.id}"]`).click();
+      const m1 = mergeData({ flog: {}, del: {} }, { flog: S.flog, del: S.del });
+      document.querySelector(`[data-fsdel="${e.id}"]`).click(); $("toastUndo").click();
+      const back = (S.flog[TODAY] || []).find(x => x.n === "Oats");
+      const m2 = mergeData({ flog: {}, del: { [e.id]: NOW() } }, { flog: S.flog, del: S.del });
+      const old = mergeData({ del: { a: NOW() - 91 * 864e5, b: NOW() } }, { del: {} });
+      return { ownFavId: !!favId && favId !== e.id, logAlive: (m1.flog[TODAY] || []).some(x => x.id === e.id), undoNewId: !!back && back.id !== e.id, undoSurvives: (m2.flog[TODAY] || []).some(x => x.n === "Oats"), pruned: !("a" in old.del) && "b" in old.del };
+    });
+    ok(tomb.ownFavId && tomb.logAlive, "a favorite gets its own id, so un-favoriting never deletes the food-log entry on sync");
+    ok(tomb.undoNewId && tomb.undoSurvives, "undo after delete restores under a fresh id that survives a merge with the synced tombstone");
+    ok(tomb.pruned, "merged tombstones older than 90 days are pruned");
+
+    /* v5.0 review: scanner releases the camera when cancelled mid-start */
+    const scan = await p5.evaluate(async () => {
+      let stopped = 0, release = null;
+      const fake = { getTracks: () => [{ stop: () => stopped++ }] };
+      Object.defineProperty(navigator, "mediaDevices", { value: { getUserMedia: () => new Promise(r => { release = () => r(fake); }) }, configurable: true });
+      window.BarcodeDetector = class { detect() { return Promise.resolve([]); } };
+      const sel = '[aria-label="Barcode scanner"]';
+      const a = fsScan(); document.querySelector(sel + " button").click(); const gone1 = !document.querySelector(sel); release(); await a;
+      const b = fsScan(); document.dispatchEvent(new KeyboardEvent("keydown", { key: "Escape" })); const gone2 = !document.querySelector(sel); release(); await b;
+      delete window.BarcodeDetector;
+      return { gone1, gone2, stopped };
+    });
+    ok(scan.gone1 && scan.gone2 && scan.stopped === 2, `barcode scanner closes on Cancel and Escape and stops a camera that starts late (${scan.stopped} stopped)`);
+
+    /* v5.0 review: chart scrub reads its payload from the element (no global map) */
+    const scrubRes = await p5.evaluate(() => {
+      showTab("progress"); renderProgress();
+      const w = document.querySelector(".chart-wrap"), svg = w.querySelector("svg"), r = svg.getBoundingClientRect();
+      svg.dispatchEvent(new PointerEvent("pointerdown", { bubbles: true, clientX: r.left + r.width / 2, clientY: r.top + 10 }));
+      return { noGlobal: typeof window.__CHARTS === "undefined", cross: !w.querySelector("line[id$='_cx']").hasAttribute("hidden") };
+    });
+    ok(scrubRes.noGlobal && scrubRes.cross, "chart scrubbing works without a global chart registry");
+
+    /* v5.0 review: warm-up callout collapses once ticked inside the cockpit */
+    const wu = await p5.evaluate(() => {
+      const d = W.days.find(x => x.session && x.session.ex.length >= 2);
+      S.sel = d.date; S.sets = {}; S.checks = {}; showTab("plan"); renderPlan(); wmOpen();
+      const shown = !!document.querySelector("#wm .callout.c-warm");
+      document.querySelector('#wm .c-warm input[data-k$="|wu"]').click();
+      const hidden = !document.querySelector("#wm .callout.c-warm"), saved = !!S.checks[d.date + "|wu"];
+      wmClose();
+      return { shown, hidden, saved };
+    });
+    ok(wu.shown && wu.hidden && wu.saved, "ticking Warm-up done in the cockpit collapses the warm-up callout");
+
+    /* v5.0 review: WCAG AA (4.5:1) for small ink on the darkest-contrast surface, both themes */
+    const cr = await p5.evaluate(() => {
+      const lum = h => { const c = [1, 3, 5].map(i => parseInt(h.slice(i, i + 2), 16) / 255).map(v => v <= .03928 ? v / 12.92 : ((v + .055) / 1.055) ** 2.4); return .2126 * c[0] + .7152 * c[1] + .0722 * c[2] };
+      const ratio = (a, b) => { const x = lum(a), y = lum(b); return (Math.max(x, y) + .05) / (Math.min(x, y) + .05) };
+      const v = n => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+      const ink = ["--dim", "--muted", "--amber", "--green", "--red", "--cool", "--coach"], prev = document.documentElement.dataset.theme, out = {};
+      for (const th of ["dark", "light"]) { document.documentElement.dataset.theme = th; out[th] = ink.map(n => [n, +ratio(v(n), v("--panel2")).toFixed(2)]).filter(([, r]) => r < 4.5); }
+      document.documentElement.dataset.theme = prev;
+      return out;
+    });
+    ok(!cr.dark.length && !cr.light.length, "text tokens meet WCAG AA on --panel2 in dark and light " + JSON.stringify(cr));
+    ok(p5.errors.length === 0, "no JS errors in v5.0 tests " + p5.errors.join(" | "));
+    await p5.close();
   }
 
   const vf = path.join(path.dirname(file), "version.json");

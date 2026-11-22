@@ -1,5 +1,11 @@
 # Elite OS — Backlog
 
+## Blocking v5.0 (owner + Claude Opus review)
+- [ ] **Claude Opus review:** Walk through `docs/HANDOFF-OPUS.md` on branch `v5-elite-overhaul` and apply any refinements before merging to `main`.
+- [ ] **Apply `supabase/v5-elite.sql`** in Supabase SQL Editor (idempotent: `checkins_protect_reply` trigger, `_merge_cardio` + `health_ingest`, `push_subs.fail_count` + `push_result_v2`, 15s `pg_cron`).
+- [ ] **Redeploy `push` edge function** (`supabase functions deploy push --no-verify-jwt`) so `SUBJECT = "mailto:showacquisitions@gmail.com"` and `push_result_v2` go live, then verify push on iPhone (Profile → Notifications → Send a test).
+- [ ] **Merge `v5-elite-overhaul` PR to `main`** and update the offline Obsidian vault copy (`index.html`).
+
 ## Blocking v4 (owner)
 - [x] `supabase/v4-health.sql` applied 2026-11-13 (migration `v4_health_fault_tolerant_ingest`). Verified in a rolled-back test: a second sync with zeros and blanks kept the stored steps and HRV.
 - [x] `health` edge function deployed 2026-11-13 (version 6, verify_jwt off). Verified live through pg_net: an all-blank body returns ok with `ignored`; a real body reaches `health_ingest`.

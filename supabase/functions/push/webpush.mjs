@@ -44,6 +44,15 @@ export async function vapidAuth(endpoint, privJwk, subject) {
   return `vapid t=${h}.${c}.${b64u(sig)}, k=${b64u(pub)}`;
 }
 
+/* RFC 8030 Topic: <= 32 base64url chars. Hash rather than truncate: "msg:<coach uuid><client uuid>" cut to 32
+   chars keeps only the coach id, so one client's pending message would replace another's on the coach's device. */
+export const topicOf = async tag => b64u(await crypto.subtle.digest("SHA-256", te.encode(String(tag || "")))).slice(0, 32);
+
+/* True when a failed send points at this endpoint, so it may count toward pruning. 401/403/BadJwtToken = our VAPID
+   key, 413 = our payload, 429/5xx = transient: those hit every subscription at once and must never delete them.
+   404/410 are handled by the caller as already-dead. */
+export const endpointFault = (status, reason) => status >= 400 && status < 500 && ![401, 403, 404, 410, 413, 429].includes(status) && !/jwt|vapid/i.test(reason || "");
+
 /* Sends one push. Returns the HTTP status (201 ok; 404/410 means the subscription is gone). */
 export async function sendPush(sub, data, privJwk, subject, opts = {}) {
   const body = await encrypt(sub, JSON.stringify(data));
