@@ -34,7 +34,7 @@
   /* Ink */
   --text: #f2f5f9;
   --muted: #8b96a8;
-  --dim: #5d6778;
+  --dim: #7c8ba1; /* WCAG AA 4.5:1 for small text on every surface down to --panel3 (was #5d6778, 3.3:1 on --panel) */
 
   /* Brand & Semantic Status (restrained 4-role spectrum) */
   --accent: #4f8bff;
@@ -88,9 +88,17 @@ html[data-theme="light"] {
   --edge: inset 0 1px 0 rgba(255, 255, 255, 0.9);
   --text: #0f172a;
   --muted: #526071;
-  --dim: #8896a6;
-  --accent: #2563eb;
+  /* Light-surface ink: every value below clears WCAG AA 4.5:1 on --panel3 (#e5e8ef) and lighter.
+     The dark-theme status hues (amber/green/cool/coach ~2:1 on white) are used as text, so they need light variants. */
+  --dim: #5c6878;
+  --accent: #2155d6;
   --accent2: #1d4ed8;
+  --green: #146c33;
+  --amber: #a34e06;
+  --warm: #a34e06;
+  --red: #b91c1c;
+  --cool: #0369a1;
+  --coach: #7c3aed;
   --glow: rgba(37, 99, 235, 0.1);
   --cta-bg: #0f172a;
   --cta-fg: #ffffff;
@@ -2799,7 +2807,8 @@ function buildInteractiveChart(cfg) {
   };
 
   const payload = pts.map((p, i) => ({ x: +X(i).toFixed(1), y: p.v != null ? +Y(p.v).toFixed(1) : (p.v2 != null ? +Y(p.v2).toFixed(1) : null), label: p.label, v: p.v != null ? cfg.fmt(p.v) : null, v2: p.v2 != null ? cfg.fmt(p.v2) : null }));
-  const html = `<div class="chart-wrap" data-chart-id="${id}" data-label2="${esc(cfg.label2 || "")}">
+  /* Payload rides on the element, so it is freed with the DOM; a global id map grew on every re-render. */
+  const html = `<div class="chart-wrap" data-chart-id="${id}" data-label2="${esc(cfg.label2 || "")}" data-pts="${esc(JSON.stringify(payload))}" data-wd="${Wd}">
     <div class="chart-tip" id="${id}_tip">${fmtTip(last)}</div>
     <svg class="${cfg.svgClass || "biochart"}" viewBox="0 0 ${Wd} ${H}" width="100%" role="img" aria-label="${esc(cfg.aria || "Chart")}">
       <defs><linearGradient id="${gradId}" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="var(--accent)" stop-opacity="0.28"/><stop offset="100%" stop-color="var(--accent)" stop-opacity="0"/></linearGradient></defs>
@@ -2811,16 +2820,16 @@ function buildInteractiveChart(cfg) {
       <text x="${Wd - R}" y="${H - 7}" text-anchor="end" class="ct">${esc(cfg.endLabel || "today")}</text>
     </svg>
   </div>`;
-  window.__CHARTS = window.__CHARTS || {};
-  window.__CHARTS[id] = { pts: payload, Wd, L, R };
   return html;
 }
 
 /* Global pointer scrubbing for every interactive chart */
 (function () {
   function scrub(wrap, clientX) {
-    const id = wrap.dataset.chartId, c = window.__CHARTS && window.__CHARTS[id];
-    if (!c || !c.pts.length) return;
+    const id = wrap.dataset.chartId;
+    let c = wrap._chart;
+    if (!c) { try { c = wrap._chart = { pts: JSON.parse(wrap.dataset.pts || "[]"), Wd: +wrap.dataset.wd }; } catch (e) { return; } }
+    if (!c.pts.length) return;
     const svg = wrap.querySelector("svg"); if (!svg) return;
     const rect = svg.getBoundingClientRect();
     const sx = (clientX - rect.left) / rect.width * c.Wd;
@@ -2898,13 +2907,17 @@ function v4Norm() {
 v4Norm();
 const UX = () => S.ux && S.ux.mode ? S.ux : v4Norm();
 
+/* Prune tombstones older than 90 days (a device offline longer than that may resurrect an item; accepted) */
+function pruneDel(del) {
+  const cut = NOW() - 90 * 864e5;
+  Object.keys(del).forEach(k => { if (!(del[k] >= cut)) delete del[k]; });
+  return del;
+}
 function markDeleted(id) {
   if (!id) return;
   S.del = obj4(S.del);
   S.del[String(id)] = NOW();
-  /* Prune tombstones older than 90 days */
-  const cut = NOW() - 90 * 864e5;
-  Object.keys(S.del).forEach(k => { if (S.del[k] < cut) delete S.del[k]; });
+  pruneDel(S.del);
 }
 
 const snapOf = () => JSON.stringify(SYNCKEYS.map(k => S[k]));
@@ -2953,9 +2966,9 @@ function applyData(d, mtime) {
 function mergeData(older, newer) {
   const o = JSON.parse(JSON.stringify(newer));
   const del = Object.assign({}, older.del || {}, newer.del || {});
-  o.del = del;
   const alive = x => x && !(x.id && del[String(x.id)]);
   MAPK.forEach(k => { if (k !== "del") o[k] = Object.assign({}, older[k], newer[k]); });
+  o.del = pruneDel(Object.assign({}, del)); /* filter with the full set, ship the pruned one */
   /* Per-day sets merge: keep longer / non-empty set list per uid|date */
   if (older.sets || newer.sets) {
     const ms = Object.assign({}, older.sets || {}, newer.sets || {});
@@ -4297,7 +4310,7 @@ function wmDraw() {
      ${ssBox}
      <div class="wm-target">${gi ? `<span class="ssl">${gi.g}${gi.k}</span>` : ""}${setLine(e, rd, gi)}</div>
      <div class="d">${esc(e.load)}${formLink(e.name, e.demo)}</div>
-     ${WM.i === 0 && !s.ex.some(x => (S.sets[x.uid + "|" + WM.date] || []).length) ? warmHTML({ session: s, date: WM.date }) : e.wu && !done.length && !WM.wuDone[e.uid] ? callout("warm", "flame", "Ramp-up sets first", "", `${WU[e.wu]}<br><label class="ccheck"><input type="checkbox" data-wmwu="${esc(e.uid)}"/> Ramp-up done</label>`) : ""}
+     ${WM.i === 0 && !S.checks[WM.date + "|wu"] && !s.ex.some(x => (S.sets[x.uid + "|" + WM.date] || []).length) ? warmHTML({ session: s, date: WM.date }) : e.wu && !done.length && !WM.wuDone[e.uid] && !(WM.i === 0 && S.checks[WM.date + "|wu"]) ? callout("warm", "flame", "Ramp-up sets first", "", `${WU[e.wu]}<br><label class="ccheck"><input type="checkbox" data-wmwu="${esc(e.uid)}"/> Ramp-up done</label>`) : ""}
      ${e.cue ? `<div class="cue">${esc(e.cue)}</div>` : ""}
      <div class="wm-dots" aria-label="Sets done">${dots}</div>
      <div class="wm-tbl">
@@ -4681,41 +4694,69 @@ function fsAdd(i, g) {
   (S.flog[S.sel] = S.flog[S.sel] || []).push(e); save(); renderPlan();
 }
 /* Supports native BarcodeDetector AND lazy-loaded ZXing CDN fallback on iOS Safari */
+/* Pinned + SRI: this script runs with the Supabase session in reach, so a changed CDN file must fail to load, not run. */
+const ZXING_SRC = "https://cdn.jsdelivr.net/npm/@zxing/browser@0.1.5/umd/zxing-browser.min.js";
+const ZXING_SRI = "sha384-ylLhng89kD62+PVK1cjm4rAYg69zDlGrbbSfAE2Eb8Xqf8RoAQCMcRoUXZh7pAPC";
 async function fsScan() {
-  let stream, iv, zxingReader = null;
+  let stream = null, iv = null, controls = null, closed = false;
   const ov = document.createElement("div");
   ov.style.cssText = "position:fixed;inset:0;z-index:260;background:#050608;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;padding:16px";
-  ov.innerHTML = `<div class="sechl">Point camera at barcode</div><video playsinline muted style="max-width:100%;max-height:66vh;border-radius:16px;border:1px solid var(--border-strong)"></video><div class="d" id="scanStatus">Initializing camera…</div><button class="btn pri">Cancel</button>`;
+  ov.setAttribute("role", "dialog"); ov.setAttribute("aria-modal", "true"); ov.setAttribute("aria-label", "Barcode scanner");
+  ov.innerHTML = `<div class="sechl">Point camera at barcode</div><video playsinline muted style="max-width:100%;max-height:66vh;border-radius:16px;border:1px solid var(--border-strong)"></video><div class="d" id="scanStatus" aria-live="polite">Initializing camera…</div><button class="btn pri">Cancel</button>`;
   document.body.appendChild(ov);
+  const st = ov.querySelector("#scanStatus"), v = ov.querySelector("video");
+  /* Idempotent. Cancel can land while getUserMedia / the CDN load is still pending, so every await below re-checks `closed`
+     and stops whatever it just acquired; without that the camera stays on after the overlay is gone. */
   const done = c => {
+    if (closed) return;
+    closed = true;
     clearInterval(iv);
-    if (zxingReader && zxingReader.reset) try { zxingReader.reset(); } catch (e) {}
+    document.removeEventListener("keydown", onKey);
+    try { if (controls) controls.stop(); } catch (e) {}
     if (stream) stream.getTracks().forEach(t => t.stop());
+    v.srcObject = null;
     ov.remove();
     if (c) { FS.bc = c; fsBarcode(c); }
   };
+  const onKey = e => { if (e.key === "Escape") done(); };
+  document.addEventListener("keydown", onKey);
   ov.querySelector("button").onclick = () => done();
+  ov.querySelector("button").focus();
   try {
-    const v = ov.querySelector("video");
     if ("BarcodeDetector" in window) {
       stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: "environment" } });
+      if (closed) { stream.getTracks().forEach(t => t.stop()); return; }
       v.srcObject = stream; await v.play();
-      const st = ov.querySelector("#scanStatus"); if (st) st.textContent = "Scanning…";
+      if (closed) return;
+      st.textContent = "Scanning…";
       const det = new BarcodeDetector({ formats: ["ean_13", "ean_8", "upc_a", "upc_e"] });
       iv = setInterval(async () => { try { const b = await det.detect(v); if (b.length) done(b[0].rawValue); } catch (e) {} }, 300);
     } else {
-      const st = ov.querySelector("#scanStatus"); if (st) st.textContent = "Loading scanner for Safari…";
+      st.textContent = "Loading scanner for Safari…";
       if (!window.ZXingBrowser) {
-        await new Promise((res, rej) => { const sc = document.createElement("script"); sc.src = "https://cdn.jsdelivr.net/npm/@zxing/browser@0.1.5/umd/zxing-browser.min.js"; sc.onload = res; sc.onerror = () => rej(new Error("Offline — type barcode number instead")); document.head.appendChild(sc); });
+        await new Promise((res, rej) => {
+          const sc = document.createElement("script");
+          sc.src = ZXING_SRC; sc.integrity = ZXING_SRI; sc.crossOrigin = "anonymous";
+          sc.onload = res;
+          sc.onerror = () => { sc.remove(); rej(new Error(navigator.onLine === false ? "you're offline. Type the barcode number instead" : "scanner failed to load. Type the barcode number instead")); };
+          document.head.appendChild(sc);
+        });
       }
-      zxingReader = new window.ZXingBrowser.BrowserMultiFormatReader();
-      if (st) st.textContent = "Scanning…";
-      const controls = await zxingReader.decodeFromConstraints({ video: { facingMode: "environment" } }, v, (result) => {
-        if (result && result.getText) { controls && controls.stop && controls.stop(); done(result.getText()); }
+      if (closed) return;
+      const reader = new window.ZXingBrowser.BrowserMultiFormatReader();
+      st.textContent = "Scanning…";
+      const c = await reader.decodeFromConstraints({ video: { facingMode: "environment" } }, v, (result, err, ctl) => {
+        if (result && result.getText) { controls = controls || ctl; done(result.getText()); }
       });
-      ov.querySelector("button").onclick = () => { controls && controls.stop && controls.stop(); done(); };
+      if (closed) { c.stop(); return; }
+      controls = c;
     }
-  } catch (e) { done(); FS.msg = "Scanner unavailable: " + e.message; renderFood(); renderQuality(); }
+  } catch (e) {
+    if (closed) return;
+    done();
+    FS.msg = "Scanner unavailable: " + (e && e.name === "NotAllowedError" ? "camera permission was denied. Type the barcode number instead" : e.message);
+    renderFood(); renderQuality();
+  }
 }
 
 const QA = [];
@@ -6029,7 +6070,7 @@ document.addEventListener("change", async e => {
   }
   if (t.dataset && t.dataset.ru) { const r = S.recipes.find(x => x.id === t.dataset.ru); if (r) { r.use = t.checked; save(); regen(); renderAll(true); } return; }
   if (t.dataset && t.dataset.gc) { const x = S.groc.find(y => y.id === t.dataset.gc); if (x) { x.done = t.checked; save(); renderCustomGrocery(); } return; }
-  if (t.dataset && t.dataset.k) { S.checks[t.dataset.k] = t.checked; markDone(t.dataset.k); save(); renderPlan(); renderGrocery(); renderOverall(); renderProgExtra(); return; }
+  if (t.dataset && t.dataset.k) { S.checks[t.dataset.k] = t.checked; markDone(t.dataset.k); save(); renderPlan(); renderGrocery(); renderOverall(); renderProgExtra(); if (WM.on && !WM.fin) wmDraw(); return; }
   if (t.dataset && t.dataset.rd) onReady(t);
 });
 
@@ -6081,14 +6122,19 @@ document.addEventListener("click", async e => {
   if ((b = t.closest("[data-fsfav]"))) {
     const x = ((S.flog || {})[S.sel] || []).find(y => y.id === b.dataset.fsfav); if (!x) return;
     const i = S.favs.findIndex(f => f.n === x.n);
-    if (i >= 0) { markDeleted(S.favs[i].id); S.favs.splice(i, 1); } else { if (S.favs.length >= 24) S.favs.shift(); S.favs.push(Object.assign({}, x)); }
+    /* A favorite needs its own id: copying the food-log id meant un-favoriting tombstoned the log entry, which the next merge then deleted.
+       Older favorites may still share an id with a log entry; those are not tombstoned (worst case they reappear on another device). */
+    const inLog = id => Object.values(S.flog || {}).some(a => (a || []).some(y => y.id === id));
+    if (i >= 0) { if (!inLog(S.favs[i].id)) markDeleted(S.favs[i].id); S.favs.splice(i, 1); } else { if (S.favs.length >= 24) S.favs.shift(); S.favs.push(Object.assign({}, x, { id: "fv" + Date.now().toString(36) + Math.random().toString(36).slice(2, 5) })); }
     save(); renderPlan(); return;
   }
   if ((b = t.closest("[data-fsadd]"))) { fsAdd(+b.dataset.fsadd, $("fsG" + b.dataset.fsadd).value); toast("Logged to food log", "good"); return; }
   if ((b = t.closest("[data-fsdel]"))) {
-    const id = b.dataset.fsdel, prev = (S.flog[S.sel] || []).find(x => x.id === id);
-    S.flog[S.sel] = (S.flog[S.sel] || []).filter(x => x.id !== id); markDeleted(id); save(); renderPlan();
-    if (prev) toast(`Removed ${prev.n}`, "info", () => { delete S.del[id]; (S.flog[S.sel] = S.flog[S.sel] || []).push(prev); save(); renderPlan(); });
+    const id = b.dataset.fsdel, day = S.sel, prev = (S.flog[day] || []).find(x => x.id === id);
+    S.flog[day] = (S.flog[day] || []).filter(x => x.id !== id); markDeleted(id); save(); renderPlan();
+    /* Undo restores under a fresh id on the original day: the 5.6 s undo window outlasts the 4 s sync debounce,
+       so the tombstone may already be on the server and would delete the old id again on the next merge. */
+    if (prev) toast(`Removed ${prev.n}`, "info", () => { (S.flog[day] = S.flog[day] || []).push(Object.assign({}, prev, { id: Date.now().toString(36) + Math.random().toString(36).slice(2, 5) })); save(); renderPlan(); });
     return;
   }
   if ((b = t.closest("[data-qtry]"))) { FS.q = b.dataset.qtry; fsSearch(); return; }

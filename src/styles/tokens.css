@@ -13,7 +13,7 @@
   /* Ink */
   --text: #f2f5f9;
   --muted: #8b96a8;
-  --dim: #5d6778;
+  --dim: #7c8ba1; /* WCAG AA 4.5:1 for small text on every surface down to --panel3 (was #5d6778, 3.3:1 on --panel) */
 
   /* Brand & Semantic Status (restrained 4-role spectrum) */
   --accent: #4f8bff;
@@ -67,9 +67,17 @@ html[data-theme="light"] {
   --edge: inset 0 1px 0 rgba(255, 255, 255, 0.9);
   --text: #0f172a;
   --muted: #526071;
-  --dim: #8896a6;
-  --accent: #2563eb;
+  /* Light-surface ink: every value below clears WCAG AA 4.5:1 on --panel3 (#e5e8ef) and lighter.
+     The dark-theme status hues (amber/green/cool/coach ~2:1 on white) are used as text, so they need light variants. */
+  --dim: #5c6878;
+  --accent: #2155d6;
   --accent2: #1d4ed8;
+  --green: #146c33;
+  --amber: #a34e06;
+  --warm: #a34e06;
+  --red: #b91c1c;
+  --cool: #0369a1;
+  --coach: #7c3aed;
   --glow: rgba(37, 99, 235, 0.1);
   --cta-bg: #0f172a;
   --cta-fg: #ffffff;

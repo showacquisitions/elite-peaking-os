@@ -80,7 +80,8 @@ function buildInteractiveChart(cfg) {
   };
 
   const payload = pts.map((p, i) => ({ x: +X(i).toFixed(1), y: p.v != null ? +Y(p.v).toFixed(1) : (p.v2 != null ? +Y(p.v2).toFixed(1) : null), label: p.label, v: p.v != null ? cfg.fmt(p.v) : null, v2: p.v2 != null ? cfg.fmt(p.v2) : null }));
-  const html = `<div class="chart-wrap" data-chart-id="${id}" data-label2="${esc(cfg.label2 || "")}">
+  /* Payload rides on the element, so it is freed with the DOM; a global id map grew on every re-render. */
+  const html = `<div class="chart-wrap" data-chart-id="${id}" data-label2="${esc(cfg.label2 || "")}" data-pts="${esc(JSON.stringify(payload))}" data-wd="${Wd}">
     <div class="chart-tip" id="${id}_tip">${fmtTip(last)}</div>
     <svg class="${cfg.svgClass || "biochart"}" viewBox="0 0 ${Wd} ${H}" width="100%" role="img" aria-label="${esc(cfg.aria || "Chart")}">
       <defs><linearGradient id="${gradId}" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="var(--accent)" stop-opacity="0.28"/><stop offset="100%" stop-color="var(--accent)" stop-opacity="0"/></linearGradient></defs>
@@ -92,16 +93,16 @@ function buildInteractiveChart(cfg) {
       <text x="${Wd - R}" y="${H - 7}" text-anchor="end" class="ct">${esc(cfg.endLabel || "today")}</text>
     </svg>
   </div>`;
-  window.__CHARTS = window.__CHARTS || {};
-  window.__CHARTS[id] = { pts: payload, Wd, L, R };
   return html;
 }
 
 /* Global pointer scrubbing for every interactive chart */
 (function () {
   function scrub(wrap, clientX) {
-    const id = wrap.dataset.chartId, c = window.__CHARTS && window.__CHARTS[id];
-    if (!c || !c.pts.length) return;
+    const id = wrap.dataset.chartId;
+    let c = wrap._chart;
+    if (!c) { try { c = wrap._chart = { pts: JSON.parse(wrap.dataset.pts || "[]"), Wd: +wrap.dataset.wd }; } catch (e) { return; } }
+    if (!c.pts.length) return;
     const svg = wrap.querySelector("svg"); if (!svg) return;
     const rect = svg.getBoundingClientRect();
     const sx = (clientX - rect.left) / rect.width * c.Wd;

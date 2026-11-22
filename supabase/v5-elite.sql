@@ -1,21 +1,27 @@
 -- Elite OS v5.0: Check-in RLS column guard, Health cardio merge, Push failure tracking & smarter cron.
 -- Additive and idempotent. Run after v4-health.sql and v3.3-unread-photos.sql.
 
--- 1. Security fix: prevent a client from overwriting coach's `reply` or `replied_at` via row-level UPDATE on public.checkins
+-- 1. Security fix: only coach_checkin_reply may write `reply` / `replied_at` on public.checkins.
+-- Keyed on current_user, not auth.uid(): a direct PostgREST write runs as anon/authenticated, while
+-- coach_checkin_reply is SECURITY DEFINER and runs as its owner. Covers INSERT too — "ci own insert"
+-- would otherwise let a client create a row with a forged reply already set.
+-- (Self-coaching cannot reach this: coach_links has check (coach_id <> client_id).)
 create or replace function public.tg_checkins_protect_reply() returns trigger
 language plpgsql set search_path = '' as $$
 begin
-  -- Allow updates from SECURITY DEFINER RPC (coach_checkin_reply sets current_user != authenticated or uses coach role)
-  -- Block direct authenticated client updates that attempt to modify reply or replied_at
-  if auth.uid() = old.client_id and not public.is_coach_of(old.client_id) then
-    if new.reply is distinct from old.reply or new.replied_at is distinct from old.replied_at then
+  if current_user in ('anon', 'authenticated') then
+    if tg_op = 'INSERT' then
+      if new.reply <> '' or new.replied_at is not null then
+        raise exception 'clients cannot write coach replies';
+      end if;
+    elsif new.reply is distinct from old.reply or new.replied_at is distinct from old.replied_at then
       raise exception 'clients cannot edit coach replies';
     end if;
   end if;
   return new;
 end $$;
 drop trigger if exists checkins_protect_reply on public.checkins;
-create trigger checkins_protect_reply before update on public.checkins
+create trigger checkins_protect_reply before insert or update on public.checkins
   for each row execute function public.tg_checkins_protect_reply();
 
 -- 2. Health ingest: merge same-day cardio workouts by (type, min) instead of wiping earlier workouts
@@ -108,9 +114,13 @@ begin
   update public.push_subs set last_ok = now(), fail_count = 0, last_err = null where endpoint = any(ok_eps);
   delete from public.push_subs where endpoint = any(dead_eps);
   if jsonb_typeof(fail_eps) = 'array' then
+    -- Only endpoint-specific failures (f.count = true) move toward pruning. Server-side faults
+    -- (bad VAPID JWT, 401/403, 429, 5xx, network) hit every subscription at once; counting them
+    -- would delete every device's subscription after five bad sends.
     for f in select * from jsonb_array_elements(fail_eps) loop
       update public.push_subs
-      set fail_count = fail_count + 1, last_err = left(coalesce(f->>'err', ''), 200)
+      set fail_count = fail_count + case when coalesce((f->>'count')::boolean, false) then 1 else 0 end,
+          last_err = left(coalesce(f->>'err', ''), 200)
       where endpoint = f->>'ep';
     end loop;
     delete from public.push_subs where fail_count >= 5;
@@ -120,6 +130,9 @@ end $$;
 revoke all on function public.push_result_v2(text[], text[], jsonb) from public, anon, authenticated;
 grant execute on function public.push_result_v2(text[], text[], jsonb) to service_role;
 
--- 4. Reduce idle pg_cron frequency from 5s to 15s (instant events still kick immediately via push_enqueue)
+-- 4. pg_cron stays at 5 seconds. Rest-timer pushes (push_timer) enqueue with kick = false and a future
+-- due_at, so the cron tick is their only delivery path: 15 s would make the locked-screen "rest is over"
+-- alert up to 15 s late. An idle tick is one indexed exists() check (push_queue_due), and pg_net is
+-- only called when something is due.
 select cron.unschedule(jobid) from cron.job where jobname = 'elite-push';
-select cron.schedule('elite-push', '15 seconds', 'select public.push_kick()');
+select cron.schedule('elite-push', '5 seconds', 'select public.push_kick()');

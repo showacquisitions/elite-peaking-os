@@ -967,7 +967,7 @@ document.addEventListener("change", async e => {
   }
   if (t.dataset && t.dataset.ru) { const r = S.recipes.find(x => x.id === t.dataset.ru); if (r) { r.use = t.checked; save(); regen(); renderAll(true); } return; }
   if (t.dataset && t.dataset.gc) { const x = S.groc.find(y => y.id === t.dataset.gc); if (x) { x.done = t.checked; save(); renderCustomGrocery(); } return; }
-  if (t.dataset && t.dataset.k) { S.checks[t.dataset.k] = t.checked; markDone(t.dataset.k); save(); renderPlan(); renderGrocery(); renderOverall(); renderProgExtra(); return; }
+  if (t.dataset && t.dataset.k) { S.checks[t.dataset.k] = t.checked; markDone(t.dataset.k); save(); renderPlan(); renderGrocery(); renderOverall(); renderProgExtra(); if (WM.on && !WM.fin) wmDraw(); return; }
   if (t.dataset && t.dataset.rd) onReady(t);
 });
 
@@ -1019,14 +1019,19 @@ document.addEventListener("click", async e => {
   if ((b = t.closest("[data-fsfav]"))) {
     const x = ((S.flog || {})[S.sel] || []).find(y => y.id === b.dataset.fsfav); if (!x) return;
     const i = S.favs.findIndex(f => f.n === x.n);
-    if (i >= 0) { markDeleted(S.favs[i].id); S.favs.splice(i, 1); } else { if (S.favs.length >= 24) S.favs.shift(); S.favs.push(Object.assign({}, x)); }
+    /* A favorite needs its own id: copying the food-log id meant un-favoriting tombstoned the log entry, which the next merge then deleted.
+       Older favorites may still share an id with a log entry; those are not tombstoned (worst case they reappear on another device). */
+    const inLog = id => Object.values(S.flog || {}).some(a => (a || []).some(y => y.id === id));
+    if (i >= 0) { if (!inLog(S.favs[i].id)) markDeleted(S.favs[i].id); S.favs.splice(i, 1); } else { if (S.favs.length >= 24) S.favs.shift(); S.favs.push(Object.assign({}, x, { id: "fv" + Date.now().toString(36) + Math.random().toString(36).slice(2, 5) })); }
     save(); renderPlan(); return;
   }
   if ((b = t.closest("[data-fsadd]"))) { fsAdd(+b.dataset.fsadd, $("fsG" + b.dataset.fsadd).value); toast("Logged to food log", "good"); return; }
   if ((b = t.closest("[data-fsdel]"))) {
-    const id = b.dataset.fsdel, prev = (S.flog[S.sel] || []).find(x => x.id === id);
-    S.flog[S.sel] = (S.flog[S.sel] || []).filter(x => x.id !== id); markDeleted(id); save(); renderPlan();
-    if (prev) toast(`Removed ${prev.n}`, "info", () => { delete S.del[id]; (S.flog[S.sel] = S.flog[S.sel] || []).push(prev); save(); renderPlan(); });
+    const id = b.dataset.fsdel, day = S.sel, prev = (S.flog[day] || []).find(x => x.id === id);
+    S.flog[day] = (S.flog[day] || []).filter(x => x.id !== id); markDeleted(id); save(); renderPlan();
+    /* Undo restores under a fresh id on the original day: the 5.6 s undo window outlasts the 4 s sync debounce,
+       so the tombstone may already be on the server and would delete the old id again on the next merge. */
+    if (prev) toast(`Removed ${prev.n}`, "info", () => { (S.flog[day] = S.flog[day] || []).push(Object.assign({}, prev, { id: Date.now().toString(36) + Math.random().toString(36).slice(2, 5) })); save(); renderPlan(); });
     return;
   }
   if ((b = t.closest("[data-qtry]"))) { FS.q = b.dataset.qtry; fsSearch(); return; }

@@ -190,41 +190,69 @@ function fsAdd(i, g) {
   (S.flog[S.sel] = S.flog[S.sel] || []).push(e); save(); renderPlan();
 }
 /* Supports native BarcodeDetector AND lazy-loaded ZXing CDN fallback on iOS Safari */
+/* Pinned + SRI: this script runs with the Supabase session in reach, so a changed CDN file must fail to load, not run. */
+const ZXING_SRC = "https://cdn.jsdelivr.net/npm/@zxing/browser@0.1.5/umd/zxing-browser.min.js";
+const ZXING_SRI = "sha384-ylLhng89kD62+PVK1cjm4rAYg69zDlGrbbSfAE2Eb8Xqf8RoAQCMcRoUXZh7pAPC";
 async function fsScan() {
-  let stream, iv, zxingReader = null;
+  let stream = null, iv = null, controls = null, closed = false;
   const ov = document.createElement("div");
   ov.style.cssText = "position:fixed;inset:0;z-index:260;background:#050608;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;padding:16px";
-  ov.innerHTML = `<div class="sechl">Point camera at barcode</div><video playsinline muted style="max-width:100%;max-height:66vh;border-radius:16px;border:1px solid var(--border-strong)"></video><div class="d" id="scanStatus">Initializing camera…</div><button class="btn pri">Cancel</button>`;
+  ov.setAttribute("role", "dialog"); ov.setAttribute("aria-modal", "true"); ov.setAttribute("aria-label", "Barcode scanner");
+  ov.innerHTML = `<div class="sechl">Point camera at barcode</div><video playsinline muted style="max-width:100%;max-height:66vh;border-radius:16px;border:1px solid var(--border-strong)"></video><div class="d" id="scanStatus" aria-live="polite">Initializing camera…</div><button class="btn pri">Cancel</button>`;
   document.body.appendChild(ov);
+  const st = ov.querySelector("#scanStatus"), v = ov.querySelector("video");
+  /* Idempotent. Cancel can land while getUserMedia / the CDN load is still pending, so every await below re-checks `closed`
+     and stops whatever it just acquired; without that the camera stays on after the overlay is gone. */
   const done = c => {
+    if (closed) return;
+    closed = true;
     clearInterval(iv);
-    if (zxingReader && zxingReader.reset) try { zxingReader.reset(); } catch (e) {}
+    document.removeEventListener("keydown", onKey);
+    try { if (controls) controls.stop(); } catch (e) {}
     if (stream) stream.getTracks().forEach(t => t.stop());
+    v.srcObject = null;
     ov.remove();
     if (c) { FS.bc = c; fsBarcode(c); }
   };
+  const onKey = e => { if (e.key === "Escape") done(); };
+  document.addEventListener("keydown", onKey);
   ov.querySelector("button").onclick = () => done();
+  ov.querySelector("button").focus();
   try {
-    const v = ov.querySelector("video");
     if ("BarcodeDetector" in window) {
       stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: "environment" } });
+      if (closed) { stream.getTracks().forEach(t => t.stop()); return; }
       v.srcObject = stream; await v.play();
-      const st = ov.querySelector("#scanStatus"); if (st) st.textContent = "Scanning…";
+      if (closed) return;
+      st.textContent = "Scanning…";
       const det = new BarcodeDetector({ formats: ["ean_13", "ean_8", "upc_a", "upc_e"] });
       iv = setInterval(async () => { try { const b = await det.detect(v); if (b.length) done(b[0].rawValue); } catch (e) {} }, 300);
     } else {
-      const st = ov.querySelector("#scanStatus"); if (st) st.textContent = "Loading scanner for Safari…";
+      st.textContent = "Loading scanner for Safari…";
       if (!window.ZXingBrowser) {
-        await new Promise((res, rej) => { const sc = document.createElement("script"); sc.src = "https://cdn.jsdelivr.net/npm/@zxing/browser@0.1.5/umd/zxing-browser.min.js"; sc.onload = res; sc.onerror = () => rej(new Error("Offline — type barcode number instead")); document.head.appendChild(sc); });
+        await new Promise((res, rej) => {
+          const sc = document.createElement("script");
+          sc.src = ZXING_SRC; sc.integrity = ZXING_SRI; sc.crossOrigin = "anonymous";
+          sc.onload = res;
+          sc.onerror = () => { sc.remove(); rej(new Error(navigator.onLine === false ? "you're offline. Type the barcode number instead" : "scanner failed to load. Type the barcode number instead")); };
+          document.head.appendChild(sc);
+        });
       }
-      zxingReader = new window.ZXingBrowser.BrowserMultiFormatReader();
-      if (st) st.textContent = "Scanning…";
-      const controls = await zxingReader.decodeFromConstraints({ video: { facingMode: "environment" } }, v, (result) => {
-        if (result && result.getText) { controls && controls.stop && controls.stop(); done(result.getText()); }
+      if (closed) return;
+      const reader = new window.ZXingBrowser.BrowserMultiFormatReader();
+      st.textContent = "Scanning…";
+      const c = await reader.decodeFromConstraints({ video: { facingMode: "environment" } }, v, (result, err, ctl) => {
+        if (result && result.getText) { controls = controls || ctl; done(result.getText()); }
       });
-      ov.querySelector("button").onclick = () => { controls && controls.stop && controls.stop(); done(); };
+      if (closed) { c.stop(); return; }
+      controls = c;
     }
-  } catch (e) { done(); FS.msg = "Scanner unavailable: " + e.message; renderFood(); renderQuality(); }
+  } catch (e) {
+    if (closed) return;
+    done();
+    FS.msg = "Scanner unavailable: " + (e && e.name === "NotAllowedError" ? "camera permission was denied. Type the barcode number instead" : e.message);
+    renderFood(); renderQuality();
+  }
 }
 
 const QA = [];

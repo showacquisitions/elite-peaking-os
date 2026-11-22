@@ -308,6 +308,10 @@ async function page(browser, vp) {
     const A = { ua_public: "BCVxsr7N_eNgVRqvHtD0zTZsEc6-VV-JvLexhqUzORcxaOzi6-AYWXvTBHm4bjyPjs7Vd8pZGH6SRpkNtoIAiw4", as_public: "BP4z9KsN6nGRTbVYI_c7VJSPQTBtkgcy27mlmlMoZIIgDll6e3vCYLocInmYWAmS6TlzAC8wEqKK6PBru3jl7A8", ecdh: "kyrL1jIIOHEzg3sM2ZWRHDRB62YACZhhSlknJ672kSs", auth: "BTBZMqHH6r4Tts7J_aSIgg", salt: "DGv6ra1nlYgDCS1FRnbzlw" };
     const kk = await deriveKeys(unb64u(A.ecdh), unb64u(A.auth), unb64u(A.ua_public), unb64u(A.as_public), unb64u(A.salt));
     ok(b64u(kk.cek) === "oIhVW04MRdy2XN9CiKLxTg" && b64u(kk.nonce) === "4h_95klXJ5E_qnoN", "push key schedule matches the RFC 8291 test vector");
+    const { topicOf, endpointFault } = await import(require("url").pathToFileURL(path.join(__dirname, "..", "supabase", "functions", "push", "webpush.mjs")).href);
+    const co = "a".repeat(36), t1 = await topicOf("msg:" + co + "b".repeat(36)), t2 = await topicOf("msg:" + co + "c".repeat(36));
+    ok(t1.length === 32 && /^[A-Za-z0-9_-]+$/.test(t1) && t1 !== t2, "push Topic is 32 base64url chars and differs per client (no truncation collisions)");
+    ok([[400, "BadDeviceToken"], [400, ""]].every(([s, r]) => endpointFault(s, r)) && [[403, ""], [401, ""], [400, "BadJwtToken"], [429, ""], [500, ""], [503, ""], [410, ""], [413, ""]].every(([s, r]) => !endpointFault(s, r)), "only endpoint-specific push failures count toward pruning; VAPID, rate-limit and server errors never do");
   }
 
   console.log("v3.2: auto supersets, demos, progression, unread, photos, copyright");
@@ -610,12 +614,13 @@ async function page(browser, vp) {
     /* Tombstone sync merge prevents resurrection */
     const tombRes = await p5.evaluate(() => {
       const a = freshState(), b = freshState();
-      a.recipes = []; a.del = { r9: 2000 };
+      const t = NOW() - 2000;
+      a.recipes = []; a.del = { r9: t };
       b.recipes = [{ id: "r9", name: "Deleted recipe" }, { id: "r10", name: "Live recipe" }];
       const m = mergeData(a, b);
-      return { ids: m.recipes.map(x => x.id).join(","), tomb: m.del.r9 };
+      return { ids: m.recipes.map(x => x.id).join(","), tomb: m.del.r9 === t };
     });
-    ok(tombRes.ids === "r10" && tombRes.tomb === 2000, "tombstone sync merge prevents resurrection of deleted recipes/items");
+    ok(tombRes.ids === "r10" && tombRes.tomb, "tombstone sync merge prevents resurrection of deleted recipes/items");
 
     /* EWMA trend weight + Adaptive TDEE */
     const metRes = await p5.evaluate(() => {
@@ -690,6 +695,72 @@ async function page(browser, vp) {
       return { cleanChrome: !emo.test(chrome), wrap, tip };
     });
     ok(uiRes.cleanChrome && uiRes.wrap && uiRes.tip, "zero raw emojis in UI chrome and touch-scrubbable interactive charts render");
+
+    /* v5.0 review: tombstones never kill live items */
+    const tomb = await p5.evaluate(() => {
+      S.sel = TODAY; S.flog = {}; S.favs = []; S.del = {}; showTab("plan"); setPlanSeg("m"); renderPlan();
+      $("exN").value = "Oats"; $("exP").value = "10"; $("exC").value = "50"; $("exF").value = "5"; $("btnAddEx").click();
+      const e = S.flog[TODAY].slice(-1)[0];
+      document.querySelector(`[data-fsfav="${e.id}"]`).click();
+      const favId = S.favs[0] && S.favs[0].id;
+      document.querySelector(`[data-fsfav="${e.id}"]`).click();
+      const m1 = mergeData({ flog: {}, del: {} }, { flog: S.flog, del: S.del });
+      document.querySelector(`[data-fsdel="${e.id}"]`).click(); $("toastUndo").click();
+      const back = (S.flog[TODAY] || []).find(x => x.n === "Oats");
+      const m2 = mergeData({ flog: {}, del: { [e.id]: NOW() } }, { flog: S.flog, del: S.del });
+      const old = mergeData({ del: { a: NOW() - 91 * 864e5, b: NOW() } }, { del: {} });
+      return { ownFavId: !!favId && favId !== e.id, logAlive: (m1.flog[TODAY] || []).some(x => x.id === e.id), undoNewId: !!back && back.id !== e.id, undoSurvives: (m2.flog[TODAY] || []).some(x => x.n === "Oats"), pruned: !("a" in old.del) && "b" in old.del };
+    });
+    ok(tomb.ownFavId && tomb.logAlive, "a favorite gets its own id, so un-favoriting never deletes the food-log entry on sync");
+    ok(tomb.undoNewId && tomb.undoSurvives, "undo after delete restores under a fresh id that survives a merge with the synced tombstone");
+    ok(tomb.pruned, "merged tombstones older than 90 days are pruned");
+
+    /* v5.0 review: scanner releases the camera when cancelled mid-start */
+    const scan = await p5.evaluate(async () => {
+      let stopped = 0, release = null;
+      const fake = { getTracks: () => [{ stop: () => stopped++ }] };
+      Object.defineProperty(navigator, "mediaDevices", { value: { getUserMedia: () => new Promise(r => { release = () => r(fake); }) }, configurable: true });
+      window.BarcodeDetector = class { detect() { return Promise.resolve([]); } };
+      const sel = '[aria-label="Barcode scanner"]';
+      const a = fsScan(); document.querySelector(sel + " button").click(); const gone1 = !document.querySelector(sel); release(); await a;
+      const b = fsScan(); document.dispatchEvent(new KeyboardEvent("keydown", { key: "Escape" })); const gone2 = !document.querySelector(sel); release(); await b;
+      delete window.BarcodeDetector;
+      return { gone1, gone2, stopped };
+    });
+    ok(scan.gone1 && scan.gone2 && scan.stopped === 2, `barcode scanner closes on Cancel and Escape and stops a camera that starts late (${scan.stopped} stopped)`);
+
+    /* v5.0 review: chart scrub reads its payload from the element (no global map) */
+    const scrubRes = await p5.evaluate(() => {
+      showTab("progress"); renderProgress();
+      const w = document.querySelector(".chart-wrap"), svg = w.querySelector("svg"), r = svg.getBoundingClientRect();
+      svg.dispatchEvent(new PointerEvent("pointerdown", { bubbles: true, clientX: r.left + r.width / 2, clientY: r.top + 10 }));
+      return { noGlobal: typeof window.__CHARTS === "undefined", cross: !w.querySelector("line[id$='_cx']").hasAttribute("hidden") };
+    });
+    ok(scrubRes.noGlobal && scrubRes.cross, "chart scrubbing works without a global chart registry");
+
+    /* v5.0 review: warm-up callout collapses once ticked inside the cockpit */
+    const wu = await p5.evaluate(() => {
+      const d = W.days.find(x => x.session && x.session.ex.length >= 2);
+      S.sel = d.date; S.sets = {}; S.checks = {}; showTab("plan"); renderPlan(); wmOpen();
+      const shown = !!document.querySelector("#wm .callout.c-warm");
+      document.querySelector('#wm .c-warm input[data-k$="|wu"]').click();
+      const hidden = !document.querySelector("#wm .callout.c-warm"), saved = !!S.checks[d.date + "|wu"];
+      wmClose();
+      return { shown, hidden, saved };
+    });
+    ok(wu.shown && wu.hidden && wu.saved, "ticking Warm-up done in the cockpit collapses the warm-up callout");
+
+    /* v5.0 review: WCAG AA (4.5:1) for small ink on the darkest-contrast surface, both themes */
+    const cr = await p5.evaluate(() => {
+      const lum = h => { const c = [1, 3, 5].map(i => parseInt(h.slice(i, i + 2), 16) / 255).map(v => v <= .03928 ? v / 12.92 : ((v + .055) / 1.055) ** 2.4); return .2126 * c[0] + .7152 * c[1] + .0722 * c[2] };
+      const ratio = (a, b) => { const x = lum(a), y = lum(b); return (Math.max(x, y) + .05) / (Math.min(x, y) + .05) };
+      const v = n => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+      const ink = ["--dim", "--muted", "--amber", "--green", "--red", "--cool", "--coach"], prev = document.documentElement.dataset.theme, out = {};
+      for (const th of ["dark", "light"]) { document.documentElement.dataset.theme = th; out[th] = ink.map(n => [n, +ratio(v(n), v("--panel2")).toFixed(2)]).filter(([, r]) => r < 4.5); }
+      document.documentElement.dataset.theme = prev;
+      return out;
+    });
+    ok(!cr.dark.length && !cr.light.length, "text tokens meet WCAG AA on --panel2 in dark and light " + JSON.stringify(cr));
     ok(p5.errors.length === 0, "no JS errors in v5.0 tests " + p5.errors.join(" | "));
     await p5.close();
   }

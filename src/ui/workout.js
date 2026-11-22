@@ -405,7 +405,7 @@ function wmDraw() {
      ${ssBox}
      <div class="wm-target">${gi ? `<span class="ssl">${gi.g}${gi.k}</span>` : ""}${setLine(e, rd, gi)}</div>
      <div class="d">${esc(e.load)}${formLink(e.name, e.demo)}</div>
-     ${WM.i === 0 && !s.ex.some(x => (S.sets[x.uid + "|" + WM.date] || []).length) ? warmHTML({ session: s, date: WM.date }) : e.wu && !done.length && !WM.wuDone[e.uid] ? callout("warm", "flame", "Ramp-up sets first", "", `${WU[e.wu]}<br><label class="ccheck"><input type="checkbox" data-wmwu="${esc(e.uid)}"/> Ramp-up done</label>`) : ""}
+     ${WM.i === 0 && !S.checks[WM.date + "|wu"] && !s.ex.some(x => (S.sets[x.uid + "|" + WM.date] || []).length) ? warmHTML({ session: s, date: WM.date }) : e.wu && !done.length && !WM.wuDone[e.uid] && !(WM.i === 0 && S.checks[WM.date + "|wu"]) ? callout("warm", "flame", "Ramp-up sets first", "", `${WU[e.wu]}<br><label class="ccheck"><input type="checkbox" data-wmwu="${esc(e.uid)}"/> Ramp-up done</label>`) : ""}
      ${e.cue ? `<div class="cue">${esc(e.cue)}</div>` : ""}
      <div class="wm-dots" aria-label="Sets done">${dots}</div>
      <div class="wm-tbl">

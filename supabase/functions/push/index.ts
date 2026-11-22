@@ -1,7 +1,7 @@
 // © 2026 Show Acquisitions. All rights reserved. Proprietary; see LICENSE.
 // Push sender (v5.0). Woken by pg_net (public.push_kick) when a notification is due, and right after instant events.
 // Auth: x-push-secret must match Vault 'push_cron_secret' (checked in SQL). VAPID private key also comes from Vault.
-import { sendPush } from "./webpush.mjs";
+import { sendPush, topicOf, endpointFault } from "./webpush.mjs";
 const URL_ = Deno.env.get("SUPABASE_URL") ?? "https://yimjcsyhvoviliupwayl.supabase.co";
 const SRK = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? "";
 // RFC 8292 mailto: subject avoids APNs Web Push HTTP 400 rejections on path-bearing URLs
@@ -22,22 +22,22 @@ Deno.serve(async req => {
     if (!auth.vapid) return out({ ok: false, error: "push_vapid_private not set in Vault" }, 500);
     const jwk = JSON.parse(auth.vapid);
     let sent = 0, failed = 0;
-    const ok: string[] = [], dead: string[] = [], errs: { ep: string; err: string }[] = [];
+    const ok: string[] = [], dead: string[] = [], errs: { ep: string; err: string; count: boolean }[] = [];
     for (let round = 0; round < 5; round++) {
       const items = await rpc("push_claim", { lim: 100 });
       if (!items || !items.length) break;
       await Promise.all(items.flatMap((it: any) => (it.subs || []).map(async (s: any) => {
         try {
           const detail: { reason?: string } = {};
-          const st = await sendPush(s, { title: it.title, body: it.body, url: it.url || "./", tag: it.tag, cat: it.cat }, jwk, SUBJECT, { ttl: it.cat === "rest" ? 300 : 86400, urgency: it.cat === "rem" ? "normal" : "high", topic: it.tag.replace(/[^A-Za-z0-9_-]/g, "").slice(0, 32) || undefined, detail });
+          const st = await sendPush(s, { title: it.title, body: it.body, url: it.url || "./", tag: it.tag, cat: it.cat }, jwk, SUBJECT, { ttl: it.cat === "rest" ? 300 : 86400, urgency: it.cat === "rem" ? "normal" : "high", topic: await topicOf(it.tag || ""), detail });
           if (st >= 200 && st < 300) { sent++; ok.push(s.endpoint); }
           else {
             failed++;
             if (st === 404 || st === 410) dead.push(s.endpoint);
-            else errs.push({ ep: s.endpoint, err: `HTTP ${st} ${detail.reason || ""}`.trim() });
+            else errs.push({ ep: s.endpoint, err: `HTTP ${st} ${detail.reason || ""}`.trim(), count: endpointFault(st, detail.reason || "") });
             console.warn("push status", st, new URL(s.endpoint).host, detail.reason || "");
           }
-        } catch (e) { failed++; errs.push({ ep: s.endpoint, err: String(e).slice(0, 180) }); console.warn("push error", String(e)); }
+        } catch (e) { failed++; errs.push({ ep: s.endpoint, err: String(e).slice(0, 180), count: false }); console.warn("push error", String(e)); }
       })));
     }
     if (ok.length || dead.length || errs.length) {

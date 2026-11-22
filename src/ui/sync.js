@@ -48,13 +48,17 @@ function v4Norm() {
 v4Norm();
 const UX = () => S.ux && S.ux.mode ? S.ux : v4Norm();
 
+/* Prune tombstones older than 90 days (a device offline longer than that may resurrect an item; accepted) */
+function pruneDel(del) {
+  const cut = NOW() - 90 * 864e5;
+  Object.keys(del).forEach(k => { if (!(del[k] >= cut)) delete del[k]; });
+  return del;
+}
 function markDeleted(id) {
   if (!id) return;
   S.del = obj4(S.del);
   S.del[String(id)] = NOW();
-  /* Prune tombstones older than 90 days */
-  const cut = NOW() - 90 * 864e5;
-  Object.keys(S.del).forEach(k => { if (S.del[k] < cut) delete S.del[k]; });
+  pruneDel(S.del);
 }
 
 const snapOf = () => JSON.stringify(SYNCKEYS.map(k => S[k]));
@@ -103,9 +107,9 @@ function applyData(d, mtime) {
 function mergeData(older, newer) {
   const o = JSON.parse(JSON.stringify(newer));
   const del = Object.assign({}, older.del || {}, newer.del || {});
-  o.del = del;
   const alive = x => x && !(x.id && del[String(x.id)]);
   MAPK.forEach(k => { if (k !== "del") o[k] = Object.assign({}, older[k], newer[k]); });
+  o.del = pruneDel(Object.assign({}, del)); /* filter with the full set, ship the pruned one */
   /* Per-day sets merge: keep longer / non-empty set list per uid|date */
   if (older.sets || newer.sets) {
     const ms = Object.assign({}, older.sets || {}, newer.sets || {});
